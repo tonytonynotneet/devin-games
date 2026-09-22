@@ -54,6 +54,13 @@ body {
 .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 .dot.p1 { background: var(--accent); }
 .dot.p2 { background: var(--accent2); }
+.hudface {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  background: var(--card2);
+  margin: -3px 0;
+}
+.hudface.f2 { border-color: var(--accent2); }
 .c1 { color: var(--accent); } .c2 { color: var(--accent2); }
 .p1chip { border-color: var(--accent); } .p2chip { border-color: var(--accent2); }
 .icobtn {
@@ -103,6 +110,14 @@ body {
   z-index: 5;
 }
 #banner small { display: block; font-size: .8rem; font-weight: 400; color: var(--muted); }
+#banner { display: flex; align-items: center; gap: 9px; }
+#banner .btext { text-align: center; }
+.bface {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  background: var(--card);
+  flex-shrink: 0;
+}
 .hidden { display: none !important; }
 
 /* ---------- Overlays ---------- */
@@ -154,6 +169,13 @@ body {
   width: 130px;
   text-align: center;
 }
+.pface {
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--card);
+  flex-shrink: 0;
+}
+.pface.f2 { border-color: var(--accent2); }
 .howto {
   text-align: left;
   font-size: .82rem;
@@ -212,6 +234,18 @@ kbd {
   background-clip: text;
   color: transparent;
 }
+.resfaces {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 4px 0 6px;
+}
+.rface {
+  width: 58px; height: 58px; border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--card2);
+}
+.rface.f2 { border-color: var(--accent2); }
 .stats {
   display: flex; justify-content: center; gap: 18px;
   flex-wrap: wrap;
