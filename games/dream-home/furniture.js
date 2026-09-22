@@ -470,7 +470,8 @@
         ctx.strokeStyle = ghost.ok ? "#3dff7a" : "#ff4d4d"; ctx.lineWidth = 2;
         ctx.strokeRect(gx + 1, gy + 1, d.w * T - 2, T - 2);
         ctx.fillStyle = "#ffffffdd"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
-        ctx.fillText(ghost.ok ? "A: place · Esc: cancel" : "blocked ☹️", gx + d.w * T / 2, gy - 4);
+        const keyName = M.placing.pid === 0 ? "F" : "Enter";
+        ctx.fillText(ghost.ok ? `${keyName}: place · Esc: cancel` : "blocked ☹️", gx + d.w * T / 2, gy - 4);
         ctx.restore();
       }
     },
