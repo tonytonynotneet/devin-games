@@ -16,14 +16,18 @@
 
       <div class="name-row">
         <div class="name-box p1">
-          <span class="snake-dot"></span>
-          <label for="name1">Player 1</label>
+          <div class="name-head">
+            <canvas class="avatar" id="avatar1" width="72" height="72"></canvas>
+            <label for="name1">Player 1</label>
+          </div>
           <input id="name1" type="text" maxlength="10" placeholder="koto" value="koto" autocomplete="off">
         </div>
         <div class="vs">VS</div>
         <div class="name-box p2">
-          <span class="snake-dot"></span>
-          <label for="name2">Player 2</label>
+          <div class="name-head">
+            <canvas class="avatar" id="avatar2" width="72" height="72"></canvas>
+            <label for="name2">Player 2</label>
+          </div>
           <input id="name2" type="text" maxlength="10" placeholder="zuza" value="zuza" autocomplete="off">
         </div>
       </div>
@@ -65,7 +69,10 @@
     <section id="screen-game" class="screen hidden">
       <div class="hud">
         <div class="hud-side p1">
-          <div class="hud-name p1t" id="hud-name1">P1</div>
+          <div class="hud-id">
+            <canvas class="hud-avatar" id="hud-avatar1" width="48" height="48"></canvas>
+            <div class="hud-name p1t" id="hud-name1">P1</div>
+          </div>
           <div class="pips" id="pips1"></div>
           <div class="boost"><div class="boost-fill p1fill" id="boost1"></div></div>
         </div>
@@ -73,7 +80,10 @@
           <div class="round-label" id="round-label">ROUND 1</div>
         </div>
         <div class="hud-side p2">
-          <div class="hud-name p2t" id="hud-name2">P2</div>
+          <div class="hud-id">
+            <div class="hud-name p2t" id="hud-name2">P2</div>
+            <canvas class="hud-avatar" id="hud-avatar2" width="48" height="48"></canvas>
+          </div>
           <div class="pips" id="pips2"></div>
           <div class="boost"><div class="boost-fill p2fill" id="boost2"></div></div>
         </div>

@@ -366,6 +366,102 @@ function updatePlay(dt) {
   }
 }
 
+/* ---- キャラクター (koto=P1, zuza=P2) ---- */
+const SKIN_P1 = '#f6d7bd', SKIN_P2 = '#f0cfae';
+const HAIR_P1 = '#16131d', HAIR_P2 = '#3a2a1e';
+const CHAR_SHIRT = '#0d0c14', CHAR_CHAIN = '#d4d8e2', CHAR_GLASSES = '#08080d';
+
+function drawKoto(c, gx, gy) {
+  // マッシュルームカットの後ろ髪
+  c.fillStyle = HAIR_P1;
+  c.beginPath(); c.ellipse(0, -4.6, 9.6, 8.8, 0, 0, Math.PI * 2); c.fill();
+
+  // 黒シャツの肩
+  c.fillStyle = CHAR_SHIRT;
+  c.beginPath(); c.roundRect(-8.5, 5.6, 17, 7.5, 3.5); c.fill();
+
+  // 銀チェーンネックレス
+  c.strokeStyle = CHAR_CHAIN; c.lineWidth = 1.1;
+  c.beginPath(); c.arc(0, 5.4, 4.4, Math.PI * 0.18, Math.PI * 0.82); c.stroke();
+
+  // 腕時計
+  c.strokeStyle = CHAR_CHAIN; c.lineWidth = 1.6;
+  c.beginPath(); c.moveTo(-8.6, 9.4); c.lineTo(-5.9, 9.4); c.stroke();
+  c.fillStyle = '#22242f';
+  c.beginPath(); c.arc(-7.2, 9.4, 1.6, 0, Math.PI * 2); c.fill();
+
+  // 顔
+  c.fillStyle = SKIN_P1;
+  c.beginPath(); c.arc(0, -1.4, 7.4, 0, Math.PI * 2); c.fill();
+
+  // 重めの前髪（下辺まっすぐ）
+  c.fillStyle = HAIR_P1;
+  c.beginPath();
+  c.moveTo(-8, -3.3);
+  c.lineTo(-8, -4.6);
+  c.quadraticCurveTo(0, -11.4, 8, -4.6);
+  c.lineTo(8, -3.3);
+  c.closePath();
+  c.fill();
+
+  // 目（進行方向にずらす）
+  const ex = gx * 1.4, ey = gy * 1.1;
+  c.fillStyle = '#171320';
+  c.beginPath();
+  c.ellipse(-2.7 + ex, -1 + ey, 1.15, 1.5, 0, 0, Math.PI * 2);
+  c.ellipse(2.7 + ex, -1 + ey, 1.15, 1.5, 0, 0, Math.PI * 2);
+  c.fill();
+}
+
+function drawZuza(c, gx, gy) {
+  // 肩の後ろまで伸びる長い直毛
+  c.fillStyle = HAIR_P2;
+  c.beginPath(); c.roundRect(-10.5, -13.5, 21, 27, 9); c.fill();
+
+  // 黒い服
+  c.fillStyle = CHAR_SHIRT;
+  c.beginPath(); c.roundRect(-8, 6, 16, 7, 3.5); c.fill();
+
+  // 顔
+  c.fillStyle = SKIN_P2;
+  c.beginPath(); c.arc(0, -2, 8, 0, Math.PI * 2); c.fill();
+
+  // 額と顔の両サイドに落ちるストレートヘア
+  c.fillStyle = HAIR_P2;
+  c.beginPath(); c.ellipse(0, -7.6, 9.2, 5.6, 0, 0, Math.PI * 2); c.fill();
+  c.beginPath(); c.roundRect(-9.5, -8, 4, 15.5, 2); c.fill();
+  c.beginPath(); c.roundRect(5.5, -8, 4, 15.5, 2); c.fill();
+
+  // 黒サングラス
+  const sx = gx * 1.3, sy = gy * 1;
+  c.fillStyle = CHAR_GLASSES;
+  c.beginPath(); c.roundRect(-7.6 + sx, -4.4 + sy, 6.9, 4.4, 2.2); c.fill();
+  c.beginPath(); c.roundRect(0.7 + sx, -4.4 + sy, 6.9, 4.4, 2.2); c.fill();
+  c.fillRect(-1.1 + sx, -3.4 + sy, 2.2, 1.3);
+  c.strokeStyle = 'rgba(255,255,255,.5)'; c.lineWidth = 0.9;
+  c.beginPath(); c.moveTo(-6.1 + sx, -1.6 + sy); c.lineTo(-4 + sx, -3.7 + sy); c.stroke();
+}
+
+function drawCharacter(c, cx, cy, s, p) {
+  const g = p.dir || { x: 0, y: 0 };
+  c.save();
+  c.translate(cx, cy);
+
+  // 軌跡色のハロー（どちらの蛇か一目で分かるよう維持）
+  c.shadowColor = p.boosting ? p.glow : p.color;
+  c.shadowBlur = p.boosting ? 16 : 9;
+  c.fillStyle = p.boosting ? p.glow : p.color;
+  c.globalAlpha = p.boosting ? 0.5 : 0.28;
+  c.beginPath(); c.arc(0, 0, 14.5 * s, 0, Math.PI * 2); c.fill();
+  c.shadowBlur = 0;
+  c.globalAlpha = 1;
+
+  c.scale(s, s);
+  if (p.id === 0) drawKoto(c, g.x, g.y);
+  else drawZuza(c, g.x, g.y);
+  c.restore();
+}
+
 /* ================= 描画 ================= */
 function drawTrailCell(p) {
   const x = p.x * CELL, y = p.y * CELL;
@@ -393,25 +489,24 @@ function spawnExplosion(p) {
 function drawHead(p) {
   if (!p.alive) return;
   const cx = p.x * CELL + CELL / 2, cy = p.y * CELL + CELL / 2;
-  ctx.save();
-  ctx.shadowColor = p.boosting ? p.glow : p.color;
-  ctx.shadowBlur = p.boosting ? 18 : 10;
-  ctx.fillStyle = p.boosting ? p.glow : p.color;
-  const r = CELL * 0.52;
-  ctx.beginPath();
-  ctx.roundRect(cx - r / 2 - 2, cy - r / 2 - 2, r + 4, r + 4, 5);
-  ctx.fill();
-  ctx.restore();
-
-  // 目
-  const ex = p.dir.x, ey = p.dir.y;
-  const ox = ey !== 0 ? 4 : 0, oy = ex !== 0 ? 4 : 0;
-  ctx.fillStyle = '#0f0e1a';
-  ctx.beginPath();
-  ctx.arc(cx + ex * 4 + ox, cy + ey * 4 + oy, 2.2, 0, Math.PI * 2);
-  ctx.arc(cx + ex * 4 - ox, cy + ey * 4 - oy, 2.2, 0, Math.PI * 2);
-  ctx.fill();
+  drawCharacter(ctx, cx, cy, 0.85, p);
 }
+
+/* ---- スタート画面 / HUD のアバター ---- */
+function paintAvatar(el, id) {
+  if (!el) return;
+  drawCharacter(el.getContext('2d'), el.width / 2, el.height / 2, el.width / 32, {
+    id,
+    color: id === 0 ? COL_P1 : COL_P2,
+    glow: id === 0 ? GLOW_P1 : GLOW_P2,
+    boosting: false,
+    dir: { x: 0, y: 0 },
+  });
+}
+paintAvatar($('avatar1'), 0);
+paintAvatar($('avatar2'), 1);
+paintAvatar($('hud-avatar1'), 0);
+paintAvatar($('hud-avatar2'), 1);
 
 function render(dt) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
