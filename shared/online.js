@@ -16,8 +16,56 @@
     (window.localStorage && localStorage.getItem("DG_WS")) ||
     "wss://devin-games-relay.fly.dev/ws";
 
+  // Per-player links use PeerJS (free public broker, no backend needed):
+  // koto always hosts as peer id "dg-<game>-koto"; zuza connects to it.
+  function connectPeer(game, want) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const done = (fn, v) => { if (!settled) { settled = true; fn(v); } };
+      const net = {
+        ws: null, role: want, _conn: null, _peer: null,
+        send(obj) { const c = net._conn; if (c && c.open) { try { c.send(obj); } catch (e) {} } },
+        onmessage: null,
+        onpeer: null,
+        close() { try { net._peer && net._peer.destroy(); } catch (e) {} },
+      };
+      const wire = conn => {
+        net._conn = conn;
+        conn.on("data", d => { try { net.onmessage && net.onmessage(d); } catch (e) {} });
+        conn.on("close", () => { net.onpeer && net.onpeer(false); });
+      };
+      if (want === "host") {
+        const peer = (net._peer = new Peer("dg-" + game + "-koto"));
+        peer.on("open", () => done(resolve, net));
+        peer.on("connection", conn => {
+          wire(conn);
+          conn.on("open", () => net.onpeer && net.onpeer(true));
+        });
+        peer.on("error", e => { if (e.type === "unavailable-id") done(reject, new Error("host_taken")); });
+      } else {
+        const peer = (net._peer = new Peer());
+        let tries = 0;
+        const tryConn = () => {
+          if (settled || peer.destroyed) return;
+          const conn = peer.connect("dg-" + game + "-koto", { reliable: true });
+          wire(conn);
+          conn.on("open", () => { net.onpeer && net.onpeer(true); done(resolve, net); });
+        };
+        peer.on("open", tryConn);
+        peer.on("error", e => {
+          if (e.type === "peer-unavailable") {
+            if (++tries < 100) setTimeout(tryConn, 3000); // wait for koto to come online
+            else done(reject, new Error("no_host"));
+          } else if (!settled) done(reject, e);
+        });
+      }
+      setTimeout(() => done(reject, new Error("timeout")), 60000);
+    });
+  }
+
   window.DGOnline = {
     connect(game, want) {
+      if ((want === "host" || want === "guest") && window.Peer) return connectPeer(game, want);
       return new Promise((resolve, reject) => {
         let url = WS_URL + "?game=" + encodeURIComponent(game);
         if (want === "host" || want === "guest") url += "&role=" + want;

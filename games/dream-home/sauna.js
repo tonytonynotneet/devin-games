@@ -185,17 +185,20 @@
       if (net && !net._saunaPatched) {              // piggyback sauna snapshots for guests
         net._saunaPatched = true;
         const c0 = net.connect.bind(net);
-        net.connect = onRole => c0(role => {
-          const s = net._s;
-          if (s && s.onmessage) {
-            const h0 = s.onmessage;
-            s.onmessage = m => {
-              if (m && m.type === "dhSauna" && net.role === "guest") M.deserialize(m.snap);
-              else h0(m);
-            };
-          }
-          onRole && onRole(role);
-        });
+        net.connect = (want, onRole) => {
+          if (typeof want === "function") { onRole = want; want = null; }
+          return c0(want, role => {
+            const s = net._s;
+            if (s && s.onmessage) {
+              const h0 = s.onmessage;
+              s.onmessage = m => {
+                if (m && m.type === "dhSauna" && net.role === "guest") M.deserialize(m.snap);
+                else h0(m);
+              };
+            }
+            onRole && onRole(role);
+          });
+        };
       }
     },
 
