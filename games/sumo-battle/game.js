@@ -698,7 +698,7 @@ function drawHUD() {
   ctx.textAlign = 'center';
   ctx.font = `700 ${fs * 0.7}px sans-serif`;
   ctx.fillStyle = 'rgba(240,235,255,.75)';
-  ctx.fillText(`先取 ${WIN_ROUNDS} 本`, cx, 30);
+  ctx.fillText(`First to ${WIN_ROUNDS}`, cx, 30);
 
   // 組み合いゲージ
   if (clinch || Math.abs(advantage) > 0.03) {
@@ -709,7 +709,7 @@ function drawHUD() {
     ctx.fill();
     ctx.fillStyle = 'rgba(240,235,255,.85)';
     ctx.font = `700 ${fs * 0.62}px sans-serif`;
-    ctx.fillText('組み合い！', cx, by - 14);
+    ctx.fillText('CLINCH!', cx, by - 14);
     // バー
     ctx.fillStyle = players[0].color;
     roundRect(bx, by, bw / 2, bh, 8); ctx.fill();
@@ -735,8 +735,8 @@ function drawCountdown() {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   const t = countT;
-  let txt = 'はっけよい…';
-  if (t > 1.0) txt = 'のこった！';
+  let txt = 'Ready…';
+  if (t > 1.0) txt = 'GO!';
   const fs = Math.min(64, W * 0.09);
   ctx.font = `900 ${fs}px sans-serif`;
   const pop = 1 + Math.max(0, 0.25 - (t % 1)) * 1.6;
@@ -759,11 +759,11 @@ function drawRoundEnd() {
   ctx.translate(cx, cy);
   let txt;
   if (roundDraw) {
-    txt = '取り直し！';
+    txt = 'Do-over!';
     ctx.fillStyle = '#ffd166';
   } else {
     const p = players[roundWinner];
-    txt = `${p.name} の一本！`;
+    txt = `${p.name} scores!`;
     ctx.fillStyle = p.color;
   }
   const s = 1 + Math.max(0, 0.3 - roundEndT) * 1.4;
@@ -822,9 +822,9 @@ function drawTouchUI() {
     ctx.font = `900 ${b.r * 0.42}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('突', b.x, b.y - b.r * 0.18);
+    ctx.fillText('PUSH', b.x, b.y - b.r * 0.18);
     ctx.font = `700 ${b.r * 0.22}px sans-serif`;
-    ctx.fillText(clinch ? '一発押し' : 'つっぱり', b.x, b.y + b.r * 0.3);
+    ctx.fillText(clinch ? 'SHOVE!' : 'thrust', b.x, b.y + b.r * 0.3);
     ctx.restore();
 
     // ジョイスティック
@@ -851,7 +851,7 @@ function drawTouchUI() {
     const ly = portrait ? (i === 0 ? H - fs * 2.2 : fs * 2.6) : H * 0.5 + dohyoR + fs * 2;
     ctx.save();
     if (flip) { ctx.translate(lx, ly); ctx.rotate(Math.PI); ctx.translate(-lx, -ly); }
-    ctx.fillText(`${p.name} エリア — ドラッグで移動`, lx, ly);
+    ctx.fillText(`${p.name} zone — drag to move`, lx, ly);
     ctx.restore();
     ctx.restore();
   }
@@ -874,8 +874,8 @@ function sanitize(v, fallback) {
 }
 function tryStart() {
   if (startScreen.classList.contains('hidden')) return;
-  players[0].name = sanitize(name1El.value, 'プレイヤー1');
-  players[1].name = sanitize(name2El.value, 'プレイヤー2');
+  players[0].name = sanitize(name1El.value, 'Player 1');
+  players[1].name = sanitize(name2El.value, 'Player 2');
   players[0].wins = players[1].wins = 0;
   matchOver = false;
   startScreen.classList.add('hidden');
@@ -886,10 +886,10 @@ function tryStart() {
 }
 function showEnd() {
   const w = players[roundWinner];
-  winnerText.textContent = `${w.name} の勝利！`;
+  winnerText.textContent = `${w.name} wins!`;
   winnerText.style.color = w.color;
   finalScore.textContent = `${players[0].name} ${players[0].wins} – ${players[1].wins} ${players[1].name}`;
-  loserNote.textContent = `${players[1 - roundWinner].name} ざんねん… ☹️`;
+  loserNote.textContent = `${players[1 - roundWinner].name} — so close… ☹️`;
   endScreen.classList.remove('hidden');
 }
 startBtn.addEventListener('click', tryStart);
@@ -934,7 +934,7 @@ function loop(ts) {
 touchMode = detectTouch();
 touchToggle.classList.toggle('on', touchMode);
 resize();
-players[0].name = sanitize(name1El.value, 'プレイヤー1');
-players[1].name = sanitize(name2El.value, 'プレイヤー2');
+players[0].name = sanitize(name1El.value, 'Player 1');
+players[1].name = sanitize(name2El.value, 'Player 2');
 resetPositions();
 requestAnimationFrame(loop);

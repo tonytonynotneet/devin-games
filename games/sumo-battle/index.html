@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>相撲押し出しバトル | devin-games</title>
+<title>Sumo Battle | devin-games</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <canvas id="game"></canvas>
 
-<!-- スタート画面 -->
+<!-- Start screen -->
 <div id="startScreen" class="overlay">
   <div class="panel">
     <div class="emoji-title">🤼</div>
-    <h1>相撲押し出しバトル</h1>
-    <p class="catch">土俵から相手を押し出せ！先に3本取ったほうの勝ち。</p>
+    <h1>Sumo Battle</h1>
+    <p class="catch">Push your opponent out of the ring! First to 3 wins.</p>
 
     <div class="names">
       <div class="name-field">
-        <label for="name1">プレイヤー1</label>
+        <label for="name1">Player 1</label>
         <input id="name1" type="text" maxlength="12" value="koto" autocomplete="off">
       </div>
       <div class="vs">VS</div>
       <div class="name-field">
-        <label for="name2">プレイヤー2</label>
+        <label for="name2">Player 2</label>
         <input id="name2" type="text" maxlength="12" value="zuza" autocomplete="off">
       </div>
     </div>
@@ -31,38 +31,38 @@
     <div class="controls-grid">
       <div class="ctl p1">
         <span class="who">P1</span>
-        <span class="keys">W A S D</span> 移動
-        <span class="keys">F / Space</span> 突っ張り
+        <span class="keys">W A S D</span> move
+        <span class="keys">F / Space</span> thrust
       </div>
       <div class="ctl p2">
         <span class="who">P2</span>
-        <span class="keys">矢印キー</span> 移動
-        <span class="keys">Enter / 右Shift</span> 突っ張り
+        <span class="keys">Arrow keys</span> move
+        <span class="keys">Enter / Right Shift</span> thrust
       </div>
     </div>
-    <p class="hint">長くぶつかると「組み合い」！ 力の押し合いで土俵際へ運ぼう。組み合い中の突っ張りは一発押し。<br class="sp">スマホ・タブレットは自動で画面分割タッチ操作になるよ。</p>
+    <p class="hint">Stay locked together and you'll clinch — out-muscle your opponent toward the edge! A thrust during a clinch is a one-shot shove.<br class="sp">Phones and tablets get split-screen touch controls automatically.</p>
 
-    <button id="startBtn" class="big-btn">対戦スタート</button>
-    <a class="back" href="../../index.html">← ゲーム一覧にもどる</a>
+    <button id="startBtn" class="big-btn">Start Battle</button>
+    <a class="back" href="../../index.html">← Back to game list</a>
   </div>
 </div>
 
-<!-- リザルト画面 -->
+<!-- Result screen -->
 <div id="endScreen" class="overlay hidden">
   <div class="panel">
     <div class="emoji-title">🏆</div>
     <h1 id="winnerText"></h1>
     <p id="finalScore" class="catch"></p>
     <p id="loserNote" class="loser-note"></p>
-    <button id="rematchBtn" class="big-btn">もう一度対戦</button>
-    <button id="renameBtn" class="sub-btn">名前をかえて対戦</button>
+    <button id="rematchBtn" class="big-btn">Rematch</button>
+    <button id="renameBtn" class="sub-btn">Change Names & Rematch</button>
   </div>
 </div>
 
-<!-- 右上トグル -->
+<!-- Top-right toggles -->
 <div id="cornerBtns">
-  <button id="touchToggle" title="タッチ操作の切り替え">📱</button>
-  <button id="muteBtn" title="音 ON/OFF">🔊</button>
+  <button id="touchToggle" title="Toggle touch controls">📱</button>
+  <button id="muteBtn" title="Sound on/off">🔊</button>
 </div>
 
 <script src="game.js"></script>

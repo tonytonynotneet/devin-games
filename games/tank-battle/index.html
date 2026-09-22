@@ -1,38 +1,38 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>タンクバトル — devin-games</title>
+<title>Tank Battle — devin-games</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="wrap">
 
-    <!-- ============ スタート画面 ============ -->
+    <!-- ============ Start screen ============ -->
     <section id="screen-start" class="screen">
-      <h1 class="logo">タンクバトル</h1>
-      <p class="tagline">迷路の要塞で砲弾を撃ち合え！壁バウンドを決めろ！</p>
+      <h1 class="logo">Tank Battle</h1>
+      <p class="tagline">Trade cannon fire in a maze fortress — master the wall bounce!</p>
 
       <div class="name-row">
         <div class="name-box p1">
           <span class="tank-dot"></span>
-          <label for="name1">プレイヤー1</label>
+          <label for="name1">Player 1</label>
           <input id="name1" type="text" maxlength="10" placeholder="koto" value="koto" autocomplete="off">
         </div>
         <div class="vs">VS</div>
         <div class="name-box p2">
           <span class="tank-dot"></span>
-          <label for="name2">プレイヤー2</label>
+          <label for="name2">Player 2</label>
           <input id="name2" type="text" maxlength="10" placeholder="zuza" value="zuza" autocomplete="off">
         </div>
       </div>
 
       <div class="rules">
         <div class="rule-col">
-          <h3>🎮 操作方法</h3>
+          <h3>🎮 Controls</h3>
           <table class="controls">
-            <tr><th></th><th>前進/後退・旋回</th><th>砲撃</th></tr>
+            <tr><th></th><th>Forward/Back & Turn</th><th>Fire</th></tr>
             <tr>
               <td class="p1t">P1</td>
               <td class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></td>
@@ -46,22 +46,22 @@
           </table>
         </div>
         <div class="rule-col">
-          <h3>📖 ルール</h3>
+          <h3>📖 Rules</h3>
           <ul>
-            <li>迷路の中で戦車を動かして砲弾を撃ち合う対戦ゲーム</li>
-            <li>砲弾は壁に当たると<b>最大3回反射</b>する — 跳弾を狙え！</li>
-            <li>自分の跳弾にも当たるので注意！</li>
-            <li>相手を撃破するとラウンド獲得。<b>3ラウンド先取</b>で勝利！</li>
-            <li><kbd>P</kbd> でポーズ</li>
-            <li class="touch-only">📱 タッチ端末では画面両端のボタンで操作</li>
+            <li>Drive your tank through the maze and blast each other</li>
+            <li>Shells <b>bounce off walls up to 3 times</b> — aim for ricochets!</li>
+            <li>Watch out — your own ricochets can hit you!</li>
+            <li>Destroy the enemy to take the round. <b>First to 3 rounds</b> wins!</li>
+            <li><kbd>P</kbd> pauses</li>
+            <li class="touch-only">📱 On touch devices, use the on-screen buttons</li>
           </ul>
         </div>
       </div>
 
-      <button id="btn-start" class="big-btn">ゲームスタート</button>
+      <button id="btn-start" class="big-btn">Start Game</button>
     </section>
 
-    <!-- ============ ゲーム画面 ============ -->
+    <!-- ============ Game screen ============ -->
     <section id="screen-game" class="screen hidden">
       <div class="hud">
         <div class="hud-side p1">
@@ -85,20 +85,20 @@
         <div id="touch-controls">
           <div class="tc-side tc-p1">
             <div class="tc-dpad">
-              <button class="tc-btn tc-up"    data-p="0" data-dir="up"    aria-label="P1 前進">▲</button>
-              <button class="tc-btn tc-left"  data-p="0" data-dir="left"  aria-label="P1 左旋回">◀</button>
-              <button class="tc-btn tc-right" data-p="0" data-dir="right" aria-label="P1 右旋回">▶</button>
-              <button class="tc-btn tc-down"  data-p="0" data-dir="down"  aria-label="P1 後退">▼</button>
+              <button class="tc-btn tc-up"    data-p="0" data-dir="up"    aria-label="P1 forward">▲</button>
+              <button class="tc-btn tc-left"  data-p="0" data-dir="left"  aria-label="P1 turn left">◀</button>
+              <button class="tc-btn tc-right" data-p="0" data-dir="right" aria-label="P1 turn right">▶</button>
+              <button class="tc-btn tc-down"  data-p="0" data-dir="down"  aria-label="P1 back">▼</button>
             </div>
-            <button class="tc-fire p1b" data-p="0" data-fire aria-label="P1 砲撃">💥</button>
+            <button class="tc-fire p1b" data-p="0" data-fire aria-label="P1 fire">💥</button>
           </div>
           <div class="tc-side tc-p2">
-            <button class="tc-fire p2b" data-p="1" data-fire aria-label="P2 砲撃">💥</button>
+            <button class="tc-fire p2b" data-p="1" data-fire aria-label="P2 fire">💥</button>
             <div class="tc-dpad">
-              <button class="tc-btn tc-up"    data-p="1" data-dir="up"    aria-label="P2 前進">▲</button>
-              <button class="tc-btn tc-left"  data-p="1" data-dir="left"  aria-label="P2 左旋回">◀</button>
-              <button class="tc-btn tc-right" data-p="1" data-dir="right" aria-label="P2 右旋回">▶</button>
-              <button class="tc-btn tc-down"  data-p="1" data-dir="down"  aria-label="P2 後退">▼</button>
+              <button class="tc-btn tc-up"    data-p="1" data-dir="up"    aria-label="P2 forward">▲</button>
+              <button class="tc-btn tc-left"  data-p="1" data-dir="left"  aria-label="P2 turn left">◀</button>
+              <button class="tc-btn tc-right" data-p="1" data-dir="right" aria-label="P2 turn right">▶</button>
+              <button class="tc-btn tc-down"  data-p="1" data-dir="down"  aria-label="P2 back">▼</button>
             </div>
           </div>
         </div>
@@ -107,15 +107,15 @@
           <div id="overlay-main" class="overlay-main"></div>
           <div id="overlay-sub" class="overlay-sub"></div>
           <div id="overlay-btns" class="overlay-btns hidden">
-            <button id="btn-replay" class="big-btn small">もう一度対戦</button>
-            <button id="btn-title" class="ghost-btn">タイトルへ</button>
+            <button id="btn-replay" class="big-btn small">Play Again</button>
+            <button id="btn-title" class="ghost-btn">Back to Title</button>
           </div>
         </div>
       </div>
 
       <div class="controls-hint">
-        <span class="p1t">P1: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移動 / <kbd>F</kbd> 砲撃</span>
-        <span class="p2t">P2: 矢印キー 移動 / <kbd>Enter</kbd> 砲撃</span>
+        <span class="p1t">P1: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move / <kbd>F</kbd> fire</span>
+        <span class="p2t">P2: Arrow keys move / <kbd>Enter</kbd> fire</span>
       </div>
     </section>
 

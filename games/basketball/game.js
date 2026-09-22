@@ -54,8 +54,8 @@ let dribbleT = 0, lastDribbleDown = false;
 const moveHeld = [{ left: false, right: false }, { left: false, right: false }];
 
 function getNames() {
-  const n1 = $('name1').value.trim() || $('name1').placeholder || 'プレイヤー1';
-  const n2 = $('name2').value.trim() || $('name2').placeholder || 'プレイヤー2';
+  const n1 = $('name1').value.trim() || $('name1').placeholder || 'Player 1';
+  const n2 = $('name2').value.trim() || $('name2').placeholder || 'Player 2';
   return [n1, n2];
 }
 
@@ -271,7 +271,7 @@ function startMatch() {
   paused = false;
   particles = []; floaters = [];
   clockEl.classList.remove('urgent');
-  targetEl.textContent = TARGET + '点先取 / ' + REG_T + '秒';
+  targetEl.textContent = 'First to ' + TARGET + ' / ' + REG_T + 's';
   scrStart.classList.add('hidden');
   scrGame.classList.remove('hidden');
   if (document.activeElement) document.activeElement.blur();
@@ -298,7 +298,7 @@ function scoreBasket(p) {
   if (ball.swish) sfxSwish();
   spawnNetFx();
   addFloater(ball.x, RIM.y - 20, '+' + ball.pts, p.color, 1.6);
-  if (ball.pts === 3) addFloater(ball.x, RIM.y - 48, '3ポイント！', '#ffd166', 1.0);
+  if (ball.pts === 3) addFloater(ball.x, RIM.y - 48, '3 POINTER!', '#ffd166', 1.0);
   shakeT = ball.pts === 3 ? 260 : 140;
 
   if (!overtime && p.score >= TARGET) { endMatch(p); return; }
@@ -323,9 +323,9 @@ function checkBall(possessionId) {
   checkT = 1100;
   overlay.classList.remove('hidden');
   ovBtns.classList.add('hidden');
-  ovMain.textContent = 'チェックボール';
+  ovMain.textContent = 'CHECK BALL';
   ovMain.style.color = '#eae7f5';
-  ovSub.textContent = off.name + ' の攻撃';
+  ovSub.textContent = off.name + ' ball';
 }
 
 function endMatch(champ) {
@@ -335,9 +335,9 @@ function endMatch(champ) {
   overlay.classList.remove('hidden');
   ovBtns.classList.remove('hidden');
   const loser = players.find((p) => p !== champ);
-  ovMain.textContent = '🏆 ' + champ.name + ' の勝利！';
+  ovMain.textContent = '🏆 ' + champ.name + ' wins!';
   ovMain.style.color = champ.color;
-  ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name}　（${loser.name} ☹️）`;
+  ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name} (${loser.name} ☹️)`;
   clockEl.classList.remove('urgent');
 }
 
@@ -349,10 +349,10 @@ function regulationEnd() {
   overtime = true;
   sfxBuzzer();
   const pos = lastScorer === -1 ? 1 : 1 - lastScorer;
-  targetEl.textContent = 'サドンデス — 先取点！';
+  targetEl.textContent = 'Sudden death — next basket wins!';
   checkBall(pos);
-  ovMain.textContent = 'サドンデス！';
-  ovSub.textContent = '先に1本決めた方が勝ち — ' + players[pos].name + ' の攻撃';
+  ovMain.textContent = 'SUDDEN DEATH!';
+  ovSub.textContent = 'First basket wins — ' + players[pos].name + ' to attack';
 }
 
 function togglePause() {
@@ -360,9 +360,9 @@ function togglePause() {
   if (paused) {
     overlay.classList.remove('hidden');
     ovBtns.classList.add('hidden');
-    ovMain.textContent = 'ポーズ中';
+    ovMain.textContent = 'Paused';
     ovMain.style.color = '#eae7f5';
-    ovSub.textContent = 'P キーで再開';
+    ovSub.textContent = 'Press P to resume';
   } else {
     overlay.classList.add('hidden');
   }
@@ -416,7 +416,7 @@ function trySteal(p) {
     ball.vy = -200;
     ball.noPick = o.id; ball.noPickUntil = performance.now() + 350;
     sfxSteal();
-    addFloater(o.x, o.y - o.h - 18, 'スティール！', p.color, 0.9);
+    addFloater(o.x, o.y - o.h - 18, 'STEAL!', p.color, 0.9);
     spawnBurst(ball.x, ball.y, p.color, 10);
     updateMarks();
   }
@@ -536,7 +536,7 @@ function updateBall(dt) {
     if (b.state === 'shot') {
       b.state = 'loose';
       if (!b.touchedRim && b.shotBy) {
-        addFloater(b.shotBy.x, b.shotBy.y - b.shotBy.h - 20, 'エアボール ☹️', '#8a86a3', 1.2);
+        addFloater(b.shotBy.x, b.shotBy.y - b.shotBy.h - 20, 'AIRBALL ☹️', '#8a86a3', 1.2);
       }
     }
   }
@@ -584,7 +584,7 @@ function updateBall(dt) {
         b.noPick = -1;
         sfxBlock();
         shakeT = 220;
-        addFloater(p.x, p.y - p.h - 20, 'ブロック！', p.color, 1.1);
+        addFloater(p.x, p.y - p.h - 20, 'BLOCKED!', p.color, 1.1);
         spawnBurst(b.x, b.y, p.color, 16);
         break;
       } else if (now >= b.noPickUntil) {

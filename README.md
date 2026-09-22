@@ -1,22 +1,22 @@
 # devin-games
 
-ふたりで遊べる HTML ゲーム置き場。1つのキーボードで対戦・協力プレイできるゲーム集です。
+A collection of HTML games for two players — versus and co-op games you can play together on one keyboard.
 
-## 遊び方
+## How to play
 
-`index.html` をブラウザで開くか、各ゲームの `games/<game>/index.html` を直接開きます。外部依存なし・ビルド不要です。
+Open `index.html` in a browser, or open each game's `games/<game>/index.html` directly. No external dependencies, no build step.
 
-## ゲーム一覧
+## Games
 
-| ゲーム | モード | ディレクトリ |
+| Game | Mode | Directory |
 |--------|--------|--------------|
-| エアホッケー対戦 | 対戦 | `games/air-hockey/` |
-| タンクバトル | 対戦 | `games/tank-battle/` |
-| 協力ダンジョン脱出 | 協力 | `games/dungeon-escape/` |
-| スネークバトル | 対戦 | `games/snake-battle/` |
-| 相撲押し出しバトル | 対戦 | `games/sumo-battle/` |
-| バスケ対戦 | 対戦 | `games/basketball/` |
+| Air Hockey | Versus | `games/air-hockey/` |
+| Tank Battle | Versus | `games/tank-battle/` |
+| Dungeon Escape | Co-op | `games/dungeon-escape/` |
+| Snake Battle | Versus | `games/snake-battle/` |
+| Sumo Battle | Versus | `games/sumo-battle/` |
+| Basketball 1on1 | Versus | `games/basketball/` |
 
-## 操作の基本
+## Controls
 
-各ゲームはスタート画面で2人の名前を入力して開始します。基本は Player 1 が `WASD` + アクションキー、Player 2 が `矢印キー` + アクションキー（細かいキー配置は各ゲーム内に表示）。
+Each game starts on a name-entry screen for both players. Player 1 uses `WASD` + an action key, Player 2 uses the `arrow keys` + an action key (exact bindings are shown inside each game).
