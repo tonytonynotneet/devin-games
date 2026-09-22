@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Home — devin-games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <span class="chip">🏠 <span id="hudHappy">0</span></span>
+    <span class="chip">🪙 <span id="hudCoins">50</span></span>
+    <span class="chip">☀️ <span id="hudTime">8:00</span></span>
+    <span class="chip p1chip"><span class="dot p1"></span><span id="hudP1">koto</span></span>
+    <span class="chip p2chip"><span class="dot p2"></span><span id="hudP2">zuza</span></span>
+    <button id="btnPause" class="icobtn" title="Pause">⏸</button>
+  </header>
+
+  <div id="stage">
+    <canvas id="cv" width="960" height="540"></canvas>
+
+    <div id="titleScreen" class="overlay">
+      <div class="card">
+        <h1>🏡 Dream Home</h1>
+        <p class="tagline">Build your dream home together — furnish, garden, and raise a big happy family!</p>
+        <div class="namerow">
+          <label><span class="dot p1"></span><input id="name1" value="koto" maxlength="10" autocomplete="off"></label>
+          <label><span class="dot p2"></span><input id="name2" value="zuza" maxlength="10" autocomplete="off"></label>
+        </div>
+        <div class="btns">
+          <button id="btnStart" class="bigbtn">▶ Start Building</button>
+        </div>
+        <p class="hint">
+          koto: WASD move · F action&nbsp;&nbsp;|&nbsp;&nbsp;zuza: Arrows move · Enter action<br>
+          On touch: drag on your half to move · tap A button to act
+        </p>
+      </div>
+    </div>
+
+    <div id="menuScreen" class="overlay hidden">
+      <div class="card menu">
+        <h2 id="menuTitle">Menu</h2>
+        <div id="menuItems" class="items"></div>
+        <button id="menuClose" class="midbtn">Close</button>
+      </div>
+    </div>
+
+    <div id="pauseScreen" class="overlay hidden">
+      <div class="card">
+        <h1>⏸ Paused</h1>
+        <div class="btns">
+          <button id="btnResume" class="bigbtn">Resume</button>
+          <button id="btnQuit" class="midbtn">Back to Title</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="hidden"></div>
+  </div>
+
+  <div id="touchLayer" class="hidden">
+    <div class="pad">
+      <button class="tbtn dir" data-p="0" data-k="l">◀</button>
+      <button class="tbtn dir" data-p="0" data-k="u">▲</button>
+      <button class="tbtn dir" data-p="0" data-k="d">▼</button>
+      <button class="tbtn dir" data-p="0" data-k="r">▶</button>
+      <button class="tbtn act a" data-p="0" data-k="a">A</button>
+    </div>
+    <div class="pad">
+      <button class="tbtn dir" data-p="1" data-k="l">◀</button>
+      <button class="tbtn dir" data-p="1" data-k="u">▲</button>
+      <button class="tbtn dir" data-p="1" data-k="d">▼</button>
+      <button class="tbtn dir" data-p="1" data-k="r">▶</button>
+      <button class="tbtn act a" data-p="1" data-k="a">A</button>
+    </div>
+  </div>
+</div>
+
+<script src="sprites.js"></script>
+<script src="world.js"></script>
+<script src="furniture.js"></script>
+<script src="garden.js"></script>
+<script src="animals.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
