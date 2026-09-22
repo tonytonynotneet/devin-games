@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スネークバトル — devin-games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ============ スタート画面 ============ -->
+    <section id="screen-start" class="screen">
+      <h1 class="logo">スネークバトル</h1>
+      <p class="tagline">トロン風2人対戦 — 伸びる軌跡で相手を追い込め！</p>
+
+      <div class="name-row">
+        <div class="name-box p1">
+          <span class="snake-dot"></span>
+          <label for="name1">プレイヤー1</label>
+          <input id="name1" type="text" maxlength="10" placeholder="koto" value="koto" autocomplete="off">
+        </div>
+        <div class="vs">VS</div>
+        <div class="name-box p2">
+          <span class="snake-dot"></span>
+          <label for="name2">プレイヤー2</label>
+          <input id="name2" type="text" maxlength="10" placeholder="zuza" value="zuza" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="rules">
+        <div class="rule-col">
+          <h3>🎮 操作方法</h3>
+          <table class="controls">
+            <tr><th></th><th>移動</th><th>ダッシュ</th></tr>
+            <tr>
+              <td class="p1t">P1</td>
+              <td class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></td>
+              <td class="keys"><kbd>F</kbd></td>
+            </tr>
+            <tr>
+              <td class="p2t">P2</td>
+              <td class="keys"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></td>
+              <td class="keys"><kbd>Enter</kbd></td>
+            </tr>
+          </table>
+        </div>
+        <div class="rule-col">
+          <h3>📖 ルール</h3>
+          <ul>
+            <li>2匹のスネークは自動で動き続け、軌跡が壁になる</li>
+            <li>外壁・自分・相手の軌跡にぶつかったら負け</li>
+            <li><b>3ラウンド先取</b>で勝利！ 同時に衝突したら引き分け</li>
+            <li>ダッシュ中はスピードアップ（ゲージに注意）</li>
+            <li><kbd>P</kbd> でポーズ</li>
+            <li class="touch-only">📱 タッチ端末では画面両端のボタンで操作</li>
+          </ul>
+        </div>
+      </div>
+
+      <button id="btn-start" class="big-btn">ゲームスタート</button>
+    </section>
+
+    <!-- ============ ゲーム画面 ============ -->
+    <section id="screen-game" class="screen hidden">
+      <div class="hud">
+        <div class="hud-side p1">
+          <div class="hud-name p1t" id="hud-name1">P1</div>
+          <div class="pips" id="pips1"></div>
+          <div class="boost"><div class="boost-fill p1fill" id="boost1"></div></div>
+        </div>
+        <div class="hud-mid">
+          <div class="round-label" id="round-label">ROUND 1</div>
+        </div>
+        <div class="hud-side p2">
+          <div class="hud-name p2t" id="hud-name2">P2</div>
+          <div class="pips" id="pips2"></div>
+          <div class="boost"><div class="boost-fill p2fill" id="boost2"></div></div>
+        </div>
+      </div>
+
+      <div class="canvas-holder">
+        <canvas id="game" width="800" height="600"></canvas>
+
+        <div id="touch-controls">
+          <div class="tc-side tc-p1">
+            <div class="tc-dpad">
+              <button class="tc-btn tc-up"    data-p="0" data-dir="up"    aria-label="P1 上">▲</button>
+              <button class="tc-btn tc-left"  data-p="0" data-dir="left"  aria-label="P1 左">◀</button>
+              <button class="tc-btn tc-right" data-p="0" data-dir="right" aria-label="P1 右">▶</button>
+              <button class="tc-btn tc-down"  data-p="0" data-dir="down"  aria-label="P1 下">▼</button>
+            </div>
+            <button class="tc-boost p1b" data-p="0" data-boost aria-label="P1 ダッシュ">⚡</button>
+          </div>
+          <div class="tc-side tc-p2">
+            <button class="tc-boost p2b" data-p="1" data-boost aria-label="P2 ダッシュ">⚡</button>
+            <div class="tc-dpad">
+              <button class="tc-btn tc-up"    data-p="1" data-dir="up"    aria-label="P2 上">▲</button>
+              <button class="tc-btn tc-left"  data-p="1" data-dir="left"  aria-label="P2 左">◀</button>
+              <button class="tc-btn tc-right" data-p="1" data-dir="right" aria-label="P2 右">▶</button>
+              <button class="tc-btn tc-down"  data-p="1" data-dir="down"  aria-label="P2 下">▼</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="overlay" class="overlay hidden">
+          <div id="overlay-main" class="overlay-main"></div>
+          <div id="overlay-sub" class="overlay-sub"></div>
+          <div id="overlay-btns" class="overlay-btns hidden">
+            <button id="btn-replay" class="big-btn small">もう一度対戦</button>
+            <button id="btn-title" class="ghost-btn">タイトルへ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-hint">
+        <span class="p1t">P1: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移動 / <kbd>F</kbd> ダッシュ</span>
+        <span class="p2t">P2: 矢印キー 移動 / <kbd>Enter</kbd> ダッシュ</span>
+      </div>
+    </section>
+
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
