@@ -244,5 +244,10 @@
     });
   });
 
+  // ?play or ?play=1 → jump straight into the game, skipping the title screen
+  if (/[?&]play\b/.test(location.search)) {
+    startRun([$("name1").value || "koto", $("name2").value || "zuza"]);
+  }
+
   requestAnimationFrame(frame);
 })();
