@@ -63,12 +63,18 @@ const keys = Object.create(null);
 
 /* ── audio ── */
 let AC = null;
+let audioAllowed = false; // only construct AudioContext inside a real user gesture
 function ac() {
+  if (!audioAllowed) return null;
   if (!AC) {
     try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
   }
   if (AC.state === 'suspended') AC.resume();
   return AC;
+}
+function unlockAudio() {
+  audioAllowed = true;
+  ac();
 }
 function tone(freq, dur = 0.08, type = 'square', vol = 0.12, when = 0) {
   const a = ac();
@@ -93,6 +99,7 @@ const sWin = () => { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, 
 
 /* ── input ── */
 window.addEventListener('keydown', e => {
+  unlockAudio();
   const k = e.key.toLowerCase();
   if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(k)) e.preventDefault();
   keys[k] = true;
@@ -129,7 +136,7 @@ function enableTouchMode() {
 canvas.addEventListener('touchstart', e => {
   e.preventDefault();
   enableTouchMode();
-  ac();
+  unlockAudio();
   for (const t of e.changedTouches) {
     if (touchMap.has(t.identifier)) continue;
     const p = canvasPos(t);
@@ -189,7 +196,7 @@ function startGame() {
   resultEl.classList.add('hidden');
   resetPositions();
   startCount(Math.random() < 0.5 ? 0 : 1); // random first serve direction
-  ac();
+  unlockAudio();
   startBtn.blur();
 }
 
@@ -540,7 +547,7 @@ function frame(now) {
 startBtn.addEventListener('click', startGame);
 replayBtn.addEventListener('click', restart);
 menuBtn.addEventListener('click', toMenu);
-pauseBtn.addEventListener('click', () => { enableTouchMode(); togglePause(); });
+pauseBtn.addEventListener('click', () => { enableTouchMode(); unlockAudio(); togglePause(); });
 [input1, input2].forEach(inp => inp.addEventListener('keydown', e => {
   e.stopPropagation();
   if (e.key === 'Enter') startGame();
