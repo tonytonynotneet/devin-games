@@ -22,7 +22,7 @@
   }
 
   // ---------- input ----------
-  const inp = [{ l: 0, r: 0, u: 0, d: 0, a: 0, aEdge: 0 }, { l: 0, r: 0, u: 0, d: 0, a: 0, aEdge: 0 }];
+  const inp = (DH.inp = [{ l: 0, r: 0, u: 0, d: 0, a: 0, aEdge: 0 }, { l: 0, r: 0, u: 0, d: 0, a: 0, aEdge: 0 }]);
   const KEYMAP = {
     KeyA: [0, "l"], KeyD: [0, "r"], KeyW: [0, "u"], KeyS: [0, "d"], KeyF: [0, "a"], Space: [0, "a"],
     ArrowLeft: [1, "l"], ArrowRight: [1, "r"], ArrowUp: [1, "u"], ArrowDown: [1, "d"], Enter: [1, "a"],
@@ -87,9 +87,19 @@
     return acts;
   }
   function tryAction(p) {
+    if (DH.net && DH.net.online && DH.net.role === "guest") {
+      // guest asks the host to perform the action at its position
+      DH.net.send({ type: "actAt", x: p.x, y: p.y });
+      return;
+    }
     const acts = nearestActions(p);
     if (acts.length) acts[0].action();
   }
+  // host-side: run the nearest action for a remote player's position
+  DH.tryActionAt = function (x, y) {
+    const acts = nearestActions({ x, y, pid: 1 });
+    if (acts.length) acts[0].action();
+  };
 
   // ---------- menu modal ----------
   const menu = (DH.menu = {
@@ -117,7 +127,9 @@
   };
 
   // ---------- modules ----------
-  const modules = [DH.furniture, DH.garden, DH.animals].filter(Boolean);
+  const modules = [
+    ["furniture", DH.furniture], ["garden", DH.garden], ["animals", DH.animals],
+  ].filter(([_, m]) => m).map(([n, m]) => (m._name = n, m));
   modules.forEach(m => m.init && m.init(state));
 
   // ---------- loop ----------
@@ -128,12 +140,24 @@
     last = t;
     if (!state.running || state.paused) { if (state.running) render(dt); return; }
 
-    state.timeMin = (state.timeMin + dt * 4) % (24 * 60); // 4 min/day (dt*4 => 4 min per real sec? tune: 360/day)
+    state.timeMin = (state.timeMin + dt * 4) % (24 * 60); // ~6 real min per day
+    const net = DH.net;
+    const guest = net && net.online && net.role === "guest";
     for (const p of state.players) {
-      movePlayer(p, inp[p.pid], dt);
-      if (inp[p.pid].aEdge) { inp[p.pid].aEdge = 0; tryAction(p); }
+      // online guest drives P2 with their own local (P1-mapped) input
+      const k = guest ? (p.pid === 1 ? inp[0] : { l: 0, r: 0, u: 0, d: 0 }) : inp[p.pid];
+      movePlayer(p, k, dt);
+      const edge = guest ? (p.pid === 1 ? inp[0].aEdge : 0) : inp[p.pid].aEdge;
+      if (edge) {
+        if (guest) inp[0].aEdge = 0; else inp[p.pid].aEdge = 0;
+        tryAction(p);
+      }
     }
-    modules.forEach(m => m.update && m.update(dt, state));
+    if (net && net.online) {
+      if (net.role === "host") net.hostTick(dt);
+      else { net.guestSendInput(inp[0]); net.applySnapshot(); net.applyPositions(); }
+    }
+    if (!guest) modules.forEach(m => m.update && m.update(dt, state));
     updateCamera();
     render(dt);
     hud();
@@ -180,10 +204,10 @@
     $("pauseScreen").classList.add("hidden"); $("titleScreen").classList.remove("hidden");
   });
 
-  $("btnStart").addEventListener("click", () => {
+  function startRun(names) {
     state.players = [
-      makePlayer(0, "koto", $("name1").value || "koto", 9 * 32 + 16, 8 * 32),
-      makePlayer(1, "zuza", $("name2").value || "zuza", 10 * 32 + 16, 8 * 32),
+      makePlayer(0, "koto", names[0] || "koto", 9 * 32 + 16, 8 * 32),
+      makePlayer(1, "zuza", names[1] || "zuza", 10 * 32 + 16, 8 * 32),
     ];
     $("hudP1").textContent = state.players[0].name;
     $("hudP2").textContent = state.players[1].name;
@@ -191,6 +215,28 @@
     $("titleScreen").classList.add("hidden");
     state.running = true; state.paused = false;
     DH.toast("Welcome home! 🏡");
+  }
+  DH.startRun = startRun; // net.js calls this for the guest side
+
+  $("btnStart").addEventListener("click", () => {
+    startRun([$("name1").value, $("name2").value]);
+  });
+
+  // online auto-pair: first on the URL hosts (P1/koto), second is guest (P2/zuza)
+  const btnOnline = $("btnOnline");
+  if (btnOnline) btnOnline.addEventListener("click", () => {
+    if (!DH.net || !window.DGOnline) { DH.toast("Online unavailable"); return; }
+    btnOnline.disabled = true; btnOnline.textContent = "🌐 Connecting…";
+    DH.net.connect(role => {
+      if (role === "host") {
+        btnOnline.textContent = "🌐 Waiting for partner…";
+        startRun([$("name1").value || "koto", $("name2").value || "zuza"]);
+        DH.toast("You are koto. Waiting for your partner…");
+      } else {
+        DH.net.send({ type: "hello" });
+        DH.toast("Connected! You are zuza 💗");
+      }
+    });
   });
 
   requestAnimationFrame(frame);
