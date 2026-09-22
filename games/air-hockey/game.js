@@ -52,7 +52,7 @@ const S = {
   goalT: 0,
   lastScorer: -1,
   scores: [0, 0],
-  names: ['プレイヤー1', 'プレイヤー2'],
+  names: ['Player 1', 'Player 2'],
   touchMode: false,
   touched: [false, false],
   shake: 0,
@@ -183,8 +183,8 @@ function resetPositions() {
 }
 
 function startGame() {
-  S.names[0] = input1.value.trim() || 'プレイヤー1';
-  S.names[1] = input2.value.trim() || 'プレイヤー2';
+  S.names[0] = input1.value.trim() || 'Player 1';
+  S.names[1] = input2.value.trim() || 'Player 2';
   name1El.textContent = S.names[0];
   name2El.textContent = S.names[1];
   el('ctlName1').textContent = S.names[0];
@@ -243,17 +243,17 @@ function goal(scorer) {
   if (S.scores[scorer] >= WIN_SCORE) {
     S.mode = 'over';
     sWin();
-    winnerTextEl.textContent = S.names[scorer] + ' の勝利！';
+    winnerTextEl.textContent = S.names[scorer] + ' wins!';
     winnerTextEl.style.color = scorer === 0 ? C1 : C2;
     winnerTextEl.style.background = 'none';
     finalScoreEl.textContent = S.scores[0] + ' — ' + S.scores[1];
-    el('loserLine').textContent = S.names[1 - scorer] + ' おしい… ☹️';
+    el('loserLine').textContent = S.names[1 - scorer] + ' — so close… ☹️';
     setTimeout(() => resultEl.classList.remove('hidden'), 600);
   } else {
     S.mode = 'goal';
     S.goalT = 1.3;
     sGoal();
-    setBanner('ゴール！ ' + S.names[scorer], 'goal-anim', scorer === 0 ? C1 : C2);
+    setBanner('GOAL! ' + S.names[scorer], 'goal-anim', scorer === 0 ? C1 : C2);
   }
 }
 
@@ -451,9 +451,9 @@ function draw() {
     ctx.font = '600 20px "Hiragino Kaku Gothic ProN", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillStyle = 'rgba(255,107,157,.5)';
-    if (!S.touched[0]) ctx.fillText('ここをドラッグ', W * 0.25, H * 0.82);
+    if (!S.touched[0]) ctx.fillText('Drag here', W * 0.25, H * 0.82);
     ctx.fillStyle = 'rgba(78,205,196,.5)';
-    if (!S.touched[1]) ctx.fillText('ここをドラッグ', W * 0.75, H * 0.82);
+    if (!S.touched[1]) ctx.fillText('Drag here', W * 0.75, H * 0.82);
   }
 
   // puck

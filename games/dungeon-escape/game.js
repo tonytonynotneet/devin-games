@@ -13,8 +13,8 @@ const BAT_R = 14;
    *=ほうせき x=ゴール                                      */
 const LEVELS = [
   {
-    title: 'フロア1：かたおしのとびら',
-    hint: 'スイッチをおしているあいだ、赤いとびらがひらくよ',
+    title: 'Floor 1: Hold the Switches',
+    hint: 'Red doors open while a switch is held down',
     map: [
       '########################',
       '#..........#...........#',
@@ -35,8 +35,8 @@ const LEVELS = [
     enemies: [],
   },
   {
-    title: 'フロア2：ふたつのスイッチ',
-    hint: 'きん色スイッチは ふたりで同時におしてね！',
+    title: 'Floor 2: Twin Switches',
+    hint: 'Gold switches need both of you pressing at once!',
     map: [
       '########################',
       '#..........#...........#',
@@ -61,8 +61,8 @@ const LEVELS = [
     ],
   },
   {
-    title: 'フロア3：さいごのダンジョン',
-    hint: 'とびらをくぐって、バットをよけて、ふたりでゴールへ！',
+    title: 'Floor 3: The Final Dungeon',
+    hint: 'Slip through the doors, dodge the bats, and reach the goals together!',
     map: [
       '########################',
       '#..........#...........#',
@@ -257,8 +257,8 @@ function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 function startRun() {
   ensureAudio();
   players = [
-    { name: el.name1.value.trim() || 'プレイヤー1', color: P1_COLOR, spawn: {}, x: 0, y: 0, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
-    { name: el.name2.value.trim() || 'プレイヤー2', color: P2_COLOR, spawn: {}, x: 0, y: 0, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
+    { name: el.name1.value.trim() || 'Player 1', color: P1_COLOR, spawn: {}, x: 0, y: 0, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
+    { name: el.name2.value.trim() || 'Player 2', color: P2_COLOR, spawn: {}, x: 0, y: 0, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
   ];
   el.p1name.textContent = el.padname1.textContent = players[0].name;
   el.p2name.textContent = el.padname2.textContent = players[1].name;
@@ -268,7 +268,7 @@ function startRun() {
   el.gems.textContent = '0/' + game.gemsTotal;
   loadFloor(0);
   game.state = 'count'; clearT = 1.1;
-  showBanner('スタート！', 'ふたりで脱出をめざそう', 1.1);
+  showBanner('GO!', 'Escape the dungeon together', 1.1);
   sfx.go();
   el.title.classList.add('hidden');
   el.result.classList.add('hidden');
@@ -281,7 +281,7 @@ function nextFloor() {
 }
 function floorCleared() {
   game.state = 'clear'; clearT = 1.7;
-  showBanner('フロアクリア！', players[0].name + '＆' + players[1].name + '、いいコンビネーション！', 1.7);
+  showBanner('Floor Clear!', players[0].name + ' & ' + players[1].name + ' — great teamwork!', 1.7);
   sfx.clear();
   exits.forEach(e => ring(e.x, e.y, '#ffe082'));
 }
@@ -290,14 +290,14 @@ function winGame() {
   sfx.win();
   const t = game.time, mm = fmtTime(t);
   const allGems = game.gemsGot === game.gemsTotal;
-  let rank = 'B', msg = 'クリアおめでとう！もっと速く・安全にめざそう';
-  if (t <= 210 && game.misses <= 2 && allGems) { rank = 'S'; msg = 'パーフェクト！ふたりの絆は最強だね！'; }
-  else if (t <= 330 && game.misses <= 5) { rank = 'A'; msg = 'すばらしい連携！あと少しでSランク！'; }
+  let rank = 'B', msg = 'Escaped! Now try a faster, cleaner run';
+  if (t <= 210 && game.misses <= 2 && allGems) { rank = 'S'; msg = 'Perfect! Your bond is unstoppable!'; }
+  else if (t <= 330 && game.misses <= 5) { rank = 'A'; msg = 'Amazing teamwork! So close to S rank!'; }
   el.rank.textContent = rank;
   el.resTime.textContent = mm;
   el.resMiss.textContent = game.misses;
   el.resGems.textContent = game.gemsGot + ' / ' + game.gemsTotal;
-  el.resMsg.textContent = players[0].name + ' と ' + players[1].name + '：' + msg;
+  el.resMsg.textContent = players[0].name + ' & ' + players[1].name + ': ' + msg;
   if (rank === 'B') el.resMsg.textContent += ' ☹️';
   el.result.classList.remove('hidden');
   document.activeElement && document.activeElement.blur();
@@ -651,7 +651,7 @@ players = [
   { name: 'P2', color: P2_COLOR, spawn: {}, x: -99, y: -99, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
 ];
 loadFloor(0);
-el.floor.textContent = '協力ダンジョン脱出';
+el.floor.textContent = 'Dungeon Escape';
 el.banner.classList.add('hidden');
 bannerT = 0;
 requestAnimationFrame(loop);

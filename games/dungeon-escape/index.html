@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>協力ダンジョン脱出 — devin-games</title>
+<title>Dungeon Escape — devin-games</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="app">
   <header id="hud">
     <div class="hud-left">
-      <span id="hudFloor" class="chip floorchip">ダンジョン</span>
+      <span id="hudFloor" class="chip floorchip">Dungeon</span>
       <span id="hudHint" class="hint"></span>
     </div>
     <div class="hud-right">
@@ -19,9 +19,9 @@
       <span class="chip">⏱ <span id="hudTime">0:00</span></span>
       <span class="chip">💎 <span id="hudGems">0/6</span></span>
       <span class="chip">💥 <span id="hudMiss">0</span></span>
-      <button id="btnMute" class="icobtn" title="おとのオン/オフ">🔊</button>
-      <button id="btnPause" class="icobtn" title="ポーズ">⏸</button>
-      <button id="btnPads" class="icobtn" title="タッチパッド表示">🎮</button>
+      <button id="btnMute" class="icobtn" title="Sound on/off">🔊</button>
+      <button id="btnPause" class="icobtn" title="Pause">⏸</button>
+      <button id="btnPads" class="icobtn" title="Show touch pads">🎮</button>
     </div>
   </header>
 
@@ -33,44 +33,44 @@
 
     <div id="titleScreen" class="overlay">
       <div class="card">
-        <h1>協力ダンジョン脱出</h1>
-        <p class="sub">ふたりで力をあわせて、ダンジョンから脱出しよう！</p>
+        <h1>Dungeon Escape</h1>
+        <p class="sub">Team up and escape the dungeon together!</p>
         <div class="names">
           <label><span class="dot p1"></span><input id="name1" value="koto" maxlength="12" autocomplete="off"></label>
           <label><span class="dot p2"></span><input id="name2" value="zuza" maxlength="12" autocomplete="off"></label>
         </div>
         <div class="howto">
-          <div><b class="c1">プレイヤー1</b>　いどう <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> ・ ハート <kbd>F</kbd></div>
-          <div><b class="c2">プレイヤー2</b>　いどう やじるしキー ・ ハート <kbd>Enter</kbd></div>
-          <div>🔘 スイッチの上に立つと、同じ色のとびらが開くよ</div>
-          <div>🟡 きん色スイッチは ふたりで同時におしてね</div>
-          <div>🦇 てきにさわるとスタートにもどされちゃう</div>
-          <div>🏁 2つのゴールに ふたりで立とう！</div>
+          <div><b class="c1">Player 1</b> Move <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> · Heart <kbd>F</kbd></div>
+          <div><b class="c2">Player 2</b> Move arrow keys · Heart <kbd>Enter</kbd></div>
+          <div>🔘 Stand on a switch to open the matching door</div>
+          <div>🟡 Gold switches need both of you pressing at once</div>
+          <div>🦇 Touch a bat and you're sent back to the start</div>
+          <div>🏁 Both of you must stand on the two goals!</div>
         </div>
-        <button id="btnStart" class="bigbtn">▶ スタート</button>
+        <button id="btnStart" class="bigbtn">▶ Start</button>
       </div>
     </div>
 
     <div id="pauseScreen" class="overlay hidden">
       <div class="card">
-        <h2>⏸ ポーズ中</h2>
-        <button id="btnResume" class="bigbtn">つづける</button>
-        <button id="btnQuit" class="midbtn">タイトルにもどる</button>
+        <h2>⏸ Paused</h2>
+        <button id="btnResume" class="bigbtn">Resume</button>
+        <button id="btnQuit" class="midbtn">Back to Title</button>
       </div>
     </div>
 
     <div id="resultScreen" class="overlay hidden">
       <div class="card">
-        <h1>🎉 脱出成功！</h1>
+        <h1>🎉 You Escaped!</h1>
         <div id="rank" class="rank">S</div>
         <div class="stats">
-          <div>クリアタイム <b id="resTime">-</b></div>
-          <div>ミス <b id="resMiss">-</b> 回</div>
-          <div>ほうせき <b id="resGems">-</b></div>
+          <div>Clear Time <b id="resTime">-</b></div>
+          <div>Mistakes <b id="resMiss">-</b></div>
+          <div>Gems <b id="resGems">-</b></div>
         </div>
         <div id="resMsg" class="msg"></div>
-        <button id="btnReplay" class="bigbtn">もう一度あそぶ</button>
-        <button id="btnTitle2" class="midbtn">タイトルにもどる</button>
+        <button id="btnReplay" class="bigbtn">Play Again</button>
+        <button id="btnTitle2" class="midbtn">Back to Title</button>
       </div>
     </div>
   </div>
@@ -102,7 +102,7 @@
     </div>
   </div>
 
-  <footer id="legend">P1: WASD いどう + F ハート ・ P2: やじるしキー + Enter ・ P / Esc: ポーズ</footer>
+  <footer id="legend">P1: WASD move + F heart · P2: Arrow keys + Enter · P / Esc: Pause</footer>
 </div>
 <script src="game.js"></script>
 </body>

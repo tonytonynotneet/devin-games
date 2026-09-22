@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>エアホッケー対戦 — devin-games</title>
+<title>Air Hockey — devin-games</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="scoreboard">
     <div class="player-tag p1">
       <span class="dot"></span>
-      <span class="pname" id="name1">プレイヤー1</span>
+      <span class="pname" id="name1">Player 1</span>
     </div>
     <div class="score-line">
       <span class="score" id="score1">0</span>
@@ -18,55 +18,55 @@
       <span class="score" id="score2">0</span>
     </div>
     <div class="player-tag p2">
-      <span class="pname" id="name2">プレイヤー2</span>
+      <span class="pname" id="name2">Player 2</span>
       <span class="dot"></span>
     </div>
   </div>
-  <div class="target-note">先に 7 点取ったら勝利</div>
+  <div class="target-note">First to 7 points wins</div>
 
   <div class="arena">
     <canvas id="game" width="960" height="540"></canvas>
-    <button id="pauseBtn" class="pause-btn" aria-label="一時停止">&#10074;&#10074;</button>
+    <button id="pauseBtn" class="pause-btn" aria-label="Pause">&#10074;&#10074;</button>
     <div id="banner" class="banner hidden"></div>
     <div id="pause" class="pause hidden">
       <div class="pause-box">
-        <h2>一時停止</h2>
-        <p><span class="kb">P キーで再開</span><span class="tc">❚❚ ボタンで再開</span></p>
+        <h2>Paused</h2>
+        <p><span class="kb">Press P to resume</span><span class="tc">Tap ❚❚ to resume</span></p>
       </div>
     </div>
   </div>
 
   <div class="controls-bar">
-    <div class="ctl p1"><strong id="ctlName1">koto</strong>　<span class="kb">[W][A][S][D] で移動</span><span class="tc">左半分をドラッグで移動</span></div>
-    <div class="ctl mid kb">P：一時停止</div>
-    <div class="ctl p2"><strong id="ctlName2">zuza</strong>　<span class="kb">矢印キーで移動</span><span class="tc">右半分をドラッグで移動</span></div>
+    <div class="ctl p1"><strong id="ctlName1">koto</strong> <span class="kb">[W][A][S][D] to move</span><span class="tc">Drag on the left half to move</span></div>
+    <div class="ctl mid kb">P: Pause</div>
+    <div class="ctl p2"><strong id="ctlName2">zuza</strong> <span class="kb">Arrow keys to move</span><span class="tc">Drag on the right half to move</span></div>
   </div>
-  <div class="rotate-hint">横画面の方が遊びやすいよ</div>
+  <div class="rotate-hint">Landscape mode plays best</div>
 
   <div id="menu" class="overlay">
     <div class="panel">
-      <h1 class="title">エアホッケー対戦</h1>
-      <p class="subtitle">パックを打ち合って相手ゴールに叩き込め！ 先に 7 点で勝ち</p>
+      <h1 class="title">Air Hockey</h1>
+      <p class="subtitle">Trade shots and slam the puck into your opponent's goal! First to 7 wins.</p>
       <div class="name-row">
         <label class="name-field p1">
-          <span>プレイヤー1（左 / ピンク）</span>
-          <input id="input1" type="text" maxlength="12" value="koto" placeholder="プレイヤー1" autocomplete="off">
+          <span>Player 1 (Left / Pink)</span>
+          <input id="input1" type="text" maxlength="12" value="koto" placeholder="Player 1" autocomplete="off">
         </label>
         <span class="vs">VS</span>
         <label class="name-field p2">
-          <span>プレイヤー2（右 / ミント）</span>
-          <input id="input2" type="text" maxlength="12" value="zuza" placeholder="プレイヤー2" autocomplete="off">
+          <span>Player 2 (Right / Mint)</span>
+          <input id="input2" type="text" maxlength="12" value="zuza" placeholder="Player 2" autocomplete="off">
         </label>
       </div>
       <div class="howto">
-        <div class="kb"><b>P1</b>：W A S D でスマッシャーを操作</div>
-        <div class="kb"><b>P2</b>：↑ ← ↓ → でスマッシャーを操作</div>
-        <div class="tc"><b>P1</b>：画面の左半分をドラッグ</div>
-        <div class="tc"><b>P2</b>：画面の右半分をドラッグ</div>
-        <div>スマッシャーは自分側のコートだけ動けるよ</div>
+        <div class="kb"><b>P1</b>: Move your mallet with W A S D</div>
+        <div class="kb"><b>P2</b>: Move your mallet with ↑ ← ↓ →</div>
+        <div class="tc"><b>P1</b>: Drag on the left half of the screen</div>
+        <div class="tc"><b>P2</b>: Drag on the right half of the screen</div>
+        <div>Mallets can only move on your own half</div>
       </div>
-      <button id="startBtn" class="btn big">ゲームスタート</button>
-      <a class="backlink" href="../../index.html">← ゲーム一覧にもどる</a>
+      <button id="startBtn" class="btn big">Start Game</button>
+      <a class="backlink" href="../../index.html">← Back to game list</a>
     </div>
   </div>
 
@@ -75,8 +75,8 @@
       <h1 class="title" id="winnerText">WINNER</h1>
       <p class="final-score" id="finalScore">7 — 0</p>
       <p class="loser-line" id="loserLine"></p>
-      <button id="replayBtn" class="btn big">もう一度対戦</button>
-      <button id="menuBtn" class="btn ghost">スタート画面へ</button>
+      <button id="replayBtn" class="btn big">Play Again</button>
+      <button id="menuBtn" class="btn ghost">Back to Start</button>
     </div>
   </div>
 

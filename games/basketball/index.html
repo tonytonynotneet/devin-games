@@ -1,38 +1,38 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>バスケ対戦 — devin-games</title>
+<title>Basketball 1on1 — devin-games</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="wrap">
 
-    <!-- ============ スタート画面 ============ -->
+    <!-- ============ Start screen ============ -->
     <section id="screen-start" class="screen">
-      <h1 class="logo">バスケ対戦</h1>
-      <p class="tagline">サイドビュー1on1バスケット — シュート・スティール・ブロックで勝ち抜け！</p>
+      <h1 class="logo">Basketball 1on1</h1>
+      <p class="tagline">Side-view one-on-one basketball — shoot, steal, and block your way to victory!</p>
 
       <div class="name-row">
         <div class="name-box p1">
           <span class="snake-dot"></span>
-          <label for="name1">プレイヤー1</label>
+          <label for="name1">Player 1</label>
           <input id="name1" type="text" maxlength="10" placeholder="koto" value="koto" autocomplete="off">
         </div>
         <div class="vs">VS</div>
         <div class="name-box p2">
           <span class="snake-dot"></span>
-          <label for="name2">プレイヤー2</label>
+          <label for="name2">Player 2</label>
           <input id="name2" type="text" maxlength="10" placeholder="zuza" value="zuza" autocomplete="off">
         </div>
       </div>
 
       <div class="rules">
         <div class="rule-col">
-          <h3>🎮 操作方法</h3>
+          <h3>🎮 Controls</h3>
           <table class="controls">
-            <tr><th></th><th>移動</th><th>ジャンプ</th><th>アクション</th></tr>
+            <tr><th></th><th>Move</th><th>Jump</th><th>Action</th></tr>
             <tr>
               <td class="p1t">P1</td>
               <td class="keys"><kbd>A</kbd><kbd>D</kbd></td>
@@ -48,24 +48,24 @@
           </table>
         </div>
         <div class="rule-col">
-          <h3>📖 ルール</h3>
+          <h3>📖 Rules</h3>
           <ul>
-            <li><b>11点先取</b>、または90秒終了時にリードで勝利</li>
-            <li>同点ならサドンデス延長 — 先に1本決めた方が勝ち</li>
-            <li>アクション<b>長押しでチャージ</b>、緑ゾーンで離すとスイッシュ！</li>
-            <li>3ptラインの外からは3点シュート</li>
-            <li>ボールを持っていない時のアクションは<b>スティール</b></li>
-            <li>空中のシュートに体をぶつけて<b>ブロック</b>しよう</li>
-            <li>小刻みに押したらフェイク。<kbd>P</kbd> でポーズ</li>
-            <li class="touch-only">📱 タッチ端末では画面両端のボタンで操作</li>
+            <li><b>First to 11 points</b>, or lead when the 90-second clock runs out</li>
+            <li>Tied? Sudden-death overtime — first basket wins</li>
+            <li><b>Hold Action to charge</b>; release in the green zone for a swish!</li>
+            <li>Shots from beyond the 3pt line are worth 3 points</li>
+            <li>Without the ball, Action is a <b>steal</b></li>
+            <li>Jump into a shot to <b>block</b> it</li>
+            <li>A quick tap is a fake. <kbd>P</kbd> pauses</li>
+            <li class="touch-only">📱 On touch devices, use the on-screen buttons</li>
           </ul>
         </div>
       </div>
 
-      <button id="btn-start" class="big-btn">ゲームスタート</button>
+      <button id="btn-start" class="big-btn">Start Game</button>
     </section>
 
-    <!-- ============ ゲーム画面 ============ -->
+    <!-- ============ Game screen ============ -->
     <section id="screen-game" class="screen hidden">
       <div class="hud">
         <div class="hud-side p1">
@@ -74,7 +74,7 @@
         </div>
         <div class="hud-mid">
           <div class="round-label" id="clock">1:30</div>
-          <div class="target-label" id="target-label">11点先取</div>
+          <div class="target-label" id="target-label">First to 11</div>
         </div>
         <div class="hud-side p2">
           <div class="hud-name p2t"><span id="hud-name2">P2</span><span class="ballmark" id="mark2">🏀</span></div>
@@ -88,18 +88,18 @@
         <div id="touch-controls">
           <div class="tc-side tc-p1">
             <div class="tc-dpad">
-              <button class="tc-btn" data-p="0" data-move="left"  aria-label="P1 左">◀</button>
-              <button class="tc-btn" data-p="0" data-jump         aria-label="P1 ジャンプ">▲</button>
-              <button class="tc-btn" data-p="0" data-move="right" aria-label="P1 右">▶</button>
+              <button class="tc-btn" data-p="0" data-move="left"  aria-label="P1 left">◀</button>
+              <button class="tc-btn" data-p="0" data-jump         aria-label="P1 jump">▲</button>
+              <button class="tc-btn" data-p="0" data-move="right" aria-label="P1 right">▶</button>
             </div>
-            <button class="tc-act p1b" data-p="0" data-act aria-label="P1 アクション">🏀</button>
+            <button class="tc-act p1b" data-p="0" data-act aria-label="P1 action">🏀</button>
           </div>
           <div class="tc-side tc-p2">
-            <button class="tc-act p2b" data-p="1" data-act aria-label="P2 アクション">🏀</button>
+            <button class="tc-act p2b" data-p="1" data-act aria-label="P2 action">🏀</button>
             <div class="tc-dpad">
-              <button class="tc-btn" data-p="1" data-move="left"  aria-label="P2 左">◀</button>
-              <button class="tc-btn" data-p="1" data-jump         aria-label="P2 ジャンプ">▲</button>
-              <button class="tc-btn" data-p="1" data-move="right" aria-label="P2 右">▶</button>
+              <button class="tc-btn" data-p="1" data-move="left"  aria-label="P2 left">◀</button>
+              <button class="tc-btn" data-p="1" data-jump         aria-label="P2 jump">▲</button>
+              <button class="tc-btn" data-p="1" data-move="right" aria-label="P2 right">▶</button>
             </div>
           </div>
         </div>
@@ -108,15 +108,15 @@
           <div id="overlay-main" class="overlay-main"></div>
           <div id="overlay-sub" class="overlay-sub"></div>
           <div id="overlay-btns" class="overlay-btns hidden">
-            <button id="btn-replay" class="big-btn small">もう一度対戦</button>
-            <button id="btn-title" class="ghost-btn">タイトルへ</button>
+            <button id="btn-replay" class="big-btn small">Play Again</button>
+            <button id="btn-title" class="ghost-btn">Back to Title</button>
           </div>
         </div>
       </div>
 
       <div class="controls-hint">
-        <span class="p1t">P1: <kbd>A</kbd><kbd>D</kbd> 移動 / <kbd>W</kbd> ジャンプ / <kbd>F</kbd> 長押しシュート・スティール</span>
-        <span class="p2t">P2: <kbd>←</kbd><kbd>→</kbd> 移動 / <kbd>↑</kbd> ジャンプ / <kbd>Enter</kbd> 長押しシュート・スティール</span>
+        <span class="p1t">P1: <kbd>A</kbd><kbd>D</kbd> move / <kbd>W</kbd> jump / <kbd>F</kbd> hold to shoot, tap to steal</span>
+        <span class="p2t">P2: <kbd>←</kbd><kbd>→</kbd> move / <kbd>↑</kbd> jump / <kbd>Enter</kbd> hold to shoot, tap to steal</span>
       </div>
     </section>
 

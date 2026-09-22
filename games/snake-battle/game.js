@@ -67,8 +67,8 @@ function makePlayers() {
 }
 
 function getNames() {
-  const n1 = $('name1').value.trim() || $('name1').placeholder || 'プレイヤー1';
-  const n2 = $('name2').value.trim() || $('name2').placeholder || 'プレイヤー2';
+  const n1 = $('name1').value.trim() || $('name1').placeholder || 'Player 1';
+  const n2 = $('name2').value.trim() || $('name2').placeholder || 'Player 2';
   return [n1, n2];
 }
 
@@ -251,17 +251,17 @@ function endRound(deadIds) {
 
   if (bothDead) {
     sfxDraw();
-    ovMain.textContent = '引き分け ☹️';
+    ovMain.textContent = 'Draw ☹️';
     ovMain.style.color = '#eae7f5';
-    ovSub.textContent = '同時に衝突 — このラウンドはノーカウント';
+    ovSub.textContent = 'Simultaneous crash — this round doesn\'t count';
   } else {
     const winner = players[deadIds[0] ^ 1];   // 生き残った方
     const loser = players[deadIds[0]];
     winner.score++;
     sfxCrash();
-    ovMain.textContent = winner.name + ' のラウンド獲得！';
+    ovMain.textContent = winner.name + ' takes the round!';
     ovMain.style.color = winner.color;
-    ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name}　（${loser.name} ☹️）`;
+    ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name} (${loser.name} ☹️)`;
   }
   renderPips();
 }
@@ -279,9 +279,9 @@ function endMatch(champ) {
   overlay.classList.remove('hidden');
   ovBtns.classList.remove('hidden');
   const loser = players.find((p) => p !== champ);
-  ovMain.textContent = '🏆 ' + champ.name + ' の勝利！';
+  ovMain.textContent = '🏆 ' + champ.name + ' wins!';
   ovMain.style.color = champ.color;
-  ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name}　（${loser.name} ☹️）`;
+  ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name} (${loser.name} ☹️)`;
 }
 
 function togglePause() {
@@ -289,9 +289,9 @@ function togglePause() {
   if (paused) {
     overlay.classList.remove('hidden');
     ovBtns.classList.add('hidden');
-    ovMain.textContent = 'ポーズ中';
+    ovMain.textContent = 'Paused';
     ovMain.style.color = '#eae7f5';
-    ovSub.textContent = 'P キーで再開';
+    ovSub.textContent = 'Press P to resume';
   } else {
     overlay.classList.add('hidden');
   }
