@@ -20,19 +20,19 @@
 
   net.connect = function (onRole) {
     if (!window.DGOnline) return null;
-    const s = DGOnline.connect("dream-home");
-    if (!s) return null;
-    net._s = s;
-    s.onmessage = msg => {
-      try { net._handle(JSON.parse(msg)); } catch (e) {}
-    };
-    s.onpeer = joined => { if (!joined) DH.toast && DH.toast("Partner left ☹️"); };
-    // joined message arrives with role via DGOnline; poll until set
-    const t = setInterval(() => {
-      if (s.role) { clearInterval(t); net.role = s.role; net.online = true; onRole && onRole(s.role); }
-    }, 120);
-    s.onclose = () => { net.online = false; };
-    return s;
+    DGOnline.connect("dream-home").then(s => {
+      net._s = s;
+      net.role = s.role;
+      net.online = true;
+      s.onmessage = m => { try { net._handle(m); } catch (e) {} };
+      s.onpeer = joined => {
+        if (!joined) DH.toast && DH.toast("Partner left ☹️");
+        else if (net.role === "host") net.sendFullState(true);
+      };
+      s.ws && (s.ws.onclose = () => { net.online = false; });
+      onRole && onRole(s.role);
+    }).catch(() => { DH.toast && DH.toast("Couldn't connect ☹️"); onRole && onRole(null); });
+    return true;
   };
 
   net._handle = function (m) {
@@ -57,7 +57,7 @@
     }
   };
 
-  net.send = function (o) { try { net._s && net._s.send(JSON.stringify(o)); } catch (e) {} };
+  net.send = function (o) { try { net._s && net._s.send(o); } catch (e) {} };
 
   // ---- host side ----
   net.sendFullState = function (started) {
