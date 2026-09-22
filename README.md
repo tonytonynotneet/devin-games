@@ -15,6 +15,7 @@
 | 協力ダンジョン脱出 | 協力 | `games/dungeon-escape/` |
 | スネークバトル | 対戦 | `games/snake-battle/` |
 | 相撲押し出しバトル | 対戦 | `games/sumo-battle/` |
+| バスケ対戦 | 対戦 | `games/basketball/` |
 
 ## 操作の基本
 
