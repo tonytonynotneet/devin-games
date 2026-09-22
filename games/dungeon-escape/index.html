@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>協力ダンジョン脱出 — devin-games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <div class="hud-left">
+      <span id="hudFloor" class="chip floorchip">ダンジョン</span>
+      <span id="hudHint" class="hint"></span>
+    </div>
+    <div class="hud-right">
+      <span class="chip p1chip"><span class="dot p1"></span><span id="p1name">P1</span></span>
+      <span class="chip p2chip"><span class="dot p2"></span><span id="p2name">P2</span></span>
+      <span class="chip">⏱ <span id="hudTime">0:00</span></span>
+      <span class="chip">💎 <span id="hudGems">0/6</span></span>
+      <span class="chip">💥 <span id="hudMiss">0</span></span>
+      <button id="btnMute" class="icobtn" title="おとのオン/オフ">🔊</button>
+      <button id="btnPause" class="icobtn" title="ポーズ">⏸</button>
+      <button id="btnPads" class="icobtn" title="タッチパッド表示">🎮</button>
+    </div>
+  </header>
+
+  <div id="stage">
+    <canvas id="cv" width="960" height="600"></canvas>
+    <div id="vignette"></div>
+    <div id="flash"></div>
+    <div id="banner" class="hidden"></div>
+
+    <div id="titleScreen" class="overlay">
+      <div class="card">
+        <h1>協力ダンジョン脱出</h1>
+        <p class="sub">ふたりで力をあわせて、ダンジョンから脱出しよう！</p>
+        <div class="names">
+          <label><span class="dot p1"></span><input id="name1" value="koto" maxlength="12" autocomplete="off"></label>
+          <label><span class="dot p2"></span><input id="name2" value="zuza" maxlength="12" autocomplete="off"></label>
+        </div>
+        <div class="howto">
+          <div><b class="c1">プレイヤー1</b>　いどう <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> ・ ハート <kbd>F</kbd></div>
+          <div><b class="c2">プレイヤー2</b>　いどう やじるしキー ・ ハート <kbd>Enter</kbd></div>
+          <div>🔘 スイッチの上に立つと、同じ色のとびらが開くよ</div>
+          <div>🟡 きん色スイッチは ふたりで同時におしてね</div>
+          <div>🦇 てきにさわるとスタートにもどされちゃう</div>
+          <div>🏁 2つのゴールに ふたりで立とう！</div>
+        </div>
+        <button id="btnStart" class="bigbtn">▶ スタート</button>
+      </div>
+    </div>
+
+    <div id="pauseScreen" class="overlay hidden">
+      <div class="card">
+        <h2>⏸ ポーズ中</h2>
+        <button id="btnResume" class="bigbtn">つづける</button>
+        <button id="btnQuit" class="midbtn">タイトルにもどる</button>
+      </div>
+    </div>
+
+    <div id="resultScreen" class="overlay hidden">
+      <div class="card">
+        <h1>🎉 脱出成功！</h1>
+        <div id="rank" class="rank">S</div>
+        <div class="stats">
+          <div>クリアタイム <b id="resTime">-</b></div>
+          <div>ミス <b id="resMiss">-</b> 回</div>
+          <div>ほうせき <b id="resGems">-</b></div>
+        </div>
+        <div id="resMsg" class="msg"></div>
+        <button id="btnReplay" class="bigbtn">もう一度あそぶ</button>
+        <button id="btnTitle2" class="midbtn">タイトルにもどる</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pads">
+    <div class="pad" data-p="0">
+      <span class="padlabel c1" id="padname1">P1</span>
+      <div class="padrow">
+        <div class="dpad">
+          <button class="pbtn u" data-k="u">▲</button>
+          <button class="pbtn l" data-k="l">◀</button>
+          <button class="pbtn r" data-k="r">▶</button>
+          <button class="pbtn d" data-k="d">▼</button>
+        </div>
+        <button class="pbtn act" data-k="act">❤</button>
+      </div>
+    </div>
+    <div class="pad" data-p="1">
+      <div class="padrow">
+        <button class="pbtn act" data-k="act">❤</button>
+        <div class="dpad">
+          <button class="pbtn u" data-k="u">▲</button>
+          <button class="pbtn l" data-k="l">◀</button>
+          <button class="pbtn r" data-k="r">▶</button>
+          <button class="pbtn d" data-k="d">▼</button>
+        </div>
+      </div>
+      <span class="padlabel c2" id="padname2">P2</span>
+    </div>
+  </div>
+
+  <footer id="legend">P1: WASD いどう + F ハート ・ P2: やじるしキー + Enter ・ P / Esc: ポーズ</footer>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
