@@ -25,6 +25,13 @@ const COL_P2 = '#ff6b9d', GLOW_P2 = '#ffa1c2';
 const COL_BALL = '#f0923f';
 const COL_SKIN = '#ffd9b3';
 
+/* koto / zuza の配色（games/super-koto/sprites.js と同じパレット） */
+const COL_OUTFIT = '#1b1520';                    // 黒いウェア
+const COL_KOTO_HAIR = '#241a24', COL_KOTO_HAIR_HI = '#453245';
+const COL_ZUZA_HAIR = '#35200f', COL_ZUZA_HAIR_HI = '#5a3a20';
+const COL_SHADES = '#12101c';
+const COL_CHAIN = '#d8deea', COL_WATCH = '#e8ecf4';
+
 /* ================= DOM ================= */
 const $ = (id) => document.getElementById(id);
 const canvas = $('game');
@@ -745,55 +752,140 @@ function drawPlayer(p) {
   ctx.ellipse(p.x, FLOOR_Y + 6, p.w * 0.7, 6, 0, 0, Math.PI * 2);
   ctx.fill();
 
+  const cy = y - p.h + 2;             // 頭の中心
+  const koto = p.id === 0;
+
   ctx.save();
   if (p.stunT > 0) ctx.translate(Math.sin(p.stunT * 0.08) * 1.5, 0);
 
-  // 体（カプセル）
-  ctx.fillStyle = p.color;
+  // zuza: 背中まで届く長い髪（体の後ろに描く）
+  if (!koto) {
+    ctx.fillStyle = COL_ZUZA_HAIR;
+    ctx.beginPath();
+    ctx.roundRect(x - 18, cy - 12, 36, p.h - 4, 10);
+    ctx.fill();
+    ctx.fillStyle = COL_ZUZA_HAIR_HI;
+    ctx.fillRect(x - 15, cy - 9, 3, p.h - 18);
+    ctx.fillRect(x + 12, cy - 9, 3, p.h - 20);
+  }
+
+  // 黒いウェア（脇のアクセントラインだけ従来色）
+  ctx.fillStyle = COL_OUTFIT;
   ctx.strokeStyle = p.glow;
-  ctx.lineWidth = 2;
-  ctx.shadowColor = p.color; ctx.shadowBlur = 10;
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = p.color; ctx.shadowBlur = 8;
   ctx.beginPath();
   ctx.roundRect(x - p.w / 2, y - p.h + 14, p.w, p.h - 14, 10);
   ctx.fill(); ctx.stroke();
   ctx.shadowBlur = 0;
+  ctx.fillStyle = p.color;
+  ctx.fillRect(x - p.w / 2 + 3.5, y - p.h + 20, 2.5, p.h - 26);
 
   // ジャージの番号風マーク
-  ctx.fillStyle = 'rgba(15,14,26,.55)';
-  ctx.font = 'bold 13px sans-serif';
+  ctx.fillStyle = '#e9e6f5';
+  ctx.font = 'bold 12px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(String(p.id + 1), x, y - p.h + 38);
+  ctx.fillText(String(p.id + 1), x + 2, y - p.h + 38);
+
+  if (koto) {
+    // 細いシルバーチェーン
+    ctx.strokeStyle = COL_CHAIN;
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.arc(x + 1, y - p.h + 22, 7, Math.PI * 0.2, Math.PI * 0.8);
+    ctx.stroke();
+    ctx.fillStyle = COL_CHAIN;
+    ctx.beginPath(); ctx.arc(x + 1, y - p.h + 29, 1.5, 0, Math.PI * 2); ctx.fill();
+  }
 
   // 頭
   ctx.fillStyle = COL_SKIN;
-  ctx.beginPath(); ctx.arc(x, y - p.h + 2, 11, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x, cy, 11, 0, Math.PI * 2); ctx.fill();
 
-  // 目（向いている方向）
-  ctx.fillStyle = '#0f0e1a';
-  const ex = p.face * 4;
+  if (koto) {
+    // マッシュルームカット＋重めの前髪（目のすぐ上まで）
+    ctx.fillStyle = COL_KOTO_HAIR;
+    ctx.beginPath();
+    ctx.arc(x, cy - 2, 12.5, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillRect(x - 12.5, cy - 2, 4.5, 7);   // サイドの髪
+    ctx.fillRect(x + 8, cy - 2, 4.5, 7);
+    ctx.fillStyle = COL_KOTO_HAIR_HI;
+    ctx.fillRect(x - 6, cy - 10, 4, 2.5);
+    ctx.fillRect(x + 3, cy - 9, 3, 2);
+    // 目（前髪の下から覗く位置）
+    ctx.fillStyle = '#0f0e1a';
+    const ex = p.face * 4;
+    ctx.beginPath();
+    ctx.arc(x + ex - 3, cy + 1, 1.8, 0, Math.PI * 2);
+    ctx.arc(x + ex + 3, cy + 1, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    // 前に垂れる髪房と頭頂の髪
+    ctx.fillStyle = COL_ZUZA_HAIR;
+    ctx.beginPath();
+    ctx.arc(x, cy - 3, 13, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(x - 13, cy - 3, 5, 30, 2.5);
+    ctx.roundRect(x + 8, cy - 3, 5, 30, 2.5);
+    ctx.fill();
+    // 黒いサングラス
+    ctx.fillStyle = COL_SHADES;
+    ctx.beginPath();
+    ctx.roundRect(x - 9.5, cy - 3.5, 19, 6, 3);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(232,236,244,.9)';
+    ctx.fillRect(x - 6.5, cy - 2.4, 3.5, 1.4);
+  }
+
+  // 脇の手（koto は腕時計つき）
+  const handY = y - p.h + 40;
+  ctx.fillStyle = COL_SKIN;
   ctx.beginPath();
-  ctx.arc(x + ex - 3, y - p.h, 1.8, 0, Math.PI * 2);
-  ctx.arc(x + ex + 3, y - p.h, 1.8, 0, Math.PI * 2);
+  ctx.arc(x - p.w / 2 - 1, handY, 2.6, 0, Math.PI * 2);
+  ctx.arc(x + p.w / 2 + 1, handY, 2.6, 0, Math.PI * 2);
   ctx.fill();
+  if (koto) {
+    ctx.strokeStyle = COL_WATCH;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(x - p.face * (p.w / 2 + 1), handY, 3.8, 0, Math.PI * 2);
+    ctx.stroke();
+  }
 
   // スティールの腕
   if (p.armT > 0) {
+    const hx = x + p.face * (p.w / 2 + 16), hy = y - p.h + 18;
     ctx.strokeStyle = p.glow;
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(x + p.face * 6, y - p.h + 24);
-    ctx.lineTo(x + p.face * (p.w / 2 + 16), y - p.h + 18);
+    ctx.lineTo(hx, hy);
     ctx.stroke();
+    ctx.fillStyle = COL_SKIN;
+    ctx.beginPath(); ctx.arc(hx, hy, 3, 0, Math.PI * 2); ctx.fill();
+    if (koto) {
+      ctx.fillStyle = COL_WATCH;
+      ctx.beginPath(); ctx.arc(hx - p.face * 5, hy + 1.5, 1.8, 0, Math.PI * 2); ctx.fill();
+    }
   }
 
   // チャージ中は両手を上げる
   if (p.charging && p.hasBall) {
+    const wx1 = x + p.face * 2, wx2 = x + p.face * 10, wy = y - p.h - 4;
     ctx.strokeStyle = COL_SKIN;
     ctx.lineWidth = 3.5;
     ctx.beginPath();
-    ctx.moveTo(x - 8, y - p.h + 26); ctx.lineTo(x + p.face * 2, y - p.h - 4);
-    ctx.moveTo(x + 8, y - p.h + 26); ctx.lineTo(x + p.face * 10, y - p.h - 4);
+    ctx.moveTo(x - 8, y - p.h + 26); ctx.lineTo(wx1, wy);
+    ctx.moveTo(x + 8, y - p.h + 26); ctx.lineTo(wx2, wy);
     ctx.stroke();
+    if (koto) {
+      ctx.fillStyle = COL_WATCH;
+      ctx.beginPath(); ctx.arc(wx1, wy + 2, 2, 0, Math.PI * 2); ctx.fill();
+    }
   }
   ctx.restore();
 
