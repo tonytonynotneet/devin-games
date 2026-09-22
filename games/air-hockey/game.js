@@ -40,8 +40,8 @@ const pauseBtn = el('pauseBtn');
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
 const mallets = [
-  { x: W * 0.25, y: H / 2, px: W * 0.25, py: H / 2, vx: 0, vy: 0, side: 0, color: C1, touch: null },
-  { x: W * 0.75, y: H / 2, px: W * 0.75, py: H / 2, vx: 0, vy: 0, side: 1, color: C2, touch: null },
+  { x: W * 0.25, y: H / 2, px: W * 0.25, py: H / 2, vx: 0, vy: 0, side: 0, color: C1, face: 'koto', r: MR, touch: null },
+  { x: W * 0.75, y: H / 2, px: W * 0.75, py: H / 2, vx: 0, vy: 0, side: 1, color: C2, face: 'zuza', r: MR, touch: null },
 ];
 const puck = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
 
@@ -470,24 +470,7 @@ function draw() {
   ctx.fill();
 
   // mallets
-  for (const m of mallets) {
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = m.color;
-    ctx.fillStyle = m.color;
-    ctx.beginPath();
-    ctx.arc(m.x, m.y, MR, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(15,14,26,.55)';
-    ctx.beginPath();
-    ctx.arc(m.x, m.y, MR * 0.55, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,.5)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(m.x, m.y, MR * 0.55, 0, Math.PI * 2);
-    ctx.stroke();
-  }
+  for (const m of mallets) AH.drawMallet(ctx, m);
   ctx.restore();
 }
 
@@ -544,6 +527,7 @@ function frame(now) {
 }
 
 /* ── wire up ── */
+AH.buildCharacters();
 startBtn.addEventListener('click', startGame);
 replayBtn.addEventListener('click', restart);
 menuBtn.addEventListener('click', toMenu);
