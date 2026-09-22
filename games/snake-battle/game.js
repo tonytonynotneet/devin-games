@@ -251,16 +251,17 @@ function endRound(deadIds) {
 
   if (bothDead) {
     sfxDraw();
-    ovMain.textContent = '引き分け！';
+    ovMain.textContent = '引き分け ☹️';
     ovMain.style.color = '#eae7f5';
     ovSub.textContent = '同時に衝突 — このラウンドはノーカウント';
   } else {
     const winner = players[deadIds[0] ^ 1];   // 生き残った方
+    const loser = players[deadIds[0]];
     winner.score++;
     sfxCrash();
     ovMain.textContent = winner.name + ' のラウンド獲得！';
     ovMain.style.color = winner.color;
-    ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name}`;
+    ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name}　（${loser.name} ☹️）`;
   }
   renderPips();
 }
@@ -277,9 +278,10 @@ function endMatch(champ) {
   sfxWin();
   overlay.classList.remove('hidden');
   ovBtns.classList.remove('hidden');
+  const loser = players.find((p) => p !== champ);
   ovMain.textContent = '🏆 ' + champ.name + ' の勝利！';
   ovMain.style.color = champ.color;
-  ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name}`;
+  ovSub.textContent = `${players[0].name} ${players[0].score} - ${players[1].score} ${players[1].name}　（${loser.name} ☹️）`;
 }
 
 function togglePause() {
