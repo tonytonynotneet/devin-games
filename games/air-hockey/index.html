@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>エアホッケー対戦 — devin-games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="scoreboard">
+    <div class="player-tag p1">
+      <span class="dot"></span>
+      <span class="pname" id="name1">プレイヤー1</span>
+    </div>
+    <div class="score-line">
+      <span class="score" id="score1">0</span>
+      <span class="dash">—</span>
+      <span class="score" id="score2">0</span>
+    </div>
+    <div class="player-tag p2">
+      <span class="pname" id="name2">プレイヤー2</span>
+      <span class="dot"></span>
+    </div>
+  </div>
+  <div class="target-note">先に 7 点取ったら勝利</div>
+
+  <div class="arena">
+    <canvas id="game" width="960" height="540"></canvas>
+    <button id="pauseBtn" class="pause-btn" aria-label="一時停止">&#10074;&#10074;</button>
+    <div id="banner" class="banner hidden"></div>
+    <div id="pause" class="pause hidden">
+      <div class="pause-box">
+        <h2>一時停止</h2>
+        <p><span class="kb">P キーで再開</span><span class="tc">❚❚ ボタンで再開</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="ctl p1"><strong id="ctlName1">koto</strong>　<span class="kb">[W][A][S][D] で移動</span><span class="tc">左半分をドラッグで移動</span></div>
+    <div class="ctl mid kb">P：一時停止</div>
+    <div class="ctl p2"><strong id="ctlName2">zuza</strong>　<span class="kb">矢印キーで移動</span><span class="tc">右半分をドラッグで移動</span></div>
+  </div>
+  <div class="rotate-hint">横画面の方が遊びやすいよ</div>
+
+  <div id="menu" class="overlay">
+    <div class="panel">
+      <h1 class="title">エアホッケー対戦</h1>
+      <p class="subtitle">パックを打ち合って相手ゴールに叩き込め！ 先に 7 点で勝ち</p>
+      <div class="name-row">
+        <label class="name-field p1">
+          <span>プレイヤー1（左 / ピンク）</span>
+          <input id="input1" type="text" maxlength="12" value="koto" placeholder="プレイヤー1" autocomplete="off">
+        </label>
+        <span class="vs">VS</span>
+        <label class="name-field p2">
+          <span>プレイヤー2（右 / ミント）</span>
+          <input id="input2" type="text" maxlength="12" value="zuza" placeholder="プレイヤー2" autocomplete="off">
+        </label>
+      </div>
+      <div class="howto">
+        <div class="kb"><b>P1</b>：W A S D でスマッシャーを操作</div>
+        <div class="kb"><b>P2</b>：↑ ← ↓ → でスマッシャーを操作</div>
+        <div class="tc"><b>P1</b>：画面の左半分をドラッグ</div>
+        <div class="tc"><b>P2</b>：画面の右半分をドラッグ</div>
+        <div>スマッシャーは自分側のコートだけ動けるよ</div>
+      </div>
+      <button id="startBtn" class="btn big">ゲームスタート</button>
+      <a class="backlink" href="../../index.html">← ゲーム一覧にもどる</a>
+    </div>
+  </div>
+
+  <div id="result" class="overlay hidden">
+    <div class="panel">
+      <h1 class="title" id="winnerText">WINNER</h1>
+      <p class="final-score" id="finalScore">7 — 0</p>
+      <p class="loser-line" id="loserLine"></p>
+      <button id="replayBtn" class="btn big">もう一度対戦</button>
+      <button id="menuBtn" class="btn ghost">スタート画面へ</button>
+    </div>
+  </div>
+
+<script src="game.js"></script>
+</body>
+</html>
