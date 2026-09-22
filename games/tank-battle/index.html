@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>タンクバトル — devin-games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ============ スタート画面 ============ -->
+    <section id="screen-start" class="screen">
+      <h1 class="logo">タンクバトル</h1>
+      <p class="tagline">迷路の要塞で砲弾を撃ち合え！壁バウンドを決めろ！</p>
+
+      <div class="name-row">
+        <div class="name-box p1">
+          <span class="tank-dot"></span>
+          <label for="name1">プレイヤー1</label>
+          <input id="name1" type="text" maxlength="10" placeholder="koto" value="koto" autocomplete="off">
+        </div>
+        <div class="vs">VS</div>
+        <div class="name-box p2">
+          <span class="tank-dot"></span>
+          <label for="name2">プレイヤー2</label>
+          <input id="name2" type="text" maxlength="10" placeholder="zuza" value="zuza" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="rules">
+        <div class="rule-col">
+          <h3>🎮 操作方法</h3>
+          <table class="controls">
+            <tr><th></th><th>前進/後退・旋回</th><th>砲撃</th></tr>
+            <tr>
+              <td class="p1t">P1</td>
+              <td class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></td>
+              <td class="keys"><kbd>F</kbd></td>
+            </tr>
+            <tr>
+              <td class="p2t">P2</td>
+              <td class="keys"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></td>
+              <td class="keys"><kbd>Enter</kbd></td>
+            </tr>
+          </table>
+        </div>
+        <div class="rule-col">
+          <h3>📖 ルール</h3>
+          <ul>
+            <li>迷路の中で戦車を動かして砲弾を撃ち合う対戦ゲーム</li>
+            <li>砲弾は壁に当たると<b>最大3回反射</b>する — 跳弾を狙え！</li>
+            <li>自分の跳弾にも当たるので注意！</li>
+            <li>相手を撃破するとラウンド獲得。<b>3ラウンド先取</b>で勝利！</li>
+            <li><kbd>P</kbd> でポーズ</li>
+            <li class="touch-only">📱 タッチ端末では画面両端のボタンで操作</li>
+          </ul>
+        </div>
+      </div>
+
+      <button id="btn-start" class="big-btn">ゲームスタート</button>
+    </section>
+
+    <!-- ============ ゲーム画面 ============ -->
+    <section id="screen-game" class="screen hidden">
+      <div class="hud">
+        <div class="hud-side p1">
+          <div class="hud-name p1t" id="hud-name1">P1</div>
+          <div class="pips" id="pips1"></div>
+          <div class="ammo" id="ammo1"></div>
+        </div>
+        <div class="hud-mid">
+          <div class="round-label" id="round-label">ROUND 1</div>
+        </div>
+        <div class="hud-side p2">
+          <div class="hud-name p2t" id="hud-name2">P2</div>
+          <div class="pips" id="pips2"></div>
+          <div class="ammo" id="ammo2"></div>
+        </div>
+      </div>
+
+      <div class="canvas-holder">
+        <canvas id="game" width="760" height="600"></canvas>
+
+        <div id="touch-controls">
+          <div class="tc-side tc-p1">
+            <div class="tc-dpad">
+              <button class="tc-btn tc-up"    data-p="0" data-dir="up"    aria-label="P1 前進">▲</button>
+              <button class="tc-btn tc-left"  data-p="0" data-dir="left"  aria-label="P1 左旋回">◀</button>
+              <button class="tc-btn tc-right" data-p="0" data-dir="right" aria-label="P1 右旋回">▶</button>
+              <button class="tc-btn tc-down"  data-p="0" data-dir="down"  aria-label="P1 後退">▼</button>
+            </div>
+            <button class="tc-fire p1b" data-p="0" data-fire aria-label="P1 砲撃">💥</button>
+          </div>
+          <div class="tc-side tc-p2">
+            <button class="tc-fire p2b" data-p="1" data-fire aria-label="P2 砲撃">💥</button>
+            <div class="tc-dpad">
+              <button class="tc-btn tc-up"    data-p="1" data-dir="up"    aria-label="P2 前進">▲</button>
+              <button class="tc-btn tc-left"  data-p="1" data-dir="left"  aria-label="P2 左旋回">◀</button>
+              <button class="tc-btn tc-right" data-p="1" data-dir="right" aria-label="P2 右旋回">▶</button>
+              <button class="tc-btn tc-down"  data-p="1" data-dir="down"  aria-label="P2 後退">▼</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="overlay" class="overlay hidden">
+          <div id="overlay-main" class="overlay-main"></div>
+          <div id="overlay-sub" class="overlay-sub"></div>
+          <div id="overlay-btns" class="overlay-btns hidden">
+            <button id="btn-replay" class="big-btn small">もう一度対戦</button>
+            <button id="btn-title" class="ghost-btn">タイトルへ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-hint">
+        <span class="p1t">P1: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移動 / <kbd>F</kbd> 砲撃</span>
+        <span class="p2t">P2: 矢印キー 移動 / <kbd>Enter</kbd> 砲撃</span>
+      </div>
+    </section>
+
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
