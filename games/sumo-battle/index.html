@@ -66,5 +66,36 @@
 </div>
 
 <script src="game.js"></script>
+
+  <!-- Rotate-device overlay: games are designed for landscape -->
+  <div id="rotate-overlay" aria-hidden="true">
+    <div class="ro-box">
+      <div class="ro-icon">&#x1F4F1;&#x21BB;</div>
+      <p class="ro-msg">Please rotate your device<br><span>このゲームは横向きで遊んでね</span></p>
+    </div>
+  </div>
+  <style>
+    #rotate-overlay{display:none;position:fixed;inset:0;z-index:99999;
+      background:#0b0b1a;color:#fff;text-align:center;
+      align-items:center;justify-content:center}
+    #rotate-overlay.show{display:flex}
+    #rotate-overlay .ro-icon{font-size:64px;margin-bottom:18px;animation:ro-sway 1.4s ease-in-out infinite}
+    #rotate-overlay .ro-msg{font-size:20px;font-weight:700;line-height:1.5}
+    #rotate-overlay .ro-msg span{font-size:14px;font-weight:400;opacity:.7}
+    @keyframes ro-sway{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+  </style>
+  <script>
+    (function(){
+      var ov=document.getElementById('rotate-overlay');
+      var touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+      function check(){
+        var portrait=window.innerHeight>window.innerWidth;
+        ov.classList.toggle('show', touch&&portrait);
+      }
+      check();
+      window.addEventListener('resize',check);
+      window.addEventListener('orientationchange',function(){setTimeout(check,300);});
+    })();
+  </script>
 </body>
 </html>
