@@ -380,7 +380,12 @@
     const k = inp[p.pid];
     if (p.st === 'bubble') {
       const mate = G.players.find(q => q !== p && (q.st === 'play' || q.st === 'clear'));
-      if (!mate) { p.st = 'out'; return; }
+      if (!mate) {
+        // nobody to float to — land back at the start rather than vanish
+        p.x = G.level.spawn.x; p.y = G.level.spawn.y;
+        p.vx = p.vy = 0; p.st = 'play'; p.invuln = 2;
+        return;
+      }
       const tx = mate.x + mate.w / 2 - p.w / 2, ty = mate.y - 10;
       p.bx = lerp(p.bx, tx, Math.min(1, 4 * dt));
       p.by = lerp(p.by, ty, Math.min(1, 4 * dt));
@@ -492,7 +497,8 @@
     if (G.mode === 'coop') {
       const offL = p.x + p.w < G.cam - 60, offR = p.x > G.cam + W + 60;
       const mate = G.players.find(q => q !== p);
-      const far = mate && Math.abs((p.x + p.w / 2) - (mate.x + mate.w / 2)) > W - 90;
+      // only the player left *behind* bubbles — never the on-screen leader
+      const far = mate && (mate.x + mate.w / 2) - (p.x + p.w / 2) > W - 90;
       if (offL || offR || far) p.lagT += dt; else p.lagT = 0;
       if (p.lagT > (far ? 0.4 : 1.1)) {
         p.st = 'bubble'; p.lagT = 0;
