@@ -10,6 +10,7 @@ Open `index.html` in a browser, or open each game's `games/<game>/index.html` di
 
 | Game | Mode | Directory |
 |--------|--------|--------------|
+| Super Koto | Solo + Co-op | `games/super-koto/` |
 | Air Hockey | Versus | `games/air-hockey/` |
 | Tank Battle | Versus | `games/tank-battle/` |
 | Dungeon Escape | Co-op | `games/dungeon-escape/` |
