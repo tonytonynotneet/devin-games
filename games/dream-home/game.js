@@ -85,7 +85,11 @@
   // ---------- camera ----------
   let camX = 0, camY = 0;
   function updateCamera() {
-    const ps = state.players;
+    // solo on a per-player link → camera follows only your own character
+    const net = DH.net;
+    const duo = net && net.online && (net.role === "host" ? net._duo : net._synced);
+    const meIdx = asWho === "zuza" ? 1 : asWho === "koto" ? 0 : -1;
+    const ps = (meIdx >= 0 && !duo && state.players[meIdx]) ? [state.players[meIdx]] : state.players;
     const mx = ps.reduce((s, p) => s + p.x, 0) / ps.length;
     const my = ps.reduce((s, p) => s + p.y, 0) / ps.length;
     camX += (mx - cv.width / 2 - camX) * 0.08;
@@ -180,13 +184,16 @@
     state.timeMin = (state.timeMin + dt * 4) % (24 * 60); // ~6 real min per day
     const net = DH.net;
     const guest = net && net.online && net.role === "guest";
+    const asZuza = !guest && asWho === "zuza"; // zuza's link solo: she controls P2
+    const NOKEYS = { l: 0, r: 0, u: 0, d: 0 };
     for (const p of state.players) {
-      // online guest drives P2 with their own local (P1-mapped) input
-      const k = guest ? (p.pid === 1 ? inp[0] : { l: 0, r: 0, u: 0, d: 0 }) : inp[p.pid];
+      // online guest / solo-as-zuza drives P2 with local (P1-mapped) input
+      const mine2 = guest || asZuza;
+      const k = mine2 ? (p.pid === 1 ? inp[0] : NOKEYS) : inp[p.pid];
       movePlayer(p, k, dt);
-      const edge = guest ? (p.pid === 1 ? inp[0].aEdge : 0) : inp[p.pid].aEdge;
+      const edge = mine2 ? (p.pid === 1 ? inp[0].aEdge : 0) : inp[p.pid].aEdge;
       if (edge) {
-        if (guest) inp[0].aEdge = 0; else inp[p.pid].aEdge = 0;
+        if (mine2) inp[0].aEdge = 0; else inp[p.pid].aEdge = 0;
         tryAction(p);
       }
     }
@@ -290,17 +297,18 @@
   const asWho = new URLSearchParams(location.search).get("as");
   if ((asWho === "koto" || asWho === "zuza") && DH.net && window.DGOnline) {
     const want = asWho === "koto" ? "host" : "guest";
-    DH.toast(asWho === "koto" ? "Connecting… you're koto 🏠" : "Connecting… you're zuza 💗");
+    const names = [$("name1").value || "koto", $("name2").value || "zuza"];
+    if (want === "guest") startRun(names); // zuza plays solo right away; upgrades to co-op when koto connects
+    DH.toast(asWho === "koto" ? "Connecting… you're koto 🏠" : "Playing solo — koto can join anytime 💗");
     DH.net.connect(want, role => {
       if (role === "host") {
-        startRun([$("name1").value || "koto", $("name2").value || "zuza"]);
+        startRun(names);
         DH.toast("You're koto. Waiting for zuza…");
       } else if (role === "guest") {
-        DH.toast("You're zuza. Waiting for koto…");
+        DH.toast(state.running ? "koto joined — playing together 💗" : "You're zuza 💗");
         DH.net.send({ type: "hello" });
-      } else {
-        // relay unreachable → solo fallback so the link still plays
-        startRun([$("name1").value || "koto", $("name2").value || "zuza"]);
+      } else if (!state.running) {
+        startRun(names); // relay unreachable → solo fallback so the link still plays
       }
     });
   } else if (/[?&]play\b/.test(location.search)) {

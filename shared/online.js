@@ -35,13 +35,22 @@
         conn.on("close", () => { net.onpeer && net.onpeer(false); });
       };
       if (want === "host") {
-        const peer = (net._peer = new Peer("dg-" + game + "-koto"));
-        peer.on("open", () => done(resolve, net));
-        peer.on("connection", conn => {
-          wire(conn);
-          conn.on("open", () => net.onpeer && net.onpeer(true));
-        });
-        peer.on("error", e => { if (e.type === "unavailable-id") done(reject, new Error("host_taken")); });
+        let tries = 0;
+        const mkPeer = () => {
+          if (settled) return;
+          const peer = (net._peer = new Peer("dg-" + game + "-koto"));
+          peer.on("open", () => done(resolve, net));
+          peer.on("connection", conn => {
+            wire(conn);
+            conn.on("open", () => net.onpeer && net.onpeer(true));
+          });
+          peer.on("error", e => {
+            // stale ghost registration on the public broker — retry a few times
+            if (e.type === "unavailable-id" && ++tries < 6) setTimeout(mkPeer, 10000);
+            else if (e.type === "unavailable-id") done(reject, new Error("host_taken"));
+          });
+        };
+        mkPeer();
       } else {
         const peer = (net._peer = new Peer());
         let tries = 0;

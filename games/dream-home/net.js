@@ -27,6 +27,8 @@
       net.online = true;
       s.onmessage = m => { try { net._handle(m); } catch (e) {} };
       s.onpeer = joined => {
+        net._duo = joined;
+        if (!joined) net._synced = false;
         if (!joined) DH.toast && DH.toast("Partner left ☹️");
         else if (net.role === "host") net.sendFullState(true);
         else if (net.role === "guest") net.send({ type: "hello" });
@@ -53,7 +55,8 @@
     } else if (net.role === "guest") {
       if (m.type === "state") {
         net.guestState = m;
-        if (m.started && !st.running) DH.startRun && DH.startRun(m.names || []);
+        // first host snapshot joins/resyncs into the shared world, even mid-solo
+        if (m.started && !net._synced) { net._synced = true; DH.startRun && DH.startRun(m.names || []); }
       } else if (m.type === "pos") net.pos = m;
       else if (m.type === "hud") Object.assign(st, m.hud);
     }
