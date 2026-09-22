@@ -129,7 +129,7 @@
   // ---------- modules ----------
   const modules = [
     ["furniture", DH.furniture], ["garden", DH.garden], ["animals", DH.animals],
-    ["court", DH.court], ["sauna", DH.sauna],
+    ["court", DH.court], ["sauna", DH.sauna], ["couple", DH.couple],
   ].filter(([_, m]) => m).map(([n, m]) => (m._name = n, m));
   modules.forEach(m => m.init && m.init(state));
 
