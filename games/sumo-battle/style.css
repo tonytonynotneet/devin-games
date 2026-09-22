@@ -69,11 +69,25 @@ h1 {
   margin-bottom: 18px;
 }
 .name-field { flex: 1; text-align: left; }
+.name-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 5px;
+}
+.name-head .avatar {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #181426;
+  border: 2px solid var(--p1);
+}
+.name-field.p2 .avatar { border-color: var(--p2); }
 .name-field label {
   display: block;
   font-size: .72rem;
   color: var(--muted);
-  margin-bottom: 5px;
 }
 .name-field input {
   width: 100%;

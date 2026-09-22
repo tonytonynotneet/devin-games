@@ -93,9 +93,9 @@ const sfx = {
 };
 
 /* ---------- プレイヤー ---------- */
-function mkPlayer(color, dark) {
+function mkPlayer(id, color, dark) {
   return {
-    name: '', color, dark,
+    id, name: '', color, dark,
     x: 0, y: 0, vx: 0, vy: 0,
     face: 0, wins: 0,
     inK: { x: 0, y: 0 },        // キーボード入力
@@ -107,7 +107,7 @@ function mkPlayer(color, dark) {
     dashBtn: { x: 0, y: 0, r: 0 },
   };
 }
-const players = [mkPlayer('#ff5d5d', '#b03a3a'), mkPlayer('#4ecdc4', '#2b8a83')];
+const players = [mkPlayer(0, '#ff5d5d', '#b03a3a'), mkPlayer(1, '#4ecdc4', '#2b8a83')];
 
 /* ---------- ゲーム状態 ---------- */
 let state = 'start';       // start | countdown | fight | roundend
@@ -569,6 +569,108 @@ function drawDohyo() {
   ctx.restore();
 }
 
+/* ---- キャラクター (koto=P1, zuza=P2) ---- */
+const SKIN_HI = ['#ffe6cd', '#fbdcb9'];
+const SKIN_LO = ['#e8b592', '#dfa97b'];
+const HAIR_P1 = '#16131d', HAIR_P2 = '#3a2a1e';
+const CHAR_SHIRT = '#0d0c14', CHAR_CHAIN = '#d4d8e2', CHAR_GLASSES = '#08080d';
+
+// 頭をローカル座標で描く（+x が顔の向き）。呼び出し側で移動・回転済み。
+function drawCharHead(c, id, hx, hr) {
+  if (id === 0) drawKotoHead(c, hx, hr); else drawZuzaHead(c, hx, hr);
+}
+
+function drawKotoHead(c, hx, hr) {
+  // 黒いマッシュルームカット（頭より一回り大きい後ろ髪）
+  c.fillStyle = HAIR_P1;
+  c.beginPath();
+  c.ellipse(hx - hr * 0.14, 0, hr * 1.07, hr * 1.03, 0, 0, Math.PI * 2);
+  c.fill();
+  // 顔
+  c.fillStyle = SKIN_HI[0];
+  c.beginPath(); c.arc(hx, 0, hr, 0, Math.PI * 2); c.fill();
+  // 重めの前髪（直線のフチ）
+  c.save();
+  c.beginPath(); c.arc(hx, 0, hr, 0, Math.PI * 2); c.clip();
+  c.fillStyle = HAIR_P1;
+  c.fillRect(hx - hr * 1.1, -hr * 1.1, hr * 1.38, hr * 2.2);
+  c.restore();
+  // 目
+  c.fillStyle = '#171320';
+  for (const s of [-1, 1]) {
+    c.beginPath();
+    c.ellipse(hx + hr * 0.52, s * hr * 0.37, hr * 0.1, hr * 0.14, 0, 0, Math.PI * 2);
+    c.fill();
+  }
+  // 銀チェーンネックレス（首元の胸に）
+  c.strokeStyle = CHAR_CHAIN;
+  c.lineWidth = hr * 0.07;
+  c.beginPath();
+  c.arc(hx, 0, hr * 1.22, Math.PI * 0.74, Math.PI * 1.26);
+  c.stroke();
+  // 腕時計（前に伸びた腕に）
+  const wx = hx + hr * 0.5, wy = hr * 1.4;
+  c.fillStyle = SKIN_HI[0];
+  c.beginPath(); c.ellipse(wx, wy, hr * 0.42, hr * 0.24, 0.5, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = CHAR_CHAIN; c.lineWidth = hr * 0.1;
+  c.beginPath();
+  c.moveTo(wx - hr * 0.05, wy - hr * 0.28); c.lineTo(wx + hr * 0.15, wy + hr * 0.16);
+  c.stroke();
+  c.fillStyle = '#22242f';
+  c.beginPath(); c.arc(wx + hr * 0.05, wy - hr * 0.05, hr * 0.12, 0, Math.PI * 2); c.fill();
+}
+
+function drawZuzaHead(c, hx, hr) {
+  // 肩を越えて流れる長い直毛（後ろの毛束）
+  c.fillStyle = HAIR_P2;
+  c.beginPath();
+  c.ellipse(hx - hr * 0.42, 0, hr * 1.02, hr * 1.02, 0, 0, Math.PI * 2);
+  c.fill();
+  // 顔
+  c.fillStyle = SKIN_HI[1];
+  c.beginPath(); c.arc(hx, 0, hr, 0, Math.PI * 2); c.fill();
+  // 額にかかるストレートな生え際
+  c.save();
+  c.beginPath(); c.arc(hx, 0, hr, 0, Math.PI * 2); c.clip();
+  c.fillStyle = HAIR_P2;
+  c.fillRect(hx - hr * 1.1, -hr * 1.1, hr * 1.2, hr * 2.2);
+  c.restore();
+  // 顔をはさむ長いサイドの房
+  c.fillStyle = HAIR_P2;
+  for (const s of [-1, 1]) {
+    c.beginPath();
+    c.roundRect(hx - hr * 1.55, s * hr * 0.76 - hr * 0.16, hr * 1.9, hr * 0.32, hr * 0.16);
+    c.fill();
+  }
+  // 黒サングラス
+  const lx = hx + hr * 0.44, lw = hr * 0.34, lh = hr * 0.58;
+  c.fillStyle = CHAR_GLASSES;
+  for (const s of [-1, 1]) {
+    c.beginPath();
+    c.roundRect(lx - lw / 2, s * hr * 0.4 - lh / 2, lw, lh, hr * 0.09);
+    c.fill();
+  }
+  c.fillRect(lx - lw * 0.28, -hr * 0.1, lw * 0.56, hr * 0.2);
+  c.strokeStyle = 'rgba(255,255,255,.45)';
+  c.lineWidth = hr * 0.05;
+  c.beginPath();
+  c.moveTo(lx - lw * 0.2, -hr * 0.62);
+  c.lineTo(lx + lw * 0.18, -hr * 0.46);
+  c.stroke();
+}
+
+function drawHudAvatar(id, x, y, r, dir) {
+  ctx.save();
+  ctx.globalAlpha = 0.3;
+  ctx.fillStyle = players[id].color;
+  ctx.beginPath(); ctx.arc(x, y, r * 1.55, 0, Math.PI * 2); ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.translate(x, y);
+  ctx.scale(dir, 1);
+  drawCharHead(ctx, id, 0, r);
+  ctx.restore();
+}
+
 function drawRikishi(p) {
   const dashing = p.dashT > 0;
   ctx.save();
@@ -578,10 +680,10 @@ function drawRikishi(p) {
   ctx.rotate(p.face);
   ctx.scale(stretch, 1 / Math.sqrt(stretch));
 
-  // 体
+  // 肌（キャラごとの肤色）
   const grad = ctx.createRadialGradient(-wr * 0.3, -wr * 0.3, wr * 0.2, 0, 0, wr);
-  grad.addColorStop(0, '#f8d7b0');
-  grad.addColorStop(1, '#e0a86f');
+  grad.addColorStop(0, SKIN_HI[p.id]);
+  grad.addColorStop(1, SKIN_LO[p.id]);
   ctx.beginPath();
   ctx.arc(0, 0, wr, 0, Math.PI * 2);
   ctx.fillStyle = grad;
@@ -590,11 +692,17 @@ function drawRikishi(p) {
   ctx.strokeStyle = '#7a4b2a';
   ctx.stroke();
 
-  // まわし（背中側の帯）
+  // まわし（背中側の帯）— プレイヤーカラーはそのまま
   ctx.beginPath();
   ctx.arc(0, 0, wr * 0.82, Math.PI * 0.55, Math.PI * 1.45);
   ctx.strokeStyle = p.color;
   ctx.lineWidth = wr * 0.34;
+  ctx.stroke();
+  // 黒い服（肩の帯）
+  ctx.beginPath();
+  ctx.arc(0, 0, wr * 0.6, Math.PI * 0.55, Math.PI * 1.45);
+  ctx.strokeStyle = CHAR_SHIRT;
+  ctx.lineWidth = wr * 0.3;
   ctx.stroke();
   // まわしの締め込み
   ctx.beginPath();
@@ -602,18 +710,8 @@ function drawRikishi(p) {
   ctx.fillStyle = p.dark;
   ctx.fill();
 
-  // 目（前側）
-  ctx.fillStyle = '#2b1d12';
-  for (const s of [-1, 1]) {
-    ctx.beginPath();
-    ctx.arc(wr * 0.45, s * wr * 0.3, wr * 0.075, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  // まげ
-  ctx.beginPath();
-  ctx.arc(wr * 0.1, 0, wr * 0.16, 0, Math.PI * 2);
-  ctx.fillStyle = '#241a12';
-  ctx.fill();
+  // キャラの頭（koto=前髪ぱっつん / zuza=ロングヘア+サングラス）
+  drawCharHead(ctx, p.id, wr * 0.14, wr * 0.6);
 
   if (p.flash > 0) {
     ctx.globalAlpha = Math.min(0.6, p.flash);
@@ -673,27 +771,30 @@ function stars(n) {
 
 function drawHUD() {
   const fs = Math.max(15, Math.min(26, W * 0.03));
+  const ar = fs * 0.78;
   ctx.save();
   ctx.font = `800 ${fs}px sans-serif`;
   ctx.textBaseline = 'middle';
   // P1 左
+  drawHudAvatar(0, 18 + ar, 30, ar, 1);
   ctx.textAlign = 'left';
   ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.5)';
-  ctx.strokeText(players[0].name, 18, 30);
+  ctx.strokeText(players[0].name, 18 + ar * 2 + 10, 30);
   ctx.fillStyle = players[0].color;
-  ctx.fillText(players[0].name, 18, 30);
+  ctx.fillText(players[0].name, 18 + ar * 2 + 10, 30);
   ctx.font = `${fs * 0.85}px sans-serif`;
   ctx.fillStyle = '#ffd166';
-  ctx.fillText(stars(players[0].wins), 18, 30 + fs);
+  ctx.fillText(stars(players[0].wins), 18 + ar * 2 + 10, 30 + fs);
   // P2 右
+  drawHudAvatar(1, W - 18 - ar, 30, ar, -1);
   ctx.font = `800 ${fs}px sans-serif`;
   ctx.textAlign = 'right';
-  ctx.strokeText(players[1].name, W - 18, 30);
+  ctx.strokeText(players[1].name, W - 18 - ar * 2 - 10, 30);
   ctx.fillStyle = players[1].color;
-  ctx.fillText(players[1].name, W - 18, 30);
+  ctx.fillText(players[1].name, W - 18 - ar * 2 - 10, 30);
   ctx.font = `${fs * 0.85}px sans-serif`;
   ctx.fillStyle = '#ffd166';
-  ctx.fillText(stars(players[1].wins), W - 18, 30 + fs);
+  ctx.fillText(stars(players[1].wins), W - 18 - ar * 2 - 10, 30 + fs);
   // 中央
   ctx.textAlign = 'center';
   ctx.font = `700 ${fs * 0.7}px sans-serif`;
@@ -929,6 +1030,24 @@ function loop(ts) {
   draw();
   requestAnimationFrame(loop);
 }
+
+/* ---- スタート画面のアバター ---- */
+function paintAvatar(el, id, dir) {
+  if (!el) return;
+  const c = el.getContext('2d');
+  const r = el.width * 0.27;
+  c.save();
+  c.translate(el.width / 2, el.height / 2);
+  c.globalAlpha = 0.3;
+  c.fillStyle = players[id].color;
+  c.beginPath(); c.arc(0, 0, r * 1.55, 0, Math.PI * 2); c.fill();
+  c.globalAlpha = 1;
+  c.scale(dir, 1);
+  drawCharHead(c, id, 0, r);
+  c.restore();
+}
+paintAvatar($('avatar1'), 0, 1);
+paintAvatar($('avatar2'), 1, -1);
 
 /* ---------- 起動 ---------- */
 touchMode = detectTouch();
