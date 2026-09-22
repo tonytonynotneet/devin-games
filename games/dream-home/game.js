@@ -129,6 +129,7 @@
   // ---------- modules ----------
   const modules = [
     ["furniture", DH.furniture], ["garden", DH.garden], ["animals", DH.animals],
+    ["court", DH.court], ["sauna", DH.sauna],
   ].filter(([_, m]) => m).map(([n, m]) => (m._name = n, m));
   modules.forEach(m => m.init && m.init(state));
 
@@ -158,6 +159,9 @@
       else { net.guestSendInput(inp[0]); net.applySnapshot(); net.applyPositions(); }
     }
     if (!guest) modules.forEach(m => m.update && m.update(dt, state));
+    // seasons: 1 season = 2 game days; spring→summer→autumn→winter→…
+    state.day = (state.day || 0) + dt * 4 / (24 * 60);
+    state.season = ["spring", "summer", "autumn", "winter"][Math.floor(state.day / 2) % 4];
     updateCamera();
     render(dt);
     hud();
@@ -167,6 +171,7 @@
     const W = DH.world;
     ctx.clearRect(0, 0, cv.width, cv.height);
     W.draw(ctx, camX, camY);
+    modules.forEach(m => m.drawGround && m.drawGround(ctx, camX, camY, state));
     // depth-sorted draws: module entities + players by y
     const draws = [];
     modules.forEach(m => m.collectDraws && m.collectDraws(draws, camX, camY));
