@@ -10,6 +10,7 @@ Open `index.html` in a browser, or open each game's `games/<game>/index.html` di
 
 | Game | Mode | Directory |
 |--------|--------|--------------|
+| Koto Craft | Solo | `games/koto-craft/` |
 | Super Koto | Solo + Co-op | `games/super-koto/` |
 | Air Hockey | Versus | `games/air-hockey/` |
 | Tank Battle | Versus | `games/tank-battle/` |
