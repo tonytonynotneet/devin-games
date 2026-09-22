@@ -74,12 +74,15 @@ body {
 }
 .name-box input:focus { border-color: var(--p1); }
 .name-box.p2 input:focus { border-color: var(--p2); }
-.name-box .snake-dot {
-  width: 14px; height: 14px; border-radius: 4px;
-  display: inline-block;
+.name-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.name-box.p1 .snake-dot { background: var(--p1); box-shadow: 0 0 10px var(--p1); }
-.name-box.p2 .snake-dot { background: var(--p2); box-shadow: 0 0 10px var(--p2); }
+.name-head .avatar {
+  width: 46px; height: 46px;
+  flex-shrink: 0;
+}
 
 .rules {
   display: flex;
@@ -174,7 +177,15 @@ table.controls td { padding: 6px 8px; font-size: .85rem; font-weight: 700; }
 }
 .hud-side { flex: 1; }
 .hud-side.p2 { text-align: right; }
-.hud-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+.hud-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.hud-side.p2 .hud-id { justify-content: flex-end; }
+.hud-avatar { width: 26px; height: 26px; flex-shrink: 0; }
+.hud-name { font-weight: 700; font-size: 1.05rem; }
 
 .pips { display: flex; gap: 5px; margin-bottom: 6px; }
 .hud-side.p2 .pips { justify-content: flex-end; }
