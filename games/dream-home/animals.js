@@ -30,6 +30,8 @@
   const PAST = { x1: 3 * 32 + 10, y1: 12 * 32 + 12, x2: 9 * 32 - 10, y2: 17 * 32 - 10 };
   const DOOR_IN = { x: 9 * 32 + 16, y: 9 * 32 + 16 };
   const DOOR_OUT = { x: 9 * 32 + 16, y: 10 * 32 + 16 };
+  const GATE = { x: 5 * 32 + 16, y: 11 * 32 + 16 };   // pasture gate (in fence row)
+  const GATE_OUT = { x: 5 * 32 + 16, y: 10 * 32 + 16 };
 
   // ---------- module state (plain data only) ----------
   let gs = null; // game state ref (coins/happiness/timeMin) — not serialized
@@ -54,7 +56,7 @@
   const CRITTERS = [
     { species: "dog", name: "Sunny" },
     { species: "cat", name: "Momo", v: 0 }, { species: "cat", name: "Tora", v: 1 }, { species: "cat", name: "Kuro", v: 2 },
-    { species: "chicken", name: "Piyo" }, { species: "chicken", name: "Hina" }, { species: "chicken", name: "Coco" },
+    { species: "chicken", name: "Piyo" }, { species: "chicken", name: "Mugi" }, { species: "chicken", name: "Coco" },
     { species: "sheep", name: "Fluffy" }, { species: "sheep", name: "Wooly" },
     { species: "cow", name: "Bessie" }, { species: "cow", name: "Moo" },
   ];
@@ -183,18 +185,19 @@
 
   function kidZone(e) {
     const z = DH.world.zone(Math.floor(e.x / 32), Math.floor(e.y / 32));
-    return z === "house" ? "house" : "yard";
+    return z === "house" || z === "pasture" ? z : "yard";
   }
   function kidTarget(e) {
     const cur = kidZone(e);
-    const dest = Math.random() < 0.22 ? (cur === "house" ? "yard" : "house") : cur;
+    // a kid who slid into the pasture can only leave via the gate waypoint
+    const dest = cur === "pasture" ? "yard" : Math.random() < 0.22 ? (cur === "house" ? "yard" : "house") : cur;
     let goal = pick(walkTiles(dest));
     for (let i = 0; i < 6; i++) { // prefer nearby targets for natural wandering
       const g = pick(walkTiles(dest));
       if (dist2(g.x, g.y, e.x, e.y) < dist2(goal.x, goal.y, e.x, e.y)) goal = g;
     }
     goal = { x: goal.x + rnd(-8, 8), y: goal.y + rnd(-8, 8) };
-    e.path = dest === cur ? [goal] : [DOOR_IN, DOOR_OUT, goal];
+    e.path = cur === "pasture" ? [GATE, GATE_OUT, goal] : dest === cur ? [goal] : [DOOR_IN, DOOR_OUT, goal];
     e.pathI = 0; e.stuckT = 0; e.mode = "walk";
   }
   function wanderKid(e, dt) {
@@ -305,11 +308,15 @@
 
     interactables(p) {
       const out = [];
+      const pZone = DH.world.zone(Math.floor(p.x / 32), Math.floor(p.y / 32));
+      const inPasture = pZone === "pasture";
       for (const it of S.items) {
+        if (!inPasture) continue; // no reaching through the fence
         if (dist2(p.x, p.y, it.x, it.y) < INTERACT_R * INTERACT_R)
           out.push({ label: `Collect ${it.item}`, x: it.x, y: it.y, action: () => API.collect(it.id) });
       }
       for (const e of S.animals) {
+        if (!inPasture) continue;
         if (dist2(p.x, p.y, e.x, e.y) >= INTERACT_R * INTERACT_R) continue;
         if (e.hunger >= HUNGRY_AT)
           out.push({ label: `Feed ${e.name} · ${FEED_COST}🪙`, x: e.x, y: e.y, action: () => API.feed(e.id) });
@@ -319,6 +326,7 @@
           out.push({ label: `Pet ${e.name}`, x: e.x, y: e.y, action: () => API.pet(e.id) });
       }
       for (const e of S.kids) {
+        if (kidZone(e) === "house" && pZone !== "house") continue; // no reaching through walls
         if (dist2(p.x, p.y, e.x, e.y) >= INTERACT_R * INTERACT_R) continue;
         if (e.hunger >= HUNGRY_AT)
           out.push({ label: `Feed ${e.name} · ${FEED_COST}🪙`, x: e.x, y: e.y, action: () => API.feed(e.id) });
