@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>devin-games — ふたりゲームポータル</title>
+<style>
+  :root {
+    --bg: #0f0e1a;
+    --card: #1c1a2e;
+    --accent: #ff6b9d;
+    --accent2: #4ecdc4;
+    --text: #eae7f5;
+    --muted: #8a86a3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px;
+  }
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .subtitle { color: var(--muted); margin-bottom: 40px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 900px;
+    width: 100%;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid #2c2947;
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform .15s ease, border-color .15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .card .emoji { font-size: 2rem; }
+  .card h2 { font-size: 1.1rem; }
+  .card p { font-size: .85rem; color: var(--muted); line-height: 1.5; }
+  .card .mode {
+    font-size: .7rem;
+    color: var(--accent2);
+    border: 1px solid var(--accent2);
+    border-radius: 999px;
+    padding: 2px 10px;
+    align-self: flex-start;
+  }
+  .card.coming-soon { opacity: .45; pointer-events: none; }
+  footer { margin-top: 48px; color: var(--muted); font-size: .8rem; }
+</style>
+</head>
+<body>
+  <h1>devin-games</h1>
+  <p class="subtitle">ふたりで遊べるHTMLゲーム置き場 — 1つのキーボードで対戦＆協力プレイ</p>
+
+  <div class="grid">
+    <a class="card coming-soon" href="games/air-hockey/">
+      <span class="emoji">🏒</span>
+      <h2>エアホッケー対戦</h2>
+      <p>パドルでパックを弾き合う直接対決。先に規定点取ったら勝ち。</p>
+      <span class="mode">対戦</span>
+    </a>
+    <a class="card coming-soon" href="games/tank-battle/">
+      <span class="emoji">💥</span>
+      <h2>タンクバトル</h2>
+      <p>迷路マップで戦車を操り撃ち合う2人対戦シューティング。</p>
+      <span class="mode">対戦</span>
+    </a>
+    <a class="card coming-soon" href="games/dungeon-escape/">
+      <span class="emoji">🗝️</span>
+      <h2>協力ダンジョン脱出</h2>
+      <p>2人で協力してスイッチや扉の仕掛けを解き、出口を目指す。</p>
+      <span class="mode">協力</span>
+    </a>
+    <a class="card coming-soon" href="games/snake-battle/">
+      <span class="emoji">🐍</span>
+      <h2>スネークバトル</h2>
+      <p>トロン風。伸びる軌跡で相手を追い込む2人対戦。</p>
+      <span class="mode">対戦</span>
+    </a>
+    <a class="card coming-soon" href="games/sumo-battle/">
+      <span class="emoji">🤼</span>
+      <h2>相撲押し出しバトル</h2>
+      <p>円形の土俵から相手を押し出したら勝ちの大乱闘系。</p>
+      <span class="mode">対戦</span>
+    </a>
+  </div>
+
+  <footer>made by Devin for ふたりプレイ</footer>
+</body>
+</html>
