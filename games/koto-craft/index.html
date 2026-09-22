@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Koto Craft</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game"></canvas>
+
+  <!-- in-game HUD -->
+  <div id="hud" class="hidden">
+    <div id="crosshair">+</div>
+    <div id="hotbar"></div>
+    <div id="hint"></div>
+    <div id="deathmsg" class="hidden">☹️ <span>you fell out of the world</span></div>
+    <div id="flymsg" class="hidden">FLYING</div>
+  </div>
+
+  <!-- touch controls -->
+  <div id="touch" class="hidden">
+    <div id="joy"><div id="joyknob"></div></div>
+    <div id="touchbtns">
+      <div class="tbtn" id="btn-break">✕<span class="lbl">break</span></div>
+      <div class="tbtn" id="btn-place">▣<span class="lbl">place</span></div>
+      <div class="tbtn" id="btn-jump">▲<span class="lbl">jump</span></div>
+    </div>
+    <div id="touchmeta">
+      <div class="tbtn small" id="btn-fly">fly</div>
+      <div class="tbtn small" id="btn-cam">cam</div>
+      <div class="tbtn small" id="btn-pause">| |</div>
+    </div>
+  </div>
+
+  <!-- title screen -->
+  <div id="title">
+    <div class="titlebox">
+      <h1>KOTO CRAFT</h1>
+      <p class="sub">a little voxel world for koto &amp; zuza</p>
+      <div id="chars">
+        <div class="charcard" data-char="koto"><canvas width="120" height="168"></canvas><span>Koto</span></div>
+        <div class="charcard" data-char="zuza"><canvas width="120" height="168"></canvas><span>Zuza</span></div>
+      </div>
+      <button id="play" disabled>Select a character</button>
+      <div id="loading" class="hidden"><div id="loadbar"></div><span id="loadtext">generating world…</span></div>
+      <div id="controls-list">
+        <b>controls</b>
+        <span>move <i>WASD</i></span><span>jump <i>space</i></span><span>look <i>mouse</i></span>
+        <span>break <i>left click</i></span><span>place <i>right click</i></span>
+        <span>hotbar <i>1–9 / scroll</i></span><span>fly <i>F or double-space</i></span>
+        <span>3rd person <i>V / F5</i></span><span>pause <i>Esc</i></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- pause menu -->
+  <div id="pause" class="hidden">
+    <div class="pausebox">
+      <h2>Paused</h2>
+      <button id="resume">Resume</button>
+      <button id="totitle">Back to title</button>
+      <div id="pause-controls">
+        <span>move <i>WASD</i> · jump <i>space</i> · fly <i>F</i> · camera <i>V</i></span>
+        <span>break <i>LMB</i> · place <i>RMB</i> · hotbar <i>1–9 / scroll</i></span>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="three.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
