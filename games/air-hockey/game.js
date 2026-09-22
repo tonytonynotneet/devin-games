@@ -240,6 +240,7 @@ function goal(scorer) {
     winnerTextEl.style.color = scorer === 0 ? C1 : C2;
     winnerTextEl.style.background = 'none';
     finalScoreEl.textContent = S.scores[0] + ' — ' + S.scores[1];
+    el('loserLine').textContent = S.names[1 - scorer] + ' おしい… ☹️';
     setTimeout(() => resultEl.classList.remove('hidden'), 600);
   } else {
     S.mode = 'goal';
