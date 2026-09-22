@@ -3,6 +3,3 @@ name = "devin-games-relay"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = ["fastapi", "uvicorn[standard]", "websockets"]
-
-[tool.uvicorn]
-app = "main:app"
