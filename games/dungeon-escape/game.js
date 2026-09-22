@@ -102,6 +102,9 @@ const el = {
   name1: $('name1'), name2: $('name2'),
   resTime: $('resTime'), resMiss: $('resMiss'), resGems: $('resGems'),
   resMsg: $('resMsg'), rank: $('rank'),
+  titleFace1: $('titleFace1'), titleFace2: $('titleFace2'),
+  hudFace1: $('hudFace1'), hudFace2: $('hudFace2'),
+  resFace1: $('resFace1'), resFace2: $('resFace2'),
 };
 
 /* ================= サウンド ================= */
@@ -133,6 +136,155 @@ const sfx = {
   win()    { [523, 659, 784, 880, 1046, 1318, 1568].forEach((f, i) => tone(f, .2, 'triangle', .14, null, i * .13)); },
   go()     { tone(440, .1, 'square', .1); tone(880, .18, 'square', .11, null, .12); },
 };
+
+/* ================= キャラクター (koto=P1, zuza=P2) ================= */
+const SKIN_C = '#f6d7bd', SKIN2_C = '#f0cfae';
+const HAIR_KOTO = '#171320', HAIR_ZUZA = '#3a2a1e';
+const CHAR_SHIRT = '#0d0c14', CHAR_CHAIN = '#d4d8e2', CHAR_GLASS = '#0a0a12';
+
+// 見た目は名前に合わせる（不明な名前なら P1=koto, P2=zuza）
+function pickChar(i, name) {
+  const n = (name || '').trim().toLowerCase();
+  if (n === 'koto' || n === 'zuza') return n;
+  return i === 0 ? 'koto' : 'zuza';
+}
+
+function drawKoto(c, dx, dy, sad) {
+  // 後ろ髪（ぱっつんマッシュ）
+  c.fillStyle = HAIR_KOTO;
+  c.beginPath(); c.ellipse(0, -4.5, 9.8, 9.2, 0, 0, 7); c.fill();
+
+  // 黒シャツ
+  c.fillStyle = CHAR_SHIRT;
+  c.beginPath(); c.roundRect(-9, 3, 18, 12.5, 5); c.fill();
+
+  // 手
+  c.fillStyle = SKIN_C;
+  c.beginPath(); c.arc(-9.6, 9.5, 2, 0, 7); c.arc(9.6, 9.5, 2, 0, 7); c.fill();
+
+  // 左の手首に腕時計
+  c.fillStyle = '#20242f';
+  c.beginPath(); c.roundRect(-11.9, 7.1, 4.6, 2.1, 1); c.fill();
+  c.fillStyle = '#0d0f18';
+  c.beginPath(); c.arc(-9.6, 8.2, 1.7, 0, 7); c.fill();
+  c.strokeStyle = CHAR_CHAIN; c.lineWidth = .7;
+  c.beginPath(); c.arc(-9.6, 8.2, 1.7, 0, 7); c.stroke();
+  c.lineWidth = .5;
+  c.beginPath(); c.moveTo(-9.6, 8.2); c.lineTo(-9.1, 7.5); c.stroke();
+
+  // 銀チェーンのネックレス
+  c.strokeStyle = CHAR_CHAIN; c.lineWidth = 1.1;
+  c.beginPath(); c.arc(0, 3.4, 4.6, Math.PI * .16, Math.PI * .84); c.stroke();
+
+  // 顔
+  c.fillStyle = SKIN_C;
+  c.beginPath(); c.arc(0, -4, 7.6, 0, 7); c.fill();
+
+  // 重めのぱっつん前髪
+  c.fillStyle = HAIR_KOTO;
+  c.beginPath();
+  c.moveTo(-8.4, -4.6);
+  c.lineTo(-8.4, -5.8);
+  c.quadraticCurveTo(0, -13.2, 8.4, -5.8);
+  c.lineTo(8.4, -4.6);
+  c.closePath(); c.fill();
+  // ほおの横まで下りるサイドの毛束
+  c.beginPath(); c.roundRect(-8.6, -6.5, 2.6, 6.5, 1.3); c.fill();
+  c.beginPath(); c.roundRect(6, -6.5, 2.6, 6.5, 1.3); c.fill();
+
+  if (sad) {
+    c.strokeStyle = '#171320'; c.lineWidth = 1.1;
+    c.beginPath(); c.arc(-2.7, -3.2, 1.5, Math.PI * 1.15, Math.PI * 1.85); c.stroke();
+    c.beginPath(); c.arc(2.7, -3.2, 1.5, Math.PI * 1.15, Math.PI * 1.85); c.stroke();
+    c.beginPath(); c.arc(0, 1.6, 2, Math.PI * 1.2, Math.PI * 1.8); c.stroke();
+  } else {
+    // 目（進行方向にずらす）
+    c.fillStyle = '#171320';
+    c.beginPath();
+    c.ellipse(-2.7 + dx * 1.6, -3.2 + dy * 1.2, 1.15, 1.5, 0, 0, 7);
+    c.ellipse(2.7 + dx * 1.6, -3.2 + dy * 1.2, 1.15, 1.5, 0, 0, 7);
+    c.fill();
+    // 小さな笑顔
+    c.strokeStyle = '#171320'; c.lineWidth = .9;
+    c.beginPath(); c.arc(0, -0.6, 1.7, Math.PI * .25, Math.PI * .75); c.stroke();
+  }
+}
+
+function drawZuza(c, dx, dy, sad) {
+  // 肩よりずっと下まで伸びる長い直毛
+  c.fillStyle = HAIR_ZUZA;
+  c.beginPath(); c.roundRect(-10.6, -13.5, 21.2, 31, 9); c.fill();
+
+  // 黒い服
+  c.fillStyle = CHAR_SHIRT;
+  c.beginPath(); c.roundRect(-8.5, 3, 17, 12.5, 5); c.fill();
+
+  // 手
+  c.fillStyle = SKIN2_C;
+  c.beginPath(); c.arc(-9.2, 9.5, 2, 0, 7); c.arc(9.2, 9.5, 2, 0, 7); c.fill();
+
+  // 顔
+  c.fillStyle = SKIN2_C;
+  c.beginPath(); c.arc(0, -4.2, 7.8, 0, 7); c.fill();
+
+  // 額に落ちる直毛
+  c.fillStyle = HAIR_ZUZA;
+  c.beginPath(); c.ellipse(0, -8.2, 8.8, 4.4, 0, 0, 7); c.fill();
+  // 顔の両サイドを胸まで流れる毛束
+  c.beginPath(); c.roundRect(-9.4, -7.5, 4, 17, 2); c.fill();
+  c.beginPath(); c.roundRect(5.4, -7.5, 4, 17, 2); c.fill();
+
+  // 黒サングラス（進行方向にずらす）
+  const sx = dx * 1.3, sy = dy * 1;
+  c.fillStyle = CHAR_GLASS;
+  c.beginPath(); c.roundRect(-7.2 + sx, -6 + sy, 6.6, 4.6, 2.2); c.fill();
+  c.beginPath(); c.roundRect(.6 + sx, -6 + sy, 6.6, 4.6, 2.2); c.fill();
+  c.fillRect(-1 + sx, -5 + sy, 2, 1.4);
+  c.strokeStyle = 'rgba(255,255,255,.5)'; c.lineWidth = .9;
+  c.beginPath(); c.moveTo(-5.6 + sx, -3.4 + sy); c.lineTo(-3.7 + sx, -5.3 + sy); c.stroke();
+
+  c.strokeStyle = '#241a20';
+  if (sad) {
+    c.lineWidth = 1.1;
+    c.beginPath(); c.arc(0, 2.2, 2, Math.PI * 1.2, Math.PI * 1.8); c.stroke();
+  } else {
+    c.lineWidth = .9;
+    c.beginPath(); c.arc(0, 0, 1.7, Math.PI * .25, Math.PI * .75); c.stroke();
+  }
+}
+
+// キャラ＋プレイヤーカラーのハロー（見分けやすさのため残す）
+function drawChar(c, cx, cy, s, char, o = {}) {
+  const d = o.dir || { x: 0, y: 0 };
+  c.save();
+  c.translate(cx, cy);
+  if (o.accent) {
+    c.save();
+    c.shadowColor = o.accent;
+    c.shadowBlur = 9;
+    c.globalAlpha *= .32;
+    c.fillStyle = o.accent;
+    c.beginPath(); c.arc(0, 0, 15 * s, 0, 7); c.fill();
+    c.restore();
+  }
+  c.scale(s, s);
+  if (char === 'zuza') drawZuza(c, d.x, d.y, !!o.sad);
+  else drawKoto(c, d.x, d.y, !!o.sad);
+  c.restore();
+}
+
+/* ---- タイトル / HUD / リザルトの顔アイコン ---- */
+function paintFace(elc, char, i, sad) {
+  if (!elc) return;
+  const c = elc.getContext('2d');
+  c.clearRect(0, 0, elc.width, elc.height);
+  drawChar(c, elc.width / 2, elc.height / 2 + 2, elc.width / 36, char,
+    { accent: i === 0 ? P1_COLOR : P2_COLOR, sad });
+}
+function paintNameFaces() {
+  paintFace(el.titleFace1, pickChar(0, el.name1.value), 0);
+  paintFace(el.titleFace2, pickChar(1, el.name2.value), 1);
+}
 
 /* ================= 状態 ================= */
 const game = { state: 'title', floor: 0, time: 0, misses: 0, gemsGot: 0, gemsTotal: 0, t: 0 };
@@ -260,8 +412,11 @@ function startRun() {
     { name: el.name1.value.trim() || 'Player 1', color: P1_COLOR, spawn: {}, x: 0, y: 0, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
     { name: el.name2.value.trim() || 'Player 2', color: P2_COLOR, spawn: {}, x: 0, y: 0, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
   ];
+  players.forEach((p, i) => { p.char = pickChar(i, p.name); });
   el.p1name.textContent = el.padname1.textContent = players[0].name;
   el.p2name.textContent = el.padname2.textContent = players[1].name;
+  paintFace(el.hudFace1, players[0].char, 0);
+  paintFace(el.hudFace2, players[1].char, 1);
   game.time = 0; game.misses = 0; game.gemsGot = 0;
   el.time.textContent = '0:00';
   el.miss.textContent = '0';
@@ -281,7 +436,7 @@ function nextFloor() {
 }
 function floorCleared() {
   game.state = 'clear'; clearT = 1.7;
-  showBanner('Floor Clear!', players[0].name + ' & ' + players[1].name + ' — great teamwork!', 1.7);
+  showBanner('Floor Clear!', players[0].name + ' & ' + players[1].name + ' — great teamwork!', 1.7, true);
   sfx.clear();
   exits.forEach(e => ring(e.x, e.y, '#ffe082'));
 }
@@ -298,7 +453,9 @@ function winGame() {
   el.resMiss.textContent = game.misses;
   el.resGems.textContent = game.gemsGot + ' / ' + game.gemsTotal;
   el.resMsg.textContent = players[0].name + ' & ' + players[1].name + ': ' + msg;
-  if (rank === 'B') el.resMsg.textContent += ' ☹️';
+  // ☹️の代わりにキャラの顔（Bランクはしょんぼり顔）
+  paintFace(el.resFace1, players[0].char, 0, rank === 'B');
+  paintFace(el.resFace2, players[1].char, 1, rank === 'B');
   el.result.classList.remove('hidden');
   document.activeElement && document.activeElement.blur();
 }
@@ -316,8 +473,21 @@ function fmtTime(t) {
   const m = Math.floor(t / 60), s = Math.floor(t % 60);
   return m + ':' + String(s).padStart(2, '0');
 }
-function showBanner(text, sub, sec) {
-  el.banner.innerHTML = text + (sub ? '<small>' + sub + '</small>' : '');
+function showBanner(text, sub, sec, faces) {
+  el.banner.innerHTML = '';
+  if (faces) {
+    [0, 1].forEach(i => {
+      const fc = document.createElement('canvas');
+      fc.width = fc.height = 48;
+      fc.className = 'bface';
+      el.banner.appendChild(fc);
+      paintFace(fc, players[i].char, i);
+    });
+  }
+  const sp = document.createElement('span');
+  sp.className = 'btext';
+  sp.innerHTML = text + (sub ? '<small>' + sub + '</small>' : '');
+  el.banner.appendChild(sp);
   el.banner.classList.remove('hidden');
   bannerT = sec;
 }
@@ -335,7 +505,7 @@ function playerHit(p) {
   el.miss.textContent = game.misses;
   sfx.hit();
   flashRed();
-  particles.push({ type: 'emoji', ch: '☹️', x: pl.x, y: pl.y - 16, vy: -34, life: 1.3, t: 0, size: 24 });
+  particles.push({ type: 'face', char: pl.char, color: pl.color, x: pl.x, y: pl.y - 16, vy: -34, life: 1.3, t: 0 });
   for (let i = 0; i < 10; i++) spark(pl.x, pl.y, pl.color);
   pl.x = pl.spawn.x; pl.y = pl.spawn.y;
   pl.invuln = 1.5;
@@ -560,18 +730,8 @@ function draw() {
     // 影
     ctx.fillStyle = 'rgba(0,0,0,.35)';
     ctx.beginPath(); ctx.ellipse(p.x, p.y + PR - 2, PR * .9, 5, 0, 0, 7); ctx.fill();
-    // 体
-    ctx.fillStyle = p.color;
-    ctx.beginPath(); ctx.arc(p.x, p.y, PR, 0, 7); ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,.3)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    // 目
-    const ex = p.dir.x * 3.5, ey = p.dir.y * 3.5;
-    ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.arc(p.x - 4.5 + ex, p.y - 2 + ey, 3.4, 0, 7); ctx.arc(p.x + 4.5 + ex, p.y - 2 + ey, 3.4, 0, 7); ctx.fill();
-    ctx.fillStyle = '#222';
-    ctx.beginPath(); ctx.arc(p.x - 4.5 + ex * 1.5, p.y - 2 + ey * 1.5, 1.7, 0, 7); ctx.arc(p.x + 4.5 + ex * 1.5, p.y - 2 + ey * 1.5, 1.7, 0, 7); ctx.fill();
+    // キャラ（koto / zuza）
+    drawChar(ctx, p.x, p.y + 1, 1, p.char, { dir: p.dir, accent: p.color });
     ctx.restore();
     // 名前
     ctx.font = 'bold 11px sans-serif';
@@ -607,6 +767,8 @@ function draw() {
     } else if (pt.type === 'spark') {
       ctx.fillStyle = pt.color;
       ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.5 * k, 0, 7); ctx.fill();
+    } else if (pt.type === 'face') {
+      drawChar(ctx, pt.x, pt.y, .85, pt.char, { accent: pt.color, sad: true });
     } else if (pt.type === 'ring') {
       ctx.strokeStyle = pt.color;
       ctx.lineWidth = 3 * k;
@@ -640,6 +802,13 @@ $('btnMute').addEventListener('click', e => {
 });
 $('btnPads').addEventListener('click', () => document.body.classList.toggle('touch'));
 
+// 名前を変えるとタイトルの顔アイコンも変わる
+el.name1.addEventListener('input', paintNameFaces);
+el.name2.addEventListener('input', paintNameFaces);
+paintNameFaces();
+paintFace(el.hudFace1, 'koto', 0);
+paintFace(el.hudFace2, 'zuza', 1);
+
 // タッチデバイスなら自動でパッド表示
 if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window || navigator.maxTouchPoints > 0) {
   document.body.classList.add('touch');
@@ -647,8 +816,8 @@ if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window || navig
 
 // タイトル中も背景にダンジョンを薄く描画
 players = [
-  { name: 'P1', color: P1_COLOR, spawn: {}, x: -99, y: -99, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
-  { name: 'P2', color: P2_COLOR, spawn: {}, x: -99, y: -99, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
+  { name: 'P1', char: 'koto', color: P1_COLOR, spawn: {}, x: -99, y: -99, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
+  { name: 'P2', char: 'zuza', color: P2_COLOR, spawn: {}, x: -99, y: -99, dir: { x: 1, y: 0 }, invuln: 0, emoteCd: 0 },
 ];
 loadFloor(0);
 el.floor.textContent = 'Dungeon Escape';

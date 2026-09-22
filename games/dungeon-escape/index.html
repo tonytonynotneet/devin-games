@@ -14,8 +14,8 @@
       <span id="hudHint" class="hint"></span>
     </div>
     <div class="hud-right">
-      <span class="chip p1chip"><span class="dot p1"></span><span id="p1name">P1</span></span>
-      <span class="chip p2chip"><span class="dot p2"></span><span id="p2name">P2</span></span>
+      <span class="chip p1chip"><canvas class="hudface f1" id="hudFace1" width="40" height="40"></canvas><span id="p1name">P1</span></span>
+      <span class="chip p2chip"><canvas class="hudface f2" id="hudFace2" width="40" height="40"></canvas><span id="p2name">P2</span></span>
       <span class="chip">⏱ <span id="hudTime">0:00</span></span>
       <span class="chip">💎 <span id="hudGems">0/6</span></span>
       <span class="chip">💥 <span id="hudMiss">0</span></span>
@@ -36,8 +36,8 @@
         <h1>Dungeon Escape</h1>
         <p class="sub">Team up and escape the dungeon together!</p>
         <div class="names">
-          <label><span class="dot p1"></span><input id="name1" value="koto" maxlength="12" autocomplete="off"></label>
-          <label><span class="dot p2"></span><input id="name2" value="zuza" maxlength="12" autocomplete="off"></label>
+          <label><canvas class="pface f1" id="titleFace1" width="56" height="56"></canvas><input id="name1" value="koto" maxlength="12" autocomplete="off"></label>
+          <label><canvas class="pface f2" id="titleFace2" width="56" height="56"></canvas><input id="name2" value="zuza" maxlength="12" autocomplete="off"></label>
         </div>
         <div class="howto">
           <div><b class="c1">Player 1</b> Move <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> · Heart <kbd>F</kbd></div>
@@ -63,6 +63,10 @@
       <div class="card">
         <h1>🎉 You Escaped!</h1>
         <div id="rank" class="rank">S</div>
+        <div class="resfaces">
+          <canvas class="rface f1" id="resFace1" width="64" height="64"></canvas>
+          <canvas class="rface f2" id="resFace2" width="64" height="64"></canvas>
+        </div>
         <div class="stats">
           <div>Clear Time <b id="resTime">-</b></div>
           <div>Mistakes <b id="resMiss">-</b></div>
