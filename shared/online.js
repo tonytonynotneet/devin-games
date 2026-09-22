@@ -17,9 +17,11 @@
     "wss://devin-games-relay.fly.dev/ws";
 
   window.DGOnline = {
-    connect(game) {
+    connect(game, want) {
       return new Promise((resolve, reject) => {
-        const ws = new WebSocket(WS_URL + "?game=" + encodeURIComponent(game));
+        let url = WS_URL + "?game=" + encodeURIComponent(game);
+        if (want === "host" || want === "guest") url += "&role=" + want;
+        const ws = new WebSocket(url);
         const net = {
           ws,
           role: null,

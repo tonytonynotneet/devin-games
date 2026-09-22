@@ -244,8 +244,25 @@
     });
   });
 
-  // ?play or ?play=1 → jump straight into the game, skipping the title screen
-  if (/[?&]play\b/.test(location.search)) {
+  // ?play or ?play=1 → jump straight into the game, skipping the title screen.
+  // ?as=koto → online host (P1), ?as=zuza → online guest (P2); pair links auto-connect.
+  const asWho = new URLSearchParams(location.search).get("as");
+  if ((asWho === "koto" || asWho === "zuza") && DH.net && window.DGOnline) {
+    const want = asWho === "koto" ? "host" : "guest";
+    DH.toast(asWho === "koto" ? "Connecting… you're koto 🏠" : "Connecting… you're zuza 💗");
+    DH.net.connect(want, role => {
+      if (role === "host") {
+        startRun([$("name1").value || "koto", $("name2").value || "zuza"]);
+        DH.toast("You're koto. Waiting for zuza…");
+      } else if (role === "guest") {
+        DH.toast("You're zuza. Waiting for koto…");
+        DH.net.send({ type: "hello" });
+      } else {
+        // relay unreachable → solo fallback so the link still plays
+        startRun([$("name1").value || "koto", $("name2").value || "zuza"]);
+      }
+    });
+  } else if (/[?&]play\b/.test(location.search)) {
     startRun([$("name1").value || "koto", $("name2").value || "zuza"]);
   }
 

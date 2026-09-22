@@ -31,25 +31,31 @@ def health():
 
 
 @app.websocket("/ws")
-async def ws_endpoint(ws: WebSocket, game: str = ""):
+async def ws_endpoint(ws: WebSocket, game: str = "", role: str = ""):
     await ws.accept()
     game = (game or "default")[:64]
+    want = role if role in ("host", "guest") else None
     l = lobby(game)
 
-    if l["host"] is None:
-        role, me, other = "host", "host", "guest"
-        l["host"] = ws
+    if want and l[want] is None:
+        me = want
+    elif l["host"] is None:
+        me = "host"
     elif l["guest"] is None:
-        role, me, other = "guest", "guest", "host"
-        l["guest"] = ws
-        try:
-            await l["host"].send_text('{"type":"peer_joined"}')
-        except Exception:
-            pass
+        me = "guest"
     else:
         await ws.send_text('{"type":"error","msg":"room_full"}')
         await ws.close()
         return
+    role = me
+    other = "guest" if me == "host" else "host"
+    l[me] = ws
+    peer = l.get(other)
+    if peer is not None:
+        try:
+            await peer.send_text('{"type":"peer_joined"}')
+        except Exception:
+            pass
 
     await ws.send_text(f'{{"type":"joined","role":"{role}"}}')
 

@@ -16,11 +16,12 @@
     pos: null,        // latest host position packet on guest side
   });
 
-  const modules = () => [DH.furniture, DH.garden, DH.animals].filter(Boolean);
+  const modules = () => [DH.furniture, DH.garden, DH.animals, DH.court, DH.sauna, DH.couple].filter(Boolean);
 
-  net.connect = function (onRole) {
+  net.connect = function (want, onRole) {
+    if (typeof want === "function") { onRole = want; want = null; }
     if (!window.DGOnline) return null;
-    DGOnline.connect("dream-home").then(s => {
+    DGOnline.connect("dream-home", want).then(s => {
       net._s = s;
       net.role = s.role;
       net.online = true;
@@ -28,6 +29,7 @@
       s.onpeer = joined => {
         if (!joined) DH.toast && DH.toast("Partner left ☹️");
         else if (net.role === "host") net.sendFullState(true);
+        else if (net.role === "guest") net.send({ type: "hello" });
       };
       s.ws && (s.ws.onclose = () => { net.online = false; });
       onRole && onRole(s.role);
