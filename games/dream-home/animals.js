@@ -118,7 +118,7 @@
     { species: "cow", name: "Bessie" }, { species: "cow", name: "Moo" },
   ];
   const SPEED = { dog: 55, cat: 46, chicken: 30, sheep: 32, cow: 26, kid: 50 };
-  const KID_NAMES = ["Aki", "Yui", "Ren", "Sora", "Hina", "Mio", "Kai", "Rin", "Emi"];
+  const KID_NAMES = ["Aki", "Yui", "Ren", "Sora", "Hina", "Mio", "Noa", "Rin", "Emi"];
   const HAIR = ["#241a24", "#4a2c14", "#8a4a2a", "#d8a03c", "#7a4a8a", "#3a5a9a"];
   const SHIRT = ["#e05b5b", "#5b8ae0", "#5bd08a", "#e0b45b", "#a05be0", "#e07ba0", "#5bc8d0", "#8ad05b", "#d08a5b"];
 

@@ -239,6 +239,11 @@
     $("menuScreen").classList.add("hidden");
   }
   $("btnPause").addEventListener("click", () => togglePause());
+  const btnHelp = $("btnHelp");
+  if (btnHelp) {
+    btnHelp.addEventListener("click", () => $("helpScreen").classList.remove("hidden"));
+    $("btnHelpClose").addEventListener("click", () => $("helpScreen").classList.add("hidden"));
+  }
   $("btnResume").addEventListener("click", () => togglePause(false));
   $("btnQuit").addEventListener("click", () => {
     state.running = false; state.paused = false;
@@ -255,7 +260,7 @@
     modules.forEach(m => m.start && m.start(state));
     $("titleScreen").classList.add("hidden");
     state.running = true; state.paused = false;
-    DH.toast("Welcome home! 🏡");
+    DH.toast("Welcome home! 🏡 Drag left side to move · tap A to act · ❓ for rules", 4000);
   }
   DH.startRun = startRun; // net.js calls this for the guest side
 

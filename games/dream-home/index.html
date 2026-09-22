@@ -15,6 +15,7 @@
     <span class="chip p1chip"><span class="dot p1"></span><span id="hudP1">koto</span></span>
     <span class="chip p2chip"><span class="dot p2"></span><span id="hudP2">zuza</span></span>
     <button id="btnPause" class="icobtn" title="Pause">⏸</button>
+    <button id="btnHelp" class="icobtn" title="How to play" style="margin-left:6px">❓</button>
   </header>
 
   <div id="stage">
@@ -44,6 +45,21 @@
         <h2 id="menuTitle">Menu</h2>
         <div id="menuItems" class="items"></div>
         <button id="menuClose" class="midbtn">Close</button>
+      </div>
+    </div>
+
+    <div id="helpScreen" class="overlay hidden">
+      <div class="card help">
+        <h2>❓ How to Play</h2>
+        <div class="helprow"><b>🕹 Move</b><span>Drag anywhere on the left half (joystick) · koto: WASD · zuza: Arrow keys</span></div>
+        <div class="helprow"><b>🅰 Act</b><span>Tap the pink A button · koto: F · zuza: Enter — walk up to things to see what you can do</span></div>
+        <div class="helprow"><b>🏡 Goal</b><span>Keep Home Happiness high: feed & pet the animals, play with the kids, water the garden, cook, rest</span></div>
+        <div class="helprow"><b>👨‍👩‍👧‍👦 Family</b><span>Kids & pets lose energy if ignored (☹️). They keep living while you're away — check the "While you were away" report</span></div>
+        <div class="helprow"><b>🌱 Garden</b><span>Till soil → plant seeds → water → harvest. Sells for 🪙 coins at the shop sign</span></div>
+        <div class="helprow"><b>🏀 Court</b><span>Basketball mini-game — in winter it turns into an ice rink</span></div>
+        <div class="helprow"><b>🧖 Sauna</b><span>Finnish style: warm up inside, then plunge into the cold pool</span></div>
+        <div class="helprow"><b>💗 Together</b><span>Stand near your partner for couple actions — hug, hold hands, raise your bond</span></div>
+        <button id="btnHelpClose" class="bigbtn">Got it!</button>
       </div>
     </div>
 
