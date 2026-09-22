@@ -7,6 +7,15 @@
   const DH = (window.DH = window.DH || {});
   const $ = id => document.getElementById(id);
   const cv = $("cv"), ctx = cv.getContext("2d");
+  function fitCanvas() {
+    const r = $("stage").getBoundingClientRect();
+    const asp = (r.width || window.innerWidth) / Math.max(1, r.height || window.innerHeight);
+    cv.width = Math.round(540 * Math.max(asp, 1));
+    cv.height = Math.round(540 * Math.max(1 / asp, 1));
+  }
+  window.addEventListener("resize", fitCanvas);
+  window.addEventListener("orientationchange", () => setTimeout(fitCanvas, 150));
+  fitCanvas();
   ctx.imageSmoothingEnabled = false;
 
   // ---------- shared state ----------
@@ -95,8 +104,10 @@
     camX += (mx - cv.width / 2 - camX) * 0.08;
     camY += (my - cv.height / 2 - camY) * 0.08;
     const W = DH.world;
-    camX = Math.max(0, Math.min(camX, W.W * W.T - cv.width));
-    camY = Math.max(0, Math.min(camY, W.H * W.T - cv.height));
+    const wW = W.W * W.T, wH = W.H * W.T;
+    // viewport larger than the world → center the world instead of clamping
+    camX = cv.width >= wW ? (wW - cv.width) / 2 : Math.max(0, Math.min(camX, wW - cv.width));
+    camY = cv.height >= wH ? (wH - cv.height) / 2 : Math.max(0, Math.min(camY, wH - cv.height));
   }
 
   // ---------- movement ----------

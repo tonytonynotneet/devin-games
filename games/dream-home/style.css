@@ -19,8 +19,8 @@ html, body { background: var(--bg); color: var(--ink); font-family: "Segoe UI", 
 .dot.p2 { background: var(--p2); }
 .icobtn { margin-left: auto; background: var(--card); border: none; color: var(--ink); border-radius: 10px; padding: 6px 12px; font-size: 16px; cursor: pointer; }
 
-#stage { position: relative; width: min(100vw, calc(100vh * 16 / 9)); width: min(100vw, calc(100dvh * 16 / 9)); margin: 0 auto; }
-#cv { width: 100%; display: block; background: #7ec850; image-rendering: pixelated; }
+#stage { position: fixed; inset: 0; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: #7ec850; image-rendering: pixelated; touch-action: none; }
 
 .overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(10,10,25,.78); z-index: 25; }
 .overlay.hidden, .hidden { display: none !important; }
