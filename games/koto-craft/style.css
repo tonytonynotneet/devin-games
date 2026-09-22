@@ -1,0 +1,150 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+body { font-family: 'Courier New', monospace; user-select: none; -webkit-user-select: none; touch-action: none; }
+#app { position: fixed; inset: 0; }
+#game { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hidden { display: none !important; }
+
+/* ---------- HUD ---------- */
+#hud { position: absolute; inset: 0; pointer-events: none; }
+#crosshair {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  color: #fff; font-size: 26px; font-weight: bold; text-shadow: 0 0 4px #000;
+  opacity: .85;
+}
+#hotbar {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+  display: flex; gap: 4px; pointer-events: auto;
+}
+.slot {
+  width: 52px; height: 52px; background: rgba(0,0,0,.45);
+  border: 3px solid rgba(255,255,255,.28); border-radius: 4px;
+  position: relative; display: flex; align-items: center; justify-content: center;
+}
+.slot.sel { border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,.5); }
+.slot canvas { image-rendering: pixelated; }
+.slot .cnt {
+  position: absolute; right: 3px; bottom: 1px; color: #fff; font-size: 13px;
+  font-weight: bold; text-shadow: 1px 1px 0 #000;
+}
+.slot .key {
+  position: absolute; left: 3px; top: 1px; color: rgba(255,255,255,.55); font-size: 10px;
+}
+#hint {
+  position: absolute; left: 50%; bottom: 76px; transform: translateX(-50%);
+  color: #fff; font-size: 12px; text-shadow: 1px 1px 0 #000; opacity: .7; white-space: nowrap;
+}
+#deathmsg {
+  position: absolute; left: 50%; top: 38%; transform: translate(-50%,-50%);
+  color: #fff; font-size: 42px; text-shadow: 2px 2px 0 #000; text-align: center;
+}
+#deathmsg span { display: block; font-size: 15px; opacity: .8; }
+#flymsg {
+  position: absolute; right: 12px; top: 10px; color: #fff; font-size: 12px;
+  background: rgba(0,0,0,.4); padding: 4px 8px; border-radius: 4px; opacity: .8;
+}
+
+/* ---------- touch controls ---------- */
+#touch { position: absolute; inset: 0; pointer-events: none; }
+#joy {
+  position: absolute; left: 26px; bottom: 90px; width: 120px; height: 120px;
+  border-radius: 50%; background: rgba(255,255,255,.12);
+  border: 2px solid rgba(255,255,255,.3); pointer-events: auto;
+}
+#joyknob {
+  position: absolute; left: 50%; top: 50%; width: 52px; height: 52px;
+  border-radius: 50%; background: rgba(255,255,255,.35);
+  transform: translate(-50%,-50%);
+}
+#touchbtns {
+  position: absolute; right: 20px; bottom: 90px; display: flex; flex-direction: column;
+  gap: 12px; pointer-events: auto;
+}
+.tbtn {
+  width: 62px; height: 62px; border-radius: 50%; background: rgba(0,0,0,.45);
+  border: 2px solid rgba(255,255,255,.35); color: #fff; font-size: 22px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.tbtn .lbl { font-size: 9px; opacity: .8; margin-top: 3px; letter-spacing: 1px; }
+.tbtn:active { background: rgba(255,255,255,.3); }
+.tbtn.small { width: 46px; height: 46px; font-size: 12px; }
+#touchmeta {
+  position: absolute; right: 14px; top: 10px; display: flex; gap: 8px; pointer-events: auto;
+}
+
+/* ---------- title ---------- */
+#title {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(#1a2a52 0%, #3d5a8a 45%, #7fa8d0 70%, #5c8a4a 70.2%, #3e6b32 100%);
+  overflow: auto;
+}
+.titlebox {
+  text-align: center; color: #fff; padding: 24px; max-width: 640px;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.45);
+}
+#title h1 {
+  font-size: 52px; letter-spacing: 6px; margin-bottom: 4px;
+  color: #fff; text-shadow: 3px 3px 0 #2c4a2c, 6px 6px 0 rgba(0,0,0,.3);
+}
+#title .sub { font-size: 14px; opacity: .9; margin-bottom: 22px; }
+#chars { display: flex; gap: 18px; justify-content: center; margin-bottom: 22px; }
+.charcard {
+  background: rgba(0,0,0,.45); border: 3px solid rgba(255,255,255,.25); border-radius: 8px;
+  padding: 10px 14px; cursor: pointer; transition: transform .12s, border-color .12s;
+}
+.charcard:hover { transform: translateY(-3px); }
+.charcard.sel { border-color: #ffd94d; box-shadow: 0 0 14px rgba(255,217,77,.5); }
+.charcard canvas { display: block; image-rendering: pixelated; margin-bottom: 6px; }
+.charcard span { font-size: 18px; font-weight: bold; letter-spacing: 2px; }
+#play {
+  font-family: inherit; font-size: 20px; font-weight: bold; letter-spacing: 2px;
+  padding: 12px 34px; cursor: pointer; color: #fff;
+  background: #4a7c3a; border: 3px solid #2c4a22; border-radius: 6px;
+  text-shadow: 1px 1px 0 #000;
+}
+#play:hover:not(:disabled) { background: #5a9448; }
+#play:disabled { opacity: .5; cursor: default; }
+#loading { margin-top: 14px; }
+#loadbar {
+  width: 320px; height: 12px; margin: 0 auto 6px; background: rgba(0,0,0,.5);
+  border: 2px solid rgba(255,255,255,.4); border-radius: 3px; overflow: hidden;
+}
+#loadbar::after {
+  content: ''; display: block; height: 100%; width: var(--p, 0%);
+  background: #7fc35a; transition: width .1s;
+}
+#loadtext { font-size: 12px; opacity: .85; }
+#controls-list {
+  margin-top: 24px; display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center;
+  font-size: 12px; opacity: .9;
+}
+#controls-list b { width: 100%; font-size: 13px; letter-spacing: 2px; margin-bottom: 2px; }
+#controls-list i { font-style: normal; color: #ffd94d; }
+
+/* ---------- pause ---------- */
+#pause {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.55);
+}
+.pausebox {
+  text-align: center; color: #fff; background: rgba(10,14,10,.9);
+  border: 3px solid rgba(255,255,255,.3); border-radius: 8px; padding: 28px 44px;
+}
+.pausebox h2 { font-size: 30px; letter-spacing: 4px; margin-bottom: 18px; }
+.pausebox button {
+  display: block; width: 220px; margin: 8px auto; font-family: inherit;
+  font-size: 16px; font-weight: bold; padding: 10px; cursor: pointer; color: #fff;
+  background: #4a7c3a; border: 3px solid #2c4a22; border-radius: 6px;
+}
+.pausebox button:hover { background: #5a9448; }
+#pause-controls { margin-top: 16px; font-size: 12px; opacity: .8; }
+#pause-controls span { display: block; margin: 3px 0; }
+#pause-controls i { font-style: normal; color: #ffd94d; }
+
+@media (max-width: 640px) {
+  #title h1 { font-size: 34px; }
+  .slot { width: 40px; height: 40px; }
+  #chars { gap: 10px; }
+  .charcard canvas { width: 80px; height: 112px; }
+}
