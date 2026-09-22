@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Super Koto — devin-games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <div class="hud-left">
+      <span class="chip titlechip">SUPER KOTO</span>
+      <span class="chip" id="hudWorld">1-1</span>
+    </div>
+    <div class="hud-right">
+      <span class="chip p1chip"><span class="dot p1"></span><span id="hudP1">koto · 000000 · ♥3</span></span>
+      <span class="chip p2chip hidden" id="chipP2"><span class="dot p2"></span><span id="hudP2">zuza · 000000 · ♥3</span></span>
+      <span class="chip">🪙 <span id="hudCoins">0</span></span>
+      <span class="chip">⏱ <span id="hudTime">300</span></span>
+      <button id="btnMute" class="icobtn" title="Sound on/off">🔊</button>
+      <button id="btnPause" class="icobtn" title="Pause">⏸</button>
+      <button id="btnPads" class="icobtn" title="Show touch pads">🎮</button>
+    </div>
+  </header>
+
+  <div id="stage">
+    <canvas id="cv" width="960" height="512"></canvas>
+    <div id="banner" class="hidden"></div>
+
+    <div id="titleScreen" class="overlay">
+      <div class="card">
+        <h1>SUPER KOTO</h1>
+        <p class="sub">A tiny platformer for two — run, jump and reach the flag!</p>
+        <div class="names">
+          <label><span class="dot p1"></span><input id="name1" value="koto" maxlength="10" autocomplete="off"></label>
+          <label><span class="dot p2"></span><input id="name2" value="zuza" maxlength="10" autocomplete="off"></label>
+        </div>
+        <div id="modeRow" class="moderow">
+          <button id="btnSolo" class="bigbtn">▶ Solo</button>
+          <button id="btnCoop" class="bigbtn alt">▶ 2P Co-op</button>
+        </div>
+        <div id="charRow" class="charrow hidden">
+          <button id="pickKoto" class="charcard">
+            <canvas class="charprev" width="64" height="96"></canvas>
+            <span>Play as <b id="pickName1">koto</b></span>
+          </button>
+          <button id="pickZuza" class="charcard">
+            <canvas class="charprev" width="64" height="96"></canvas>
+            <span>Play as <b id="pickName2">zuza</b></span>
+          </button>
+        </div>
+        <div class="howto">
+          <div><b class="c1">Player 1</b> Move <kbd>A</kbd><kbd>D</kbd> · Jump <kbd>W</kbd>/<kbd>Space</kbd> · Run/Throw <kbd>J</kbd></div>
+          <div><b class="c2">Player 2</b> Move <kbd>◀</kbd><kbd>▶</kbd> · Jump <kbd>▲</kbd> · Run/Throw <kbd>Enter</kbd></div>
+          <div>🍄 Stomp the critters — but never the spiky one!</div>
+          <div>💖 Grab the heart charm to throw spark-hearts</div>
+          <div>🚩 Reach the flag — don't fall in the pits ☹️</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cardScreen" class="overlay hidden">
+      <div class="card">
+        <h2 id="cardTitle">Level 1-1</h2>
+        <p class="sub" id="cardSub"></p>
+        <div id="cardBtns" class="moderow"></div>
+      </div>
+    </div>
+
+    <div id="pauseScreen" class="overlay hidden">
+      <div class="card">
+        <h2>⏸ Paused</h2>
+        <div class="moderow">
+          <button id="btnResume" class="bigbtn">Resume</button>
+        </div>
+        <div class="moderow">
+          <button id="btnRestart" class="midbtn">Restart Level</button>
+          <button id="btnQuit" class="midbtn">Back to Title</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="touchLayer" class="hidden">
+      <div class="pad padL" id="padL">
+        <div class="padrow">
+          <button class="tbtn dir" data-p="0" data-k="left">◀</button>
+          <button class="tbtn dir" data-p="0" data-k="right">▶</button>
+        </div>
+        <div class="padrow">
+          <button class="tbtn act b" data-p="0" data-k="run">B</button>
+          <button class="tbtn act a" data-p="0" data-k="jump">A</button>
+        </div>
+      </div>
+      <div class="pad padR" id="padR">
+        <div class="padrow">
+          <button class="tbtn dir" data-p="1" data-k="left">◀</button>
+          <button class="tbtn dir" data-p="1" data-k="right">▶</button>
+        </div>
+        <div class="padrow">
+          <button class="tbtn act b" data-p="1" data-k="run">B</button>
+          <button class="tbtn act a" data-p="1" data-k="jump">A</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="foot">
+    <span>koto ♥ zuza — an original platformer, no plumbers involved</span>
+  </footer>
+</div>
+<script src="sprites.js"></script>
+<script src="audio.js"></script>
+<script src="levels.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
