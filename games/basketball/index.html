@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>バスケ対戦 — devin-games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ============ スタート画面 ============ -->
+    <section id="screen-start" class="screen">
+      <h1 class="logo">バスケ対戦</h1>
+      <p class="tagline">サイドビュー1on1バスケット — シュート・スティール・ブロックで勝ち抜け！</p>
+
+      <div class="name-row">
+        <div class="name-box p1">
+          <span class="snake-dot"></span>
+          <label for="name1">プレイヤー1</label>
+          <input id="name1" type="text" maxlength="10" placeholder="koto" value="koto" autocomplete="off">
+        </div>
+        <div class="vs">VS</div>
+        <div class="name-box p2">
+          <span class="snake-dot"></span>
+          <label for="name2">プレイヤー2</label>
+          <input id="name2" type="text" maxlength="10" placeholder="zuza" value="zuza" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="rules">
+        <div class="rule-col">
+          <h3>🎮 操作方法</h3>
+          <table class="controls">
+            <tr><th></th><th>移動</th><th>ジャンプ</th><th>アクション</th></tr>
+            <tr>
+              <td class="p1t">P1</td>
+              <td class="keys"><kbd>A</kbd><kbd>D</kbd></td>
+              <td class="keys"><kbd>W</kbd></td>
+              <td class="keys"><kbd>F</kbd></td>
+            </tr>
+            <tr>
+              <td class="p2t">P2</td>
+              <td class="keys"><kbd>←</kbd><kbd>→</kbd></td>
+              <td class="keys"><kbd>↑</kbd></td>
+              <td class="keys"><kbd>Enter</kbd></td>
+            </tr>
+          </table>
+        </div>
+        <div class="rule-col">
+          <h3>📖 ルール</h3>
+          <ul>
+            <li><b>11点先取</b>、または90秒終了時にリードで勝利</li>
+            <li>同点ならサドンデス延長 — 先に1本決めた方が勝ち</li>
+            <li>アクション<b>長押しでチャージ</b>、緑ゾーンで離すとスイッシュ！</li>
+            <li>3ptラインの外からは3点シュート</li>
+            <li>ボールを持っていない時のアクションは<b>スティール</b></li>
+            <li>空中のシュートに体をぶつけて<b>ブロック</b>しよう</li>
+            <li>小刻みに押したらフェイク。<kbd>P</kbd> でポーズ</li>
+            <li class="touch-only">📱 タッチ端末では画面両端のボタンで操作</li>
+          </ul>
+        </div>
+      </div>
+
+      <button id="btn-start" class="big-btn">ゲームスタート</button>
+    </section>
+
+    <!-- ============ ゲーム画面 ============ -->
+    <section id="screen-game" class="screen hidden">
+      <div class="hud">
+        <div class="hud-side p1">
+          <div class="hud-name p1t"><span class="ballmark" id="mark1">🏀</span><span id="hud-name1">P1</span></div>
+          <div class="hud-score" id="score1">0</div>
+        </div>
+        <div class="hud-mid">
+          <div class="round-label" id="clock">1:30</div>
+          <div class="target-label" id="target-label">11点先取</div>
+        </div>
+        <div class="hud-side p2">
+          <div class="hud-name p2t"><span id="hud-name2">P2</span><span class="ballmark" id="mark2">🏀</span></div>
+          <div class="hud-score" id="score2">0</div>
+        </div>
+      </div>
+
+      <div class="canvas-holder">
+        <canvas id="game" width="900" height="520"></canvas>
+
+        <div id="touch-controls">
+          <div class="tc-side tc-p1">
+            <div class="tc-dpad">
+              <button class="tc-btn" data-p="0" data-move="left"  aria-label="P1 左">◀</button>
+              <button class="tc-btn" data-p="0" data-jump         aria-label="P1 ジャンプ">▲</button>
+              <button class="tc-btn" data-p="0" data-move="right" aria-label="P1 右">▶</button>
+            </div>
+            <button class="tc-act p1b" data-p="0" data-act aria-label="P1 アクション">🏀</button>
+          </div>
+          <div class="tc-side tc-p2">
+            <button class="tc-act p2b" data-p="1" data-act aria-label="P2 アクション">🏀</button>
+            <div class="tc-dpad">
+              <button class="tc-btn" data-p="1" data-move="left"  aria-label="P2 左">◀</button>
+              <button class="tc-btn" data-p="1" data-jump         aria-label="P2 ジャンプ">▲</button>
+              <button class="tc-btn" data-p="1" data-move="right" aria-label="P2 右">▶</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="overlay" class="overlay hidden">
+          <div id="overlay-main" class="overlay-main"></div>
+          <div id="overlay-sub" class="overlay-sub"></div>
+          <div id="overlay-btns" class="overlay-btns hidden">
+            <button id="btn-replay" class="big-btn small">もう一度対戦</button>
+            <button id="btn-title" class="ghost-btn">タイトルへ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-hint">
+        <span class="p1t">P1: <kbd>A</kbd><kbd>D</kbd> 移動 / <kbd>W</kbd> ジャンプ / <kbd>F</kbd> 長押しシュート・スティール</span>
+        <span class="p2t">P2: <kbd>←</kbd><kbd>→</kbd> 移動 / <kbd>↑</kbd> ジャンプ / <kbd>Enter</kbd> 長押しシュート・スティール</span>
+      </div>
+    </section>
+
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
