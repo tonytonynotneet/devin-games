@@ -73,13 +73,20 @@ function spawnPos(i) {
     : { x: canvas.width - TILE * 2, y: canvas.height - TILE * 2, ang: Math.PI + 0.62 };
 }
 
+// パイロットの見た目は名前に合わせる（不明な名前なら P1=koto, P2=zuza）
+function pickChar(i, name) {
+  const n = name.trim().toLowerCase();
+  if (n === 'koto' || n === 'zuza') return n;
+  return i === 0 ? 'koto' : 'zuza';
+}
+
 function makePlayers() {
   const names = getNames();
   const s0 = spawnPos(0), s1 = spawnPos(1);
   return [
-    { id: 0, name: names[0], color: COL_P1, glow: GLOW_P1,
+    { id: 0, name: names[0], char: pickChar(0, names[0]), color: COL_P1, glow: GLOW_P1,
       x: s0.x, y: s0.y, ang: s0.ang, alive: true, score: 0, cool: 0 },
-    { id: 1, name: names[1], color: COL_P2, glow: GLOW_P2,
+    { id: 1, name: names[1], char: pickChar(1, names[1]), color: COL_P2, glow: GLOW_P2,
       x: s1.x, y: s1.y, ang: s1.ang, alive: true, score: 0, cool: 0 },
   ];
 }
@@ -597,11 +604,84 @@ function drawTank(p) {
   ctx.fillStyle = p.color;
   ctx.beginPath(); ctx.roundRect(6, -3, 20, 6, 3); ctx.fill();
 
-  // 砲塔
-  ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = 'rgba(0,0,0,.28)';
-  ctx.beginPath(); ctx.arc(0, 0, 3.4, 0, Math.PI * 2); ctx.fill();
+  // 砲塔ハッチ（パイロットが顔を出す）
+  ctx.beginPath(); ctx.arc(0, 0, 8.4, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,.34)';
+  ctx.beginPath(); ctx.arc(0, 0, 7.1, 0, Math.PI * 2); ctx.fill();
+  drawPilot(p);
   ctx.restore();
+}
+
+/* ---- パイロット: koto / zuza（super-koto と同じ配色） ---- */
+const SKIN_C  = '#f0c8a0';
+const HAIR_KOTO = '#241a24';           // 黒のぱっつんヘア
+const HAIR_ZUZA = '#35200f', HAIR_ZUZA2 = '#5a3a20'; // 暗めブラウンのロングヘア
+const CLOTH_C = '#1b1520';             // 黒い服
+const GLASS_C = '#12101c';             // 黒いサングラス
+const SILVER_C = '#d8deea';            // チェーン・時計の光沢
+
+function drawPilot(p) {
+  const koto = p.char === 'koto';
+  const hair = koto ? HAIR_KOTO : HAIR_ZUZA;
+
+  if (!koto) {
+    // zuza: タンクの後ろへ流れる長い直毛
+    ctx.fillStyle = hair;
+    ctx.beginPath();
+    ctx.moveTo(-3, -4.6);
+    ctx.lineTo(-15.5, -5.8);
+    ctx.lineTo(-18.5, -1.4);
+    ctx.lineTo(-18.5, 1.4);
+    ctx.lineTo(-15.5, 5.8);
+    ctx.lineTo(-3, 4.6);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = HAIR_ZUZA2; ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(-5, -2.4); ctx.lineTo(-16, -3.1);
+    ctx.moveTo(-5, 2.4);  ctx.lineTo(-16, 3.1);
+    ctx.stroke();
+  }
+
+  // 肩（黒シャツ / 黒い服）
+  ctx.fillStyle = CLOTH_C;
+  ctx.beginPath(); ctx.ellipse(-4.6, 0, 4.0, 6.4, 0, 0, Math.PI * 2); ctx.fill();
+
+  // 頭: 上から見て大部分が髪、進行方向（+x）側に顔
+  ctx.fillStyle = hair;
+  ctx.beginPath(); ctx.arc(0, 0, 6.2, 0, Math.PI * 2); ctx.fill();
+  ctx.save();
+  ctx.beginPath(); ctx.arc(0, 0, 6.2, 0, Math.PI * 2); ctx.clip();
+  ctx.fillStyle = SKIN_C;
+  ctx.beginPath(); ctx.arc(6.0, 0, 4.9, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+
+  if (koto) {
+    // 重めのぱっつん前髪（生え際に沿ったギザギザ）
+    ctx.fillStyle = hair;
+    [[1.1, 0], [1.6, -2.1], [1.6, 2.1], [2.8, -3.7], [2.8, 3.7]]
+      .forEach(([bx, by]) => { ctx.beginPath(); ctx.arc(bx, by, 1.3, 0, Math.PI * 2); ctx.fill(); });
+    // 目
+    ctx.fillStyle = '#241a20';
+    ctx.beginPath(); ctx.arc(5.0, -1.9, 1.0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(5.0,  1.9, 1.0, 0, Math.PI * 2); ctx.fill();
+    // 首のシルバーチェーン
+    ctx.strokeStyle = SILVER_C; ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.arc(0, 0, 6.7, Math.PI - 0.5, Math.PI + 0.5); ctx.stroke();
+    // ハッチ縁に添えた手 — 左手首に腕時計
+    ctx.fillStyle = SKIN_C;
+    ctx.beginPath(); ctx.arc(6.4, -6.7, 1.7, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(6.4,  6.7, 1.7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#241a20';
+    ctx.beginPath(); ctx.arc(4.6, -8.3, 1.6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = SILVER_C;
+    ctx.beginPath(); ctx.arc(4.6, -8.3, 0.75, 0, Math.PI * 2); ctx.fill();
+  } else {
+    // 黒いサングラス（顔の先端を横切る帯）＋きらり
+    ctx.fillStyle = GLASS_C;
+    ctx.beginPath(); ctx.roundRect(3.6, -3.6, 2.7, 7.2, 1.2); ctx.fill();
+    ctx.fillStyle = SILVER_C;
+    ctx.beginPath(); ctx.arc(4.5, -2.0, 0.6, 0, Math.PI * 2); ctx.fill();
+  }
 }
 
 function drawBullets() {
