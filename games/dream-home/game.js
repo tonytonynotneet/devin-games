@@ -35,15 +35,51 @@
   });
   window.addEventListener("keyup", e => { const m = KEYMAP[e.code]; if (m) inp[m[0]][m[1]] = 0; });
 
-  document.querySelectorAll(".tbtn").forEach(btn => {
-    const pi = +btn.dataset.p, key = btn.dataset.k;
-    const on = e => { e.preventDefault(); const k = inp[pi]; if (key === "a" && !k.a) k.aEdge = 1; k[key] = 1; btn.classList.add("on"); };
-    const off = e => { e.preventDefault(); inp[pi][key] = 0; btn.classList.remove("on"); };
-    btn.addEventListener("pointerdown", on);
-    btn.addEventListener("pointerup", off);
-    btn.addEventListener("pointercancel", off);
-    btn.addEventListener("pointerleave", off);
-  });
+  // single virtual joystick — drag anywhere in the zone, direction = drag vector
+  (function () {
+    const zone = $("stickZone"), base = $("stickBase"), knob = $("stickKnob");
+    if (!zone) return;
+    const DEAD = 14, R = 34;
+    let pid = null, ox = 0, oy = 0;
+    const setVec = (vx, vy) => {
+      const k = inp[0];
+      k.l = vx < -DEAD ? 1 : 0; k.r = vx > DEAD ? 1 : 0;
+      k.u = vy < -DEAD ? 1 : 0; k.d = vy > DEAD ? 1 : 0;
+    };
+    zone.addEventListener("pointerdown", e => {
+      e.preventDefault(); pid = e.pointerId; zone.setPointerCapture(pid);
+      const r = zone.getBoundingClientRect();
+      ox = e.clientX - r.left; oy = e.clientY - r.top;
+      base.classList.remove("hidden");
+      base.style.left = ox + "px"; base.style.top = oy + "px";
+      knob.style.transform = "translate(0px,0px)";
+      setVec(0, 0);
+    });
+    zone.addEventListener("pointermove", e => {
+      if (e.pointerId !== pid) return;
+      const r = zone.getBoundingClientRect();
+      let vx = e.clientX - r.left - ox, vy = e.clientY - r.top - oy;
+      const m = Math.hypot(vx, vy), c = Math.min(m, R);
+      if (m) { vx = vx / m * c; vy = vy / m * c; }
+      knob.style.transform = `translate(${vx}px,${vy}px)`;
+      setVec(e.clientX - r.left - ox, e.clientY - r.top - oy);
+    });
+    const end = e => {
+      if (e.pointerId !== pid) return;
+      pid = null; base.classList.add("hidden"); setVec(0, 0);
+    };
+    zone.addEventListener("pointerup", end);
+    zone.addEventListener("pointercancel", end);
+    const a = $("btnA");
+    if (a) {
+      const on = e => { e.preventDefault(); const k = inp[0]; if (!k.a) k.aEdge = 1; k.a = 1; a.classList.add("on"); };
+      const off = e => { e.preventDefault(); inp[0].a = 0; a.classList.remove("on"); };
+      a.addEventListener("pointerdown", on);
+      a.addEventListener("pointerup", off);
+      a.addEventListener("pointercancel", off);
+      a.addEventListener("pointerleave", off);
+    }
+  })();
   if (("ontouchstart" in window) || navigator.maxTouchPoints > 0) $("touchLayer").classList.remove("hidden");
 
   // ---------- camera ----------
