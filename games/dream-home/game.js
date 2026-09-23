@@ -14,7 +14,12 @@
     cv.height = Math.round(540 * Math.max(1 / asp, 1));
   }
   window.addEventListener("resize", fitCanvas);
-  window.addEventListener("orientationchange", () => setTimeout(fitCanvas, 150));
+  window.addEventListener("orientationchange", () => { setTimeout(fitCanvas, 150); setTimeout(fitCanvas, 450); });
+  // block iOS Safari page zoom (it ignores user-scalable=no) — the game canvas
+  // sizes itself, so the page must never be zoomed
+  ["gesturestart", "gesturechange", "gestureend"].forEach(ev =>
+    document.addEventListener(ev, e => e.preventDefault(), { passive: false }));
+  document.addEventListener("dblclick", e => e.preventDefault(), { passive: false });
   fitCanvas();
   ctx.imageSmoothingEnabled = false;
 

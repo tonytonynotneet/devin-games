@@ -6,7 +6,8 @@
   --p2: #ff6b9d;
 }
 * { box-sizing: border-box; margin: 0; }
-html, body { background: var(--bg); color: var(--ink); font-family: "Segoe UI", system-ui, sans-serif; }
+html, body { background: var(--bg); color: var(--ink); font-family: "Segoe UI", system-ui, sans-serif; touch-action: none; overscroll-behavior: none; }
+.card { touch-action: pan-y; }
 #app { max-width: none; margin: 0; padding: 0; }
 
 #hud { position: fixed; top: 6px; left: 8px; right: 8px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; z-index: 18; pointer-events: none; }
