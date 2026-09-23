@@ -24,6 +24,7 @@
     <span class="chip p2chip"><span class="dot p2"></span><span id="hudP2">zuza</span></span>
     <button id="btnPause" class="icobtn" title="Pause">⏸</button>
     <button id="btnHelp" class="icobtn" title="How to play" style="margin-left:6px">❓</button>
+    <button id="btnFb" class="icobtn" title="Send feedback" style="margin-left:6px">💌</button>
   </header>
 
   <div id="stage">
@@ -68,6 +69,19 @@
         <div class="helprow"><b>🧖 Sauna</b><span>Finnish style: warm up inside, then plunge into the cold pool</span></div>
         <div class="helprow"><b>💗 Together</b><span>Stand near your partner for couple actions — hug, hold hands, raise your bond</span></div>
         <button id="btnHelpClose" class="bigbtn">Got it!</button>
+      </div>
+    </div>
+
+    <div id="fbScreen" class="overlay hidden">
+      <div class="card">
+        <h2>💌 Tell us what you think</h2>
+        <textarea id="fbText" rows="4" placeholder="ここが楽しい / ここが変 / こういうの欲しい…"
+          style="width:100%;background:#14142a;border:1px solid #444;color:var(--ink);border-radius:8px;padding:10px;font-size:15px"></textarea>
+        <div class="btns" style="margin-top:14px">
+          <button id="btnFbSend" class="bigbtn">Share report</button>
+          <button id="btnFbClose" class="midbtn">Close</button>
+        </div>
+        <div class="hint">Sends your note + a recent play log (actions you did, happiness, play time). Nothing is sent anywhere until you share it.</div>
       </div>
     </div>
 

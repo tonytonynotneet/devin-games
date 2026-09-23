@@ -132,6 +132,20 @@
     if (W.canStand(p.x, ny)) p.y = ny;
   }
 
+  // ---------- play analytics (local ring buffer — powers 💌 feedback reports) ----------
+  const ALOG_KEY = "dreamhome-analytics";
+  const alog = (DH.alog = {
+    _buf: null,
+    _load() { try { this._buf = JSON.parse(localStorage.getItem(ALOG_KEY) || "[]"); } catch (e) { this._buf = []; } return this._buf; },
+    add(e, d) {
+      const b = this._load();
+      b.push({ t: Math.floor(Date.now() / 1000), e, d });
+      if (b.length > 240) b.splice(0, b.length - 240);
+      try { localStorage.setItem(ALOG_KEY, JSON.stringify(b)); } catch (e2) {}
+    },
+    dump(n) { return this._load().slice(-(n || 40)); },
+  });
+
   // ---------- interactions ----------
   // Each module may expose interactables(p) -> [{label, x, y, r, action}] and the
   // game shows a context menu with the action key.
@@ -149,12 +163,12 @@
       return;
     }
     const acts = nearestActions(p);
-    if (acts.length) acts[0].action();
+    if (acts.length) { alog.add("act", acts[0].label); acts[0].action(); }
   }
   // host-side: run the nearest action for a remote player's position
   DH.tryActionAt = function (x, y) {
     const acts = nearestActions({ x, y, pid: 1 });
-    if (acts.length) acts[0].action();
+    if (acts.length) { alog.add("act2", acts[0].label); acts[0].action(); }
   };
 
   // ---------- menu modal ----------
@@ -267,6 +281,35 @@
     btnHelp.addEventListener("click", () => $("helpScreen").classList.remove("hidden"));
     $("btnHelpClose").addEventListener("click", () => $("helpScreen").classList.add("hidden"));
   }
+  const btnFb = $("btnFb");
+  if (btnFb) {
+    btnFb.addEventListener("click", () => { alog.add("fb_open"); $("fbScreen").classList.remove("hidden"); });
+    $("btnFbClose").addEventListener("click", () => $("fbScreen").classList.add("hidden"));
+    $("btnFbSend").addEventListener("click", () => {
+      const note = ($("fbText").value || "").trim();
+      const role = asWho || "local";
+      const lines = alog.dump(40).map(x => {
+        const d = new Date(x.t * 1000);
+        return `${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")} ${x.e}${x.d ? " " + x.d : ""}`;
+      });
+      const report =
+        `💌 Dream Home feedback (${role})\n` +
+        `note: ${note || "-"}\n` +
+        `happiness:${Math.round(state.happiness)} coins:${Math.round(state.coins)} day:${(state.day || 0).toFixed(1)} season:${state.season}\n` +
+        `recent play log:\n` + (lines.join("\n") || "(none)");
+      alog.add("fb_sent", note.slice(0, 60));
+      $("fbScreen").classList.add("hidden");
+      if (navigator.share) {
+        navigator.share({ title: "Dream Home feedback", text: report }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(report).then(
+          () => DH.toast("Copied! Paste it to koto 💌"),
+          () => DH.toast("Couldn't copy — screenshot this instead") );
+      } else {
+        DH.toast(report, 8000);
+      }
+    });
+  }
   $("btnResume").addEventListener("click", () => togglePause(false));
   $("btnQuit").addEventListener("click", () => {
     state.running = false; state.paused = false;
@@ -283,6 +326,7 @@
     modules.forEach(m => m.start && m.start(state));
     $("titleScreen").classList.add("hidden");
     state.running = true; state.paused = false;
+    alog.add("session_start", `${location.search || "portal"} w${window.innerWidth}x${window.innerHeight}`);
     DH.toast("Welcome home! 🏡 Drag left side to move · tap A to act · ❓ for rules", 4000);
   }
   DH.startRun = startRun; // net.js calls this for the guest side
