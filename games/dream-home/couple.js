@@ -498,3 +498,5 @@
     },
   };
 })();
+
+DH.register("couple", DH.couple);

@@ -534,3 +534,5 @@
     }
   }
 })();
+
+DH.register("sauna", DH.sauna);

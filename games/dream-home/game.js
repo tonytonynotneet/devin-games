@@ -147,11 +147,11 @@
   });
 
   // ---------- interactions ----------
-  // Each module may expose interactables(p) -> [{label, x, y, r, action}] and the
-  // game shows a context menu with the action key.
+  // Each registered module may expose interactables(p) -> [{label, x, y, r, action}]
+  // and the game shows a context menu with the action key.
   function nearestActions(p) {
     const acts = [];
-    for (const mod of [DH.furniture, DH.garden, DH.animals]) {
+    for (const mod of DH._mods) {
       if (mod && mod.interactables) acts.push(...mod.interactables(p));
     }
     return acts;
@@ -196,12 +196,12 @@
     clearTimeout(t._h); t._h = setTimeout(() => t.classList.add("hidden"), ms);
   };
 
-  // ---------- modules ----------
-  const modules = [
-    ["furniture", DH.furniture], ["garden", DH.garden], ["animals", DH.animals],
-    ["court", DH.court], ["sauna", DH.sauna], ["couple", DH.couple],
-  ].filter(([_, m]) => m).map(([n, m]) => (m._name = n, m));
+  // ---------- modules (self-registered via DH.register in each file) ----------
+  const modules = DH._mods;
   modules.forEach(m => m.init && m.init(state));
+  DH.save.bind(state);
+  // only the host/solo side persists — guests just render snapshots
+  DH.save.wire(() => !(DH.net && DH.net.online && DH.net.role === "guest"));
 
   // ---------- loop ----------
   let last = 0;
@@ -323,7 +323,11 @@
     ];
     $("hudP1").textContent = state.players[0].name;
     $("hudP2").textContent = state.players[1].name;
+    const offMin = DH.save.restore(state);   // gs + every module's serialized slice
     modules.forEach(m => m.start && m.start(state));
+    const parts = DH.save.offline(offMin);   // offline decay/progress for every module
+    if (offMin >= 2 && parts.length)
+      setTimeout(() => DH.toast(DH.save.offlineSummary(offMin, parts), 5600), 900);
     $("titleScreen").classList.add("hidden");
     state.running = true; state.paused = false;
     alog.add("session_start", `${location.search || "portal"} w${window.innerWidth}x${window.innerHeight}`);

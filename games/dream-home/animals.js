@@ -49,8 +49,7 @@
   const NIGHT_FROM = 21 * 60, NIGHT_TO = 6 * 60; // game-minutes of day when family sleeps
 
   // tamagotchi save
-  const SAVE_KEY = "dreamhome-save";
-  const SAVE_EVERY = 5;            // seconds between autosaves
+  const SAVE_EVERY = 5;            // seconds between autosaves (via DH.save bus)
   const OFFLINE_CAP_MIN = 12 * 60; // decay capped at 12h away
   const OFFLINE_RATE = 0.02;       // needs advance at 2% of live speed while away
   const OFFLINE_MIN_NOTICE = 2;    // minutes away before decay/summary applies
@@ -246,7 +245,7 @@
       return false;
     },
     resetFamily() {
-      try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+      DH.save.clear();
       freshFamily();
       DH.toast("A fresh family moved in! Save cleared 🐾", 3000);
       return true;
@@ -375,22 +374,8 @@
   }
 
   // ---------- tamagotchi persistence ----------
-  function saveNow() {
-    if (!gs || !S.animals.length) return;
-    try {
-      localStorage.setItem(SAVE_KEY, JSON.stringify({
-        v: 1, savedAt: Date.now(), mod: M.serialize(),
-        gs: { happiness: gs.happiness, coins: gs.coins, timeMin: gs.timeMin, day: gs.day || 0 },
-      }));
-    } catch (e) {}
-  }
-  function loadSave() {
-    try {
-      const d = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
-      if (!d || !d.mod || !Array.isArray(d.mod.animals) || !d.mod.animals.length) return null;
-      return d;
-    } catch (e) { return null; }
-  }
+  // persistence lives on the shared bus (core.js); saveNow stays as a shorthand
+  function saveNow() { if (DH.save) DH.save.now(); }
 
   // advance needs/production as if the family kept living at a slowed pace
   function applyOffline(offMin) {
@@ -428,15 +413,14 @@
     res.missed = buddy ? buddy.name : null;
     return res;
   }
-  function awaySummary(res, offMin) {
+  function awayParts(res) {
     const parts = [];
     if (res.eggs) parts.push(`the chickens laid ${res.eggs} egg${res.eggs > 1 ? "s" : ""}`);
     if (res.matured) parts.push(`${res.matured} ready to collect`);
     if (res.needCare) parts.push(`${res.needCare} need care ☹️`);
     else if (res.hungry) parts.push(`${res.hungry} got hungry`);
     if (res.missed) parts.push(`${res.missed} missed you!`);
-    const hrs = offMin >= 90 ? ` (~${Math.round(offMin / 60)}h away)` : "";
-    return `While you were away${hrs}… ${parts.join(" · ") || "all quiet at home"}`;
+    return parts;
   }
   function familyReport() {
     const all = S.animals.concat(S.kids);
@@ -461,34 +445,19 @@
       gs = state;
       // collectDraws fns run before drawOverlay each frame, so grab ctx at init
       ctx2 = document.getElementById("cv").getContext("2d");
-      if (!wired) {
-        wired = true;
-        document.addEventListener("visibilitychange", () => { if (document.hidden && M.authority) saveNow(); });
-        window.addEventListener("pagehide", () => { if (M.authority) saveNow(); });
-        window.addEventListener("beforeunload", () => { if (M.authority) saveNow(); });
-      }
     },
 
     start(state) {
       gs = state;
       S.fx = [];
-      const sv = loadSave();
-      if (sv) {
-        M.deserialize(sv.mod);
-        if (sv.gs) {
-          if (typeof sv.gs.happiness === "number") state.happiness = sv.gs.happiness;
-          if (typeof sv.gs.coins === "number") state.coins = sv.gs.coins;
-          if (typeof sv.gs.timeMin === "number") state.timeMin = sv.gs.timeMin;
-          if (typeof sv.gs.day === "number") state.day = sv.gs.day;
-        }
-        const offMin = (Date.now() - (sv.savedAt || Date.now())) / 60000;
-        if (offMin >= OFFLINE_MIN_NOTICE) {
-          const res = applyOffline(offMin);
-          setTimeout(() => DH.toast(awaySummary(res, offMin), 5600), 900);
-        }
-      } else freshFamily();
+      // DH.save.restore already ran in startRun → S.animals is populated on a
+      // returning save; only seed a fresh family when there is nothing.
+      if (!S.animals.length) freshFamily();
       saveT = 0; gloomT = 0;
     },
+
+    // shared-bus hook: apply offline progress, return summary parts
+    offline(offMin) { return awayParts(applyOffline(offMin)); },
 
     update(dt, state) {
       gs = state;
@@ -798,3 +767,5 @@
     ctx.restore();
   }
 })();
+
+DH.register("animals", DH.animals);

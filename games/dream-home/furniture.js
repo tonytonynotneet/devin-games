@@ -480,3 +480,5 @@
     place, remove, use, serialize, deserialize, remoteAction,
   };
 })();
+
+DH.register("furniture", DH.furniture);

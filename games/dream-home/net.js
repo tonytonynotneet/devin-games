@@ -16,7 +16,7 @@
     pos: null,        // latest host position packet on guest side
   });
 
-  const modules = () => [DH.furniture, DH.garden, DH.animals, DH.court, DH.sauna, DH.couple].filter(Boolean);
+  const modules = () => DH._mods || [];
 
   net.connect = function (want, onRole) {
     if (typeof want === "function") { onRole = want; want = null; }

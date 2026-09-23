@@ -409,3 +409,5 @@
     },
   };
 })();
+
+DH.register("garden", DH.garden);

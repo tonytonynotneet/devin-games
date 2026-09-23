@@ -709,3 +709,5 @@
     ctx.fillStyle = "#f5b06a"; ctx.fillRect(x - 3, by - 4, 3, 2);
   }
 })();
+
+DH.register("court", DH.court);
