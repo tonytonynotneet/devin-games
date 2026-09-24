@@ -63,10 +63,14 @@ resize();
 
 // ---------- module wiring ----------
 const PLAY = new URLSearchParams(location.search).has('play');
-const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'props', 'combat', 'people', 'missions', 'hud', 'save', 'net'];
+const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'props', 'combat', 'people', 'wanted', 'missions', 'hud', 'save', 'net'];
 await Promise.all(MODS.map(m => import(`./${m}.js`).catch(e => { console.error('mod', m, e); })));
-for (const m of NC._mods) m.init && m.init(NC.state);
-for (const m of NC._mods) m.start && m.start(NC.state);
+// run init/start/update in declared MODS order — import eval order is arbitrary
+// and several modules' init() depends on earlier ones (city solids before
+// combat/people/missions spawn entities).
+const ORDERED = MODS.map(n => NC[n]).filter(m => m && m._name);
+for (const m of ORDERED) m.init && m.init(NC.state);
+for (const m of ORDERED) m.start && m.start(NC.state);
 
 // ---------- loop ----------
 let last = performance.now();
@@ -77,7 +81,7 @@ function frame(t) {
   if (!s.started) { renderer.render(scene, camera); return; }
   s.time += dt;
   if (NC.input && NC.input.pollKeys) NC.input.pollKeys();
-  for (const m of NC._mods) m.update && m.update(dt, s);
+  for (const m of ORDERED) m.update && m.update(dt, s);
   if (NC.input) NC.input.endFrame();
   // camera shake decay
   if (NC._shake > 0) {
