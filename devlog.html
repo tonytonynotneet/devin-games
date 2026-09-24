@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content="Devin artifact kit" />
-    <title>制作ログ — devin-games</title>
+    <title>devin-games 制作ログ</title>
     <style>
 /* Devin artifact kit — self-contained styles for standalone HTML artifacts.
    Tokens are translated from the Devin product design system. Light is the
@@ -1107,8 +1107,8 @@ details.a-disclosure[open] > summary::before {
     <main class="a-shell">
       <header class="a-header">
         <div>
-          <h1 class="a-header__title">制作ログ — devin-games</h1>
-          <p class="a-header__subtitle">Devinが今このリポジトリで作っているもの・進捗・自動開発ループの一覧。</p>
+          <h1 class="a-header__title">devin-games 制作ログ</h1>
+          <p class="a-header__subtitle">Devin がこのリポジトリで作っている全プロジェクトの進捗・仕様・自動開発ループの一覧</p>
         </div>
         <button
           type="button"
@@ -1157,9 +1157,9 @@ details.a-disclosure[open] > summary::before {
   <p class="a-prose">Devinが現在このリポジトリで動かしている3つのプロジェクトと、裏で回っている自動開発ループの一覧です。各ゲームの詳しい進捗は下のセクションを開いて確認できます。</p>
   <div class="a-grid">
     <div class="a-metric"><div class="a-metric__label">稼働プロジェクト</div><div class="a-metric__value">3</div><div class="a-metric__delta">Dream Home / NEON CITY / ANGRY BIRDS</div></div>
-    <div class="a-metric"><div class="a-metric__label">公開中ゲーム</div><div class="a-metric__value">1+9</div><div class="a-metric__delta">Dream Home + 対戦ゲーム9本</div></div>
+    <div class="a-metric"><div class="a-metric__label">完成ゲーム</div><div class="a-metric__value">2+9</div><div class="a-metric__delta">Dream Home + ANGRY BIRDS + 対戦ゲーム9本</div></div>
     <div class="a-metric"><div class="a-metric__label">自動開発ループ</div><div class="a-metric__value">2</div><div class="a-metric__delta">毎時QA + 週次デザイン会議</div></div>
-    <div class="a-metric"><div class="a-metric__label">並列開発セッション</div><div class="a-metric__value">4</div><div class="a-metric__delta">NEON CITY モジュール開発中</div></div>
+    <div class="a-metric"><div class="a-metric__label">NEON CITY</div><div class="a-metric__value">統合検証中</div><div class="a-metric__delta">全6モジュールマージ済・動画仕様差分チェック反復中</div></div>
   </div>
 </div>
 
@@ -1195,28 +1195,28 @@ details.a-disclosure[open] > summary::before {
   <article class="a-phase">
     <div class="a-phase__index">mod</div>
     <div>
-      <div class="a-phase__head"><h3 class="a-phase__title">車 + 市民/警察 + ミッション + オンライン</h3><span class="a-status" data-state="active">active · 4本並列開発中</span></div>
-      <p class="a-prose">車の乗降・運転・事故・爆破(PR準備中) / 歩行者AI・警官追跡・パトカー・BUSTED(PR #47 作成済) / DELIVERY・TAXI・RAMPAGE・GETAWAY・RACE・CO-DATEミッション(開発中) / PeerJS 2人協力(開発中)</p>
-      <dl class="a-meta-list"><div><dt>残り</dt><dd>4モジュールのマージ → 統合検証 → 公開</dd></div></dl>
+      <div class="a-phase__head"><h3 class="a-phase__title">車 + 市民/警察 + ミッション + オンライン</h3><span class="a-status" data-state="done">done · 全マージ済</span></div>
+      <p class="a-prose">車の乗降・運転・事故・爆破 / 歩行者AI・警官追跡・パトカー・BUSTED / DELIVERY・TAXI・RAMPAGE・GETAWAY・RACE・CO-DATEミッション / PeerJS 2人協力</p>
+      <dl class="a-meta-list"><div><dt>残り</dt><dd>統合検証(繰り返し) → 公開デプロイ承認</dd></div></dl>
     </div>
   </article>
   <article class="a-phase">
     <div class="a-phase__index">検証</div>
     <div>
-      <div class="a-phase__head"><h3 class="a-phase__title">仕様差分チェック(繰り返し)</h3><span class="a-status" data-state="planned">planned</span></div>
+      <div class="a-phase__head"><h3 class="a-phase__title">仕様差分チェック(繰り返し)</h3><span class="a-status" data-state="active">active · 実行中</span></div>
       <p class="a-prose">動画仕様との差分を項目チェックリストで照合 — 運転・逃走・WASTED/BUSTED・ミッション・協力を縦横両画面・エラー0で反復検証</p>
     </div>
   </article>
 </div>
 
 <div class="a-section">
-  <h2 class="a-section__title">ANGRY BIRDS — これから</h2>
-  <p class="a-prose">2本目の動画仕様を再現:パチンコで鳥を飛ばしてブロック構造物と豚を壊す物理パズル。</p>
+  <h2 class="a-section__title">KOTO &amp; ZUZA FLING(Angry Birds再現)— 完成・デプロイ待ち</h2>
+  <p class="a-prose">2本目の動画を完全再現:パチンコで鳥を飛ばしてブロック構造物と豚を壊す物理パズル。自前のインパルス物理エンジン(逐次インパルス+スリープアイランド)で構造物が本物らしく崩れます。</p>
   <dl class="a-meta-list">
-    <div><dt>状態</dt><dd><span class="a-status" data-state="planned">着手直前</span></dd></div>
-    <div><dt>仕様</dt><dd>スリングショット物理 / 4種の鳥(赤・黄=タップ加速・青=3分裂・ボマー=爆破) / 氷・木・石ブロック(破壊閾値+耐久+ひび割れ演出) / 緑の豚 / パララックス背景 / スコア+☆評価</dd></div>
-    <div><dt>キャラ</dt><dd>鳥をkoto/zuza化(黒マッシュ+シアン/ロング髪+サングラス+紫) / 交互ターンの2人プレイ対応</dd></div>
-    <div><dt>設計メモ</dt><dd>動画と同じく物理の手応え(低重力+高初速でふわっと飛ぶ)を最優先。ブロックは密度 氷&lt;木&lt;石・反発0で「その場で傾く」挙動</dd></div>
+    <div><dt>状態</dt><dd><span class="a-status" data-state="done">実装完了 · 検証クリア(8レベル全安定・エラー0)</span></dd></div>
+    <div><dt>仕様</dt><dd>スリングショット / 4種の鳥(koto・koto-dash=タップ加速・zuza=タップ3分裂・zuza-bomb=爆破) / 氷・木・石(耐久+ひび割れ3段階) / 緑の豚(ヘルメット・髭) / 昼夜パララックス / スコア+☆評価+セーブ</dd></div>
+    <div><dt>検証済み</dt><dd>全8レベルの構造安定 / 鳥3種のアビリティ / 勝敗・星・レベル選択・セーブ / 縦横両画面 / コンソールエラー0</dd></div>
+    <div><dt>設計メモ</dt><dd>構造物はヒットされるまでスリープ(本家ABと同じ挙動で勝手に倒れない)。ダメージは接触速度ベース。?debug=1 でチューニングパネル、?duo=1 で交互プレイ</dd></div>
   </dl>
 </div>
 
@@ -1244,14 +1244,14 @@ details.a-disclosure[open] > summary::before {
       <tbody>
         <tr><td>Dream Home</td><td>...?play=1&amp;as=koto</td><td>...?play=1&amp;as=zuza</td></tr>
         <tr><td>NEON CITY</td><td>games/neon-city/?play=1&amp;as=koto (公開後)</td><td>games/neon-city/?play=1&amp;as=zuza (公開後)</td></tr>
-        <tr><td>ANGRY BIRDS</td><td colspan="2">公開後に発行</td></tr>
+        <tr><td>KOTO &amp; ZUZA FLING</td><td colspan="2">games/angry-birds/index.html?play=1 (デプロイ後有効)</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
 
-      <footer class="a-footnote">更新: 2026-09-22。進捗はこのページに追記していきます。ゲーム本体: https://devin-games-qoqquqcr.devinapps.com</footer>
+      <footer class="a-footnote">Updated 2026-09-22 — generated by Devin. Live at https://devin-games-qoqquqcr.devinapps.com/devlog.html</footer>
     </main>
     <script>
 /* Devin artifact kit — self-contained behavior for standalone HTML artifacts.
