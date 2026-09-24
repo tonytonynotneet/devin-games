@@ -64,7 +64,10 @@ resize();
 // ---------- module wiring ----------
 const PLAY = new URLSearchParams(location.search).has('play');
 const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'props', 'combat', 'people', 'wanted', 'missions', 'hud', 'save', 'net'];
-await Promise.all(MODS.map(m => import(`./${m}.js`).catch(e => { console.error('mod', m, e); })));
+await Promise.all(MODS.map(m => import(`./${m}.js`).catch(e => {
+  console.error('mod', m, e);
+  window.dispatchEvent(new ErrorEvent('error', { message: `mod ${m}: ${e && e.message || e}` }));
+})));
 // run init/start/update in declared MODS order — import eval order is arbitrary
 // and several modules' init() depends on earlier ones (city solids before
 // combat/people/missions spawn entities).

@@ -9,8 +9,19 @@
 <title>NEON CITY 3D — koto &amp; zuza</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
-<script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+<script>
+// on-screen error banner — surfaces any boot failure on devices without a console
+window.addEventListener('error', function (e) {
+  var b = document.getElementById('errbar') || (function () {
+    var d = document.createElement('div'); d.id = 'errbar';
+    d.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:#3a0d16;color:#fda4af;font:12px/1.4 monospace;padding:8px 10px;border-radius:8px;white-space:pre-wrap';
+    document.body.appendChild(d); return d;
+  })();
+  b.textContent = 'ERR: ' + (e.message || e.type) + (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno : '');
+}, true);
+window.addEventListener('unhandledrejection', function (e) {
+  window.dispatchEvent(new ErrorEvent('error', { message: 'async: ' + (e.reason && e.reason.message || e.reason) }));
+});
 </script>
 </head>
 <body>
