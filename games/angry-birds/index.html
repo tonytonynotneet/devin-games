@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1030">
+<title>KOTO &amp; ZUZA FLING</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="title" class="title">
+  <div class="tcard">
+    <h1 class="tlogo"><span>KOTO</span><em>&amp;</em><span>ZUZA</span><i>FLING</i></h1>
+    <p class="tsub">slingshot physics · smash the pigs</p>
+    <button id="btn-play" class="bigbtn">FLING!</button>
+    <p class="thint">drag the bird · release to fly · tap mid-air for powers</p>
+  </div>
+</div>
+
+<div id="gameui">
+  <canvas id="cv"></canvas>
+  <div id="hud">
+    <div class="hud-card"><b id="score">0</b><span>SCORE</span></div>
+    <div class="hud-card pig"><b id="pigs">0</b><span>PIGS</span></div>
+    <div id="queue"></div>
+    <div class="hud-btns"><button id="btn-restart" title="restart">↻</button><button id="btn-menu" title="levels">☰</button></div>
+  </div>
+  <div id="banner"></div>
+  <div id="ovl" class="ovl">
+    <div class="oc">
+      <h2 id="ovl-title"></h2>
+      <div id="ovl-stars"></div>
+      <div id="ovl-score"></div>
+      <div class="obtns">
+        <button id="ovl-next" class="bigbtn">NEXT ▶</button>
+        <button id="ovl-retry" class="bigbtn dim">RETRY</button>
+        <button id="ovl-menu" class="bigbtn dim">LEVELS</button>
+      </div>
+    </div>
+  </div>
+  <div id="menu" class="menu"><h2>SELECT LEVEL</h2><div id="lvgrid"></div><button class="bigbtn dim" onclick="this.parentNode.className='menu'">CLOSE</button></div>
+</div>
+
+<script src="physics.js"></script>
+<script src="sprites.js"></script>
+<script src="levels.js"></script>
+<script src="audio.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
