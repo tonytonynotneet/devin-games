@@ -1157,9 +1157,9 @@ details.a-disclosure[open] > summary::before {
   <p class="a-prose">Devinが現在このリポジトリで動かしている3つのプロジェクトと、裏で回っている自動開発ループの一覧です。各ゲームの詳しい進捗は下のセクションを開いて確認できます。</p>
   <div class="a-grid">
     <div class="a-metric"><div class="a-metric__label">稼働プロジェクト</div><div class="a-metric__value">3</div><div class="a-metric__delta">Dream Home / NEON CITY / ANGRY BIRDS</div></div>
-    <div class="a-metric"><div class="a-metric__label">完成ゲーム</div><div class="a-metric__value">2+9</div><div class="a-metric__delta">Dream Home + ANGRY BIRDS + 対戦ゲーム9本</div></div>
+    <div class="a-metric"><div class="a-metric__label">完成ゲーム</div><div class="a-metric__value">3+9</div><div class="a-metric__delta">Dream Home + NEON CITY + ANGRY BIRDS + 対戦ゲーム9本</div></div>
     <div class="a-metric"><div class="a-metric__label">自動開発ループ</div><div class="a-metric__value">2</div><div class="a-metric__delta">毎時QA + 週次デザイン会議</div></div>
-    <div class="a-metric"><div class="a-metric__label">NEON CITY</div><div class="a-metric__value">統合検証中</div><div class="a-metric__delta">全6モジュールマージ済・動画仕様差分チェック反復中</div></div>
+    <div class="a-metric"><div class="a-metric__label">NEON CITY</div><div class="a-metric__value">検証クリア</div><div class="a-metric__delta">GTA仕様差分チェック4回実行・全機能動作確認済</div></div>
   </div>
 </div>
 
@@ -1176,7 +1176,7 @@ details.a-disclosure[open] > summary::before {
 </div>
 
 <div class="a-section">
-  <h2 class="a-section__title">NEON CITY — 開発中(GTA再現)</h2>
+  <h2 class="a-section__title">NEON CITY — 検証クリア・デプロイ待ち(GTA再現)</h2>
   <p class="a-prose">YouTube動画のGTA風オープンワールドを完全コピー。街・車強奪/運転・歩行者・警察手配度☆0-6・銃撃・ミッション・死亡→病院リスポーン・金稼ぎ。キャラだけkoto/zuzaのアニメ・サイバーパンク版。</p>
   <article class="a-phase">
     <div class="a-phase__index">土台</div>
@@ -1197,14 +1197,14 @@ details.a-disclosure[open] > summary::before {
     <div>
       <div class="a-phase__head"><h3 class="a-phase__title">車 + 市民/警察 + ミッション + オンライン</h3><span class="a-status" data-state="done">done · 全マージ済</span></div>
       <p class="a-prose">車の乗降・運転・事故・爆破 / 歩行者AI・警官追跡・パトカー・BUSTED / DELIVERY・TAXI・RAMPAGE・GETAWAY・RACE・CO-DATEミッション / PeerJS 2人協力</p>
-      <dl class="a-meta-list"><div><dt>残り</dt><dd>統合検証(繰り返し) → 公開デプロイ承認</dd></div></dl>
+      <dl class="a-meta-list"><div><dt>残り</dt><dd>公開デプロイ承認のみ</dd></div></dl>
     </div>
   </article>
   <article class="a-phase">
     <div class="a-phase__index">検証</div>
     <div>
-      <div class="a-phase__head"><h3 class="a-phase__title">仕様差分チェック(繰り返し)</h3><span class="a-status" data-state="active">active · 実行中</span></div>
-      <p class="a-prose">動画仕様との差分を項目チェックリストで照合 — 運転・逃走・WASTED/BUSTED・ミッション・協力を縦横両画面・エラー0で反復検証</p>
+      <div class="a-phase__head"><h3 class="a-phase__title">仕様差分チェック(繰り返し)</h3><span class="a-status" data-state="done">done · 4回実行</span></div>
+      <p class="a-prose">GTA仕様との差分を繰り返し照合済 — 歩行・車強奪/運転物理・歩行者AI・手配度☆0-6(警官16人+パトカー4台体制)・武器発射・WASTED→病院復活・BUSTED→署連行・ミッション受注〜マーカー〜報酬支払・金/セーブ。縦横両画面・コンソールエラー0</p>
     </div>
   </article>
 </div>
@@ -1243,7 +1243,7 @@ details.a-disclosure[open] > summary::before {
       <thead><tr><th scope="col">ゲーム</th><th scope="col">koto用</th><th scope="col">zuza用</th></tr></thead>
       <tbody>
         <tr><td>Dream Home</td><td>...?play=1&amp;as=koto</td><td>...?play=1&amp;as=zuza</td></tr>
-        <tr><td>NEON CITY</td><td>games/neon-city/?play=1&amp;as=koto (公開後)</td><td>games/neon-city/?play=1&amp;as=zuza (公開後)</td></tr>
+        <tr><td>NEON CITY</td><td>games/neon-city/index.html?play=1&amp;as=koto (デプロイ後)</td><td>games/neon-city/index.html?play=1&amp;as=zuza (デプロイ後)</td></tr>
         <tr><td>KOTO &amp; ZUZA FLING</td><td colspan="2">games/angry-birds/index.html?play=1 (デプロイ後有効)</td></tr>
       </tbody>
     </table>
