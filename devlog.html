@@ -1108,7 +1108,7 @@ details.a-disclosure[open] > summary::before {
       <header class="a-header">
         <div>
           <h1 class="a-header__title">devin-games 制作ログ</h1>
-          <p class="a-header__subtitle">Devinが並列・無人で開発している全ゲームの進捗・仕様・自動化ループのまとめ</p>
+          <p class="a-header__subtitle">kotoとzuzaのためのゲーム — 進捗・仕様・パイプラインの記録</p>
         </div>
         <button
           type="button"
@@ -1217,8 +1217,8 @@ details.a-disclosure[open] > summary::before {
 </div>
 
 <div class="a-section">
-  <h2 class="a-section__title">NEON CITY 3D — 開発中(本物の3D版・別ゲーム)</h2>
-  <p class="a-prose">ユーザーの選択で「本物の3D版を新規ゲームとして」開発。Three.js三人称視点 — ネオン都市を歩き回り、車を強奪して運転、警官+パトカーの追跡、銃撃(ライフル・ロケラン含む)、ミッション、WASTED→病院、BUSTED→署。2D版と同じGTA仕様を立体化 + koto/zuzaローポリキャラ。</p>
+  <h2 class="a-section__title">NEON CITY 3D — 完成・QA合格(本物の3D版・別ゲーム)</h2>
+  <p class="a-prose">ユーザーの選択で「本物の3D版を新規ゲームとして」開発。Three.js三人称視点 — ネオン都市を歩き回り、車を強奪して運転、警官+パトカーの追跡、銃撃(ライフル・ロケラン含む)、ミッション、WASTED→病院、BUSTED→署。2D版と同じGTA仕様を立体化 + koto/zuzaローポリキャラ。<strong>Playwright自動QAスイート37項目全合格。</strong></p>
   <article class="a-phase">
     <div class="a-phase__index">土台</div>
     <div>
@@ -1230,14 +1230,14 @@ details.a-disclosure[open] > summary::before {
     <div class="a-phase__index">mod</div>
     <div>
       <div class="a-phase__head"><h3 class="a-phase__title">車 + 市民/警察 + 戦闘 + ミッション + HUD + セーブ + 通信</h3><span class="a-status" data-state="done">done · 起動検証済(エラー0)</span></div>
-      <p class="a-prose">車の乗降/運転/爆破、歩行者徘徊+パニック、☆0-6で警官+パトカー追跡+BUSTED、ヒットスキャン銃撃+トレーサー+爆破FX、6種ミッション+ビーコン、レーダーミニマップ、ローカルセーブ、PeerJSホスト/ゲスト同期(各自自分のキャラ操作・ホストが世界シム)</p>
+      <p class="a-prose">車の乗降/運転/爆破/交通AI(NPCドライバー付き・運転手を引きずり出して強奪可)、歩行者徘徊+パニック+キルで金ドロップ拾い、☆0-6で警官+パトカー追跡+BUSTED(警官は2☆以上で射撃・見えない間だけ指名手配が減衰)、ヒットスキャン銃撃+トレーサー+爆破FX、6種ミッション+ビーコン、レーダーミニマップ、ローカルセーブ、PeerJSホスト/ゲスト同期(各自自分のキャラ操作・ホストが世界シム)</p>
     </div>
   </article>
   <article class="a-phase">
     <div class="a-phase__index">QA</div>
     <div>
-      <div class="a-phase__head"><h3 class="a-phase__title">ポリッシュ + 仕様差分 + 自動QA</h3><span class="a-status" data-state="running">3セッション並列実行中</span></div>
-      <p class="a-prose">ライティング/交通AI/小物、2D版との機能差分、Playwright自動プレイテスト(車・銃・警察・ミッション・セーブ往復・縦横画面)</p>
+      <div class="a-phase__head"><h3 class="a-phase__title">ポリッシュ + 仕様差分 + 自動QA</h3><span class="a-status" data-state="done">done · 37/37 PASS</span></div>
+      <p class="a-prose">ライティング/交通AI/小物、2D版との機能差分修正、Playwright自動プレイテスト37項目(起動・移動・カメラ・車・戦闘・手配度・WASTED/BUSTED・ミッション・セーブ往復・縦横画面)全合格 — 見つけたバグも修正済(モジュール初期化順・死後の車driver残り・降車時カメラ反転・キーリピート乗降・車内へのメレー・乗車二重ガード・車同士の押し出しで壁貫通)</p>
     </div>
   </article>
 </div>
@@ -1287,7 +1287,7 @@ details.a-disclosure[open] > summary::before {
 </div>
 
 
-      <footer class="a-footnote">自動生成 — Devin session 2f1dcbb9a86e4f34b431c7ee5715771b · devin-games repo</footer>
+      <footer class="a-footnote">Devinが自動生成。ゲームは https://devin-games-qoqquqcr.devinapps.com で公開中。</footer>
     </main>
     <script>
 /* Devin artifact kit — self-contained behavior for standalone HTML artifacts.
