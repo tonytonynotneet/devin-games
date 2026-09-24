@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content="Devin artifact kit" />
-    <title>DEVLOG — koto &amp; zuza ゲーム制作ログ</title>
+    <title>devin-games 制作ログ</title>
     <style>
 /* Devin artifact kit — self-contained styles for standalone HTML artifacts.
    Tokens are translated from the Devin product design system. Light is the
@@ -1107,8 +1107,8 @@ details.a-disclosure[open] > summary::before {
     <main class="a-shell">
       <header class="a-header">
         <div>
-          <h1 class="a-header__title">DEVLOG — koto &amp; zuza ゲーム制作ログ</h1>
-          <p class="a-header__subtitle">Devin が作ってるもの全部：進捗・仕様・自動ループの稼働状況</p>
+          <h1 class="a-header__title">devin-games 制作ログ</h1>
+          <p class="a-header__subtitle">Devinが並列・無人で開発している全ゲームの進捗・仕様・自動化ループのまとめ</p>
         </div>
         <button
           type="button"
@@ -1154,9 +1154,9 @@ details.a-disclosure[open] > summary::before {
 
 <div class="a-section">
   <h2 class="a-section__title">いま作ってるもの — 全体像</h2>
-  <p class="a-prose">Devinが現在このリポジトリで動かしている3つのプロジェクトと、裏で回っている自動開発ループの一覧です。各ゲームの詳しい進捗は下のセクションを開いて確認できます。</p>
+  <p class="a-prose">Devinが現在このリポジトリで動かしている4つのプロジェクトと、裏で回っている自動開発ループの一覧です。各ゲームの詳しい進捗は下のセクションを開いて確認できます。</p>
   <div class="a-grid">
-    <div class="a-metric"><div class="a-metric__label">稼働プロジェクト</div><div class="a-metric__value">3</div><div class="a-metric__delta">Dream Home / NEON CITY / ANGRY BIRDS</div></div>
+    <div class="a-metric"><div class="a-metric__label">稼働プロジェクト</div><div class="a-metric__value">4</div><div class="a-metric__delta">Dream Home / NEON CITY / NEON CITY 3D / ANGRY BIRDS</div></div>
     <div class="a-metric"><div class="a-metric__label">完成ゲーム</div><div class="a-metric__value">3+9</div><div class="a-metric__delta">Dream Home + NEON CITY + ANGRY BIRDS + 対戦ゲーム9本</div></div>
     <div class="a-metric"><div class="a-metric__label">自動開発ループ</div><div class="a-metric__value">2</div><div class="a-metric__delta">毎時QA + 週次デザイン会議</div></div>
     <div class="a-metric"><div class="a-metric__label">NEON CITY</div><div class="a-metric__value">検証クリア</div><div class="a-metric__delta">GTA仕様差分チェック4回実行・全機能動作確認済</div></div>
@@ -1217,6 +1217,32 @@ details.a-disclosure[open] > summary::before {
 </div>
 
 <div class="a-section">
+  <h2 class="a-section__title">NEON CITY 3D — 開発中(本物の3D版・別ゲーム)</h2>
+  <p class="a-prose">ユーザーの選択で「本物の3D版を新規ゲームとして」開発。Three.js三人称視点 — ネオン都市を歩き回り、車を強奪して運転、警官+パトカーの追跡、銃撃(ライフル・ロケラン含む)、ミッション、WASTED→病院、BUSTED→署。2D版と同じGTA仕様を立体化 + koto/zuzaローポリキャラ。</p>
+  <article class="a-phase">
+    <div class="a-phase__index">土台</div>
+    <div>
+      <div class="a-phase__head"><h3 class="a-phase__title">レンダラー + 都市生成 + キャラ + カメラ + 入力</h3><span class="a-status" data-state="done">done</span></div>
+      <p class="a-prose">9×9ブロックの立体都市(窓エミッシブ・屋上ネオン・街灯・星空)、歩行スティック+カメラドラッグ、三人称カメラ(壁貫通防止プローブ)、ちびローポリkoto/zuzaリグ(歩行アニメ)</p>
+    </div>
+  </article>
+  <article class="a-phase">
+    <div class="a-phase__index">mod</div>
+    <div>
+      <div class="a-phase__head"><h3 class="a-phase__title">車 + 市民/警察 + 戦闘 + ミッション + HUD + セーブ + 通信</h3><span class="a-status" data-state="done">done · 起動検証済(エラー0)</span></div>
+      <p class="a-prose">車の乗降/運転/爆破、歩行者徘徊+パニック、☆0-6で警官+パトカー追跡+BUSTED、ヒットスキャン銃撃+トレーサー+爆破FX、6種ミッション+ビーコン、レーダーミニマップ、ローカルセーブ、PeerJSホスト/ゲスト同期(各自自分のキャラ操作・ホストが世界シム)</p>
+    </div>
+  </article>
+  <article class="a-phase">
+    <div class="a-phase__index">QA</div>
+    <div>
+      <div class="a-phase__head"><h3 class="a-phase__title">ポリッシュ + 仕様差分 + 自動QA</h3><span class="a-status" data-state="running">3セッション並列実行中</span></div>
+      <p class="a-prose">ライティング/交通AI/小物、2D版との機能差分、Playwright自動プレイテスト(車・銃・警察・ミッション・セーブ往復・縦横画面)</p>
+    </div>
+  </article>
+</div>
+
+<div class="a-section">
   <h2 class="a-section__title">KOTO &amp; ZUZA FLING(Angry Birds再現)— 人間キャラ化 + 全100ステージ</h2>
   <p class="a-prose">2本目の動画を完全再現:パチンコで鳥を飛ばしてブロック構造物と豚を壊す物理パズル。自前のインパルス物理エンジン(逐次インパルス+スリープアイランド)で構造物が本物らしく崩れます。</p>
   <dl class="a-meta-list">
@@ -1252,6 +1278,7 @@ details.a-disclosure[open] > summary::before {
       <tbody>
         <tr><td>Dream Home</td><td>...?play=1&amp;as=koto</td><td>...?play=1&amp;as=zuza</td></tr>
         <tr><td>NEON CITY</td><td>games/neon-city/index.html?play=1&amp;as=koto (デプロイ後)</td><td>games/neon-city/index.html?play=1&amp;as=zuza (デプロイ後)</td></tr>
+        <tr><td>NEON CITY 3D</td><td>games/neon-city-3d/index.html?play=1&amp;as=koto</td><td>games/neon-city-3d/index.html?play=1&amp;as=zuza</td></tr>
         <tr><td>KOTO &amp; ZUZA FLING</td><td colspan="2">games/angry-birds/index.html?play=1</td></tr>
         <tr><td>制作ログ(本ページ)</td><td colspan="2">devlog.html</td></tr>
       </tbody>
@@ -1260,7 +1287,7 @@ details.a-disclosure[open] > summary::before {
 </div>
 
 
-      <footer class="a-footnote">自動生成 — devlog-body.html からコンパイル。最終更新: 2026-09-24</footer>
+      <footer class="a-footnote">自動生成 — Devin session 2f1dcbb9a86e4f34b431c7ee5715771b · devin-games repo</footer>
     </main>
     <script>
 /* Devin artifact kit — self-contained behavior for standalone HTML artifacts.
