@@ -294,6 +294,7 @@
     }
     if (!t) {
       c.armed = false;
+      c.offT = (c.offT || 0) + dt;
       if (!c.tx) { const pt = NC.world.randomRoad(); c.tx = pt.x; c.ty = pt.y; }
       const a = U.angTo(c.x, c.y, c.tx, c.ty);
       slideMove(c, Math.cos(a) * 70, Math.sin(a) * 70, dt, 6);
@@ -302,8 +303,9 @@
       let far = true;
       for (const p of players())
         if (U.dist(c.x, c.y, p.x, p.y) < 850) { far = false; break; }
-      return far; // despawn when off-duty and far away
+      return far || c.offT > 40; // despawn offscreen or when long off-duty
     }
+    c.offT = 0;
     const a = U.angTo(c.x, c.y, t.x, t.y);
     c.angle = a;
     if (!t.inCar && bd < BUST_R) { busted(t); return false; }
