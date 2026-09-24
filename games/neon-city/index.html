@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0c0c14">
+<title>NEON CITY — koto & zuza</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+<script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
+</head>
+<body>
+<div id="start">
+  <div class="title-wrap">
+    <div class="neon-title">NEON CITY</div>
+    <div class="sub">koto &amp; zuza — partners in crime</div>
+    <button id="btn-start" class="big-btn">ENTER THE CITY</button>
+    <div class="hint">🕹 left half = move · A = enter/exit car · B = attack · C = weapon</div>
+  </div>
+</div>
+<div id="gameui" style="display:none">
+  <canvas id="game"></canvas>
+  <div id="joy-ring"></div>
+  <div id="joy-knob"></div>
+  <div id="btns">
+    <div class="gbtn" id="btn-c">C</div>
+    <div class="gbtn" id="btn-a">A</div>
+    <div class="gbtn" id="btn-b">B</div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="../../shared/online.js"></script>
+<script src="core.js"></script>
+<script src="sprites.js"></script>
+<script src="world.js"></script>
+<script src="player.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
