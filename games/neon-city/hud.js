@@ -134,7 +134,7 @@
     // mission markers
     if (NC.missions && NC.missions.markers) {
       ctx.fillStyle = GOLD;
-      for (const m of NC.missions.markers) {
+      for (const m of NC.missions.markers()) {
         ctx.beginPath(); ctx.arc(m.x * sx, m.y * sy, 2.5, 0, 7); ctx.fill();
       }
     }
