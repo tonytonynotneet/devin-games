@@ -12,7 +12,11 @@ html, body {
   background: radial-gradient(ellipse at 50% 30%, #171226 0%, #06070d 75%);
   z-index: 30;
 }
-.title-wrap { text-align: center; }
+.title-wrap { text-align: center; max-width: 92vw; }
+.kv {
+  width: min(78vw, 46vh); border-radius: 10px; margin-bottom: 12px;
+  border: 1px solid #22d3ee44; box-shadow: 0 0 26px #ff2d9533, 0 0 60px #22d3ee22;
+}
 .neon-title {
   font-size: 13vw; font-weight: 900; letter-spacing: 0.08em;
   color: #fff;

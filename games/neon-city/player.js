@@ -43,15 +43,40 @@
     }
   }
 
+  // guest-side prediction: move self, send edges via net (host applies real logic)
+  function guestSelfMove(p, inp, dt) {
+    const j = inp.joy || inp;
+    if (p.inCar) {
+      // predicted car visuals come from snapshot; still let local car speed feel right
+      p.x = p.inCar.x; p.y = p.inCar.y;
+      if (inp.aEdge) NC.net && NC.net.act && NC.net.act("car-exit", {});
+    } else {
+      const mag = Math.min(1, j.mag || Math.hypot(j.x || 0, j.y || 0));
+      if (mag > 0.12) {
+        const sp = mag > 0.85 ? RUN : WALK;
+        const a = Math.atan2(j.y, j.x);
+        tryMove(p, Math.cos(a) * sp * mag, Math.sin(a) * sp * mag, dt);
+        p.angle = a;
+        p.step = (p.step + dt * mag * 3) % 1;
+      }
+      if (inp.aEdge) NC.net && NC.net.act && NC.net.act("car-enter", {});
+      if (inp.bEdge) NC.net && NC.net.act && NC.net.act("fire-self", { x: p.x, y: p.y, angle: p.angle, weapon: p.weapon });
+      if (inp.cEdge) NC.net && NC.net.act && NC.net.act("weapon-cycle", {});
+    }
+  }
+
   function update(dt, state) {
-    if (NC.net && NC.net.isGuest && NC.net.isGuest()) return; // guests: host applies
+    const guest = NC.net && NC.net.isGuest && NC.net.isGuest();
     for (const p of state.players) {
       if (p.dead || p.busted) continue;
       p.flash = Math.max(0, p.flash - dt);
       p.iatk = Math.max(0, p.iatk - dt);
       p.missionCD = Math.max(0, p.missionCD - dt);
       const isMe = p === NC.me();
+      // guests: only predict own movement locally; other entities come from snapshots
+      if (guest && !isMe) continue;
       const inp = isMe ? NC.input : (p._remoteInput || { joy: { x: 0, y: 0, mag: 0 } });
+      if (guest && isMe) { guestSelfMove(p, inp, dt); continue; }
       const j = inp.joy || inp;
       if (p.inCar) {
         // driving handled by cars module via cars.drive(car, inp, dt)
