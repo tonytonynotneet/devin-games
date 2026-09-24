@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05060f">
+<title>NEON CITY 3D — koto &amp; zuza</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+</head>
+<body>
+<div id="app">
+  <canvas id="cv3d"></canvas>
+  <div id="joy-ring"><div id="joy-knob"></div></div>
+  <div class="hint" id="hint">🕹 left = move · right drag = camera · A = car · B = shoot (hold) · C = weapon</div>
+  <div class="hud" id="hud">
+    <div class="hud-top">
+      <div class="hud-stat"><b id="hp">100</b><span>HP</span></div>
+      <div class="hud-stat"><b id="money">$0</b><span id="weapon">FIST</span></div>
+      <div class="hud-stat"><b id="stars">☆☆☆☆☆☆</b><span>WANTED</span></div>
+      <div class="hud-btns"><button id="btn-help" title="help">?</button><button id="btn-restart" title="restart">↻</button></div>
+    </div>
+    <canvas id="minimap" width="132" height="132"></canvas>
+    <div id="mission" class="mission"></div>
+    <div id="toast" class="toast"></div>
+    <div id="killfeed" class="killfeed"></div>
+  </div>
+  <div id="ovl" class="ovl"><div id="ovl-txt"></div><button id="ovl-btn" class="bigbtn">CONTINUE</button></div>
+  <div id="help" class="menu"><h2>HOW TO PLAY</h2>
+    <div class="help-body">
+      <p><b>Left half</b> — virtual stick to move / drive (push up = forward)</p>
+      <p><b>Right half</b> — drag to rotate the camera &amp; aim</p>
+      <p><b>A button</b> — enter/exit car · talk to the fixer (mission start)</p>
+      <p><b>B button</b> — attack / shoot (hold for autofire, aim assist on)</p>
+      <p><b>C button</b> — cycle weapons</p>
+      <p><b>Rules</b> — crimes raise your ☆ wanted level; cops hunt you down. Get caught = BUSTED (station), get killed = WASTED (hospital). Do fixer missions for cash. The game saves automatically.</p>
+      <p><b>2 players</b> — open the koto link on one phone and the zuza link on the other; you spawn together in the same city.</p>
+    </div>
+    <button class="bigbtn" id="help-close">PLAY</button>
+  </div>
+  <div id="title" class="title">
+    <h1>NEON CITY <em>3D</em></h1>
+    <p>koto &amp; zuza — a cyberpunk city for two</p>
+    <button id="btn-play" class="bigbtn">PLAY</button>
+    <p class="mini" id="netstat"></p>
+  </div>
+  <div id="btns">
+    <button id="btn-a">A</button>
+    <button id="btn-b">B</button>
+    <button id="btn-c">C</button>
+  </div>
+</div>
+<script src="../../shared/online.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
