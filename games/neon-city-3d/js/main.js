@@ -1,5 +1,5 @@
 /* NEON CITY 3D — main: module bus, renderer, loop, shared state. */
-import * as THREE from 'three';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
 const NC = window.NC = {
   _mods: [],

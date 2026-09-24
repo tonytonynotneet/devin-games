@@ -1,5 +1,5 @@
 /* NEON CITY 3D — missions: fixer NPC + 6 mission types + glowing beacon markers. */
-import * as THREE from 'three';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 const NC = window.NC;
 const U = () => NC.util;
 
