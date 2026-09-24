@@ -63,7 +63,7 @@ resize();
 
 // ---------- module wiring ----------
 const PLAY = new URLSearchParams(location.search).has('play');
-const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'traffic', 'props', 'combat', 'people', 'wanted', 'missions', 'hud', 'save', 'net'];
+const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'props', 'combat', 'people', 'missions', 'hud', 'save', 'net'];
 await Promise.all(MODS.map(m => import(`./${m}.js`).catch(e => { console.error('mod', m, e); })));
 for (const m of NC._mods) m.init && m.init(NC.state);
 for (const m of NC._mods) m.start && m.start(NC.state);

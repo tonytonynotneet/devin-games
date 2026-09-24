@@ -50,6 +50,13 @@ NC.register('combat', {
         if (NC.util.dist3(p.x, p.z, e.x, e.z) < R) { NC.people.damage(e, WEAPONS.fist.dmg, p); hit = true; }
       }
     }
+    // fists dent cars too
+    if (NC.car && NC.car.list) {
+      for (const c of NC.car.list) {
+        if (!c || c.dead || c === p.inCar) continue;
+        if (NC.util.dist3(p.x, p.z, c.x, c.z) < R + 1) { NC.car.damage(c, 8, p); this.sparkAt(c.x, 0.6, c.z); }
+      }
+    }
     if (hit && NC.state.players.indexOf(p) >= 0 && NC.people.raiseWanted) NC.people.raiseWanted(p, 1);
   },
 
@@ -118,7 +125,7 @@ NC.register('combat', {
         if (!c || c.dead) continue;
         if (b.owner && b.owner.inCar === c) continue;
         if (NC.util.dist3(b.x, b.z, c.x, c.z) < 1.4) {
-          NC.car.damage(c, b.dmg * 0.5); this.sparkAt(b.x, 0.6, b.z);
+          NC.car.damage(c, b.dmg * 0.5, b.owner); this.sparkAt(b.x, 0.6, b.z);
           return true;
         }
       }
@@ -150,16 +157,17 @@ NC.register('combat', {
   },
 
   update(dt, state) {
-    // guest peers simulate locally for smoothness? host-authoritative: guests skip sim
-    if (NC.net && NC.net.isGuest && NC.net.isGuest()) { this._tickFx(dt); return; }
+    // host-authoritative for damage, but guests still step their own tracers
+    // locally so bullets fly smoothly; hitTest/explode stay host-only.
+    const guest = NC.net && NC.net.isGuest && NC.net.isGuest();
     for (let i = this.bullets.length - 1; i >= 0; i--) {
       const b = this.bullets[i];
       b.x += b.vx * dt; b.z += b.vz * dt; b.ttl -= dt;
       let dead = false;
       if (b.ttl <= 0) dead = true;
-      else if (NC.city.solidAt(b.x, b.z, 0.1)) { if (b.boom) this.explode(b.x, 0.8, b.z, b.boom); else this.sparkAt(b.x, 0.8, b.z); dead = true; }
-      else if (this.hitTest(b)) { if (b.boom) this.explode(b.x, 0.8, b.z, b.boom); dead = true; }
-      if (dead) { if (b.ttl <= 0 && b.boom) this.explode(b.x, 0.8, b.z, b.boom); this.bullets.splice(i, 1); }
+      else if (NC.city.solidAt(b.x, b.z, 0.1)) { if (!guest && b.boom) this.explode(b.x, 0.8, b.z, b.boom); else this.sparkAt(b.x, 0.8, b.z); dead = true; }
+      else if (!guest && this.hitTest(b)) { if (b.boom) this.explode(b.x, 0.8, b.z, b.boom); dead = true; }
+      if (dead) { if (!guest && b.ttl <= 0 && b.boom) this.explode(b.x, 0.8, b.z, b.boom); this.bullets.splice(i, 1); }
     }
     for (const pk of this.pickups) {
       if (pk.taken) {

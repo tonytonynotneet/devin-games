@@ -55,8 +55,10 @@ NC.register('player', {
 
       if (p.inCar) {
         NC.car.drive(p.inCar, inp, dt, p);
-        p.x = p.inCar.x; p.z = p.inCar.z;
-        if (inp.aEdge) NC.car.tryExit(p);
+        // crash damage may have destroyed the car → tryExit already ran, inCar is null now
+        if (p.inCar) { p.x = p.inCar.x; p.z = p.inCar.z; }
+        else { p.mesh.visible = true; p.mesh.position.set(p.x, 0, p.z); }
+        if (p.inCar && inp.aEdge) NC.car.tryExit(p);
       } else {
         // camera-relative move: stick up = away from camera
         if (j.mag > 0.12) {
