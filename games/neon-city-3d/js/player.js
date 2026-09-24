@@ -6,7 +6,8 @@ NC.register('player', {
   spawnPlayer(p) {
     const spot = NC.city.nearestRoadTo(p.busted ? NC.city.police : (p.dead ? NC.city.hospital : { x: -30, z: 20 }));
     p.x = spot.x + 2; p.z = spot.z; p.dead = false; p.busted = false;
-    p.hp = 100; p.stars = 0; p.inCar = null;
+    p.hp = 100; p.stars = 0;
+    if (p.inCar) { p.inCar.driver = null; p.inCar = null; }
     p.mesh.visible = true;
     p.mesh.position.set(p.x, 0, p.z);
     NC.camera.yaw = Math.PI * 0.75;

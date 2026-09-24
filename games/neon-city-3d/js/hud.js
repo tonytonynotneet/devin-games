@@ -71,8 +71,7 @@ NC.register('hud', {
     }
     // partner
     for (const p of s.players) {
-      if (!p || p === me || p.remote === false && p.mesh.visible === false) continue;
-      if (p.dead) continue;
+      if (!p || p === me || p.dead || !p.mesh.visible) continue;
       g.fillStyle = '#ff2d95'; g.beginPath(); g.arc(wx(p.x), wz(p.z), 3, 0, 7); g.fill();
     }
     // me

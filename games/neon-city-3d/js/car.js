@@ -86,7 +86,7 @@ NC.register('car', {
     p.x = ex; p.z = ez; p.inCar = null; c.driver = null;
     p.mesh.visible = true;
     p.mesh.position.set(ex, 0, ez);
-    NC.camera && (NC.camera.yaw = c.yaw);
+    NC.camera && (NC.camera.yaw = c.yaw + Math.PI); // keep camera behind the car
   },
 
   damage(c, d) {

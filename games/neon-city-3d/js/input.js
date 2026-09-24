@@ -101,6 +101,7 @@ NC.register('input', {
     // keyboard
     window.addEventListener('keydown', (e) => {
       this.keys[e.key.toLowerCase()] = true;
+      if (e.repeat) return; // holding a key must not re-fire edge triggers
       if (e.key === 'e' || e.key === 'Enter') { this.a = true; this.aEdge = true; }
       if (e.key === ' ') { this.b = true; this.bEdge = true; e.preventDefault(); }
       if (e.key === 'q' || e.key === 'Tab') { this.c = true; this.cEdge = true; e.preventDefault(); }
