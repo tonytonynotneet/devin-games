@@ -40,16 +40,16 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPrefere
 renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x05060f);
-scene.fog = new THREE.Fog(0x0a0e24, 60, 340);
+scene.background = new THREE.Color(0x080c1c);
+scene.fog = new THREE.Fog(0x101736, 55, 340);
 const camera = new THREE.PerspectiveCamera(62, 1, 0.1, 500);
 camera.position.set(0, 6, 8);
 NC.scene = scene; NC.cam = camera; NC.renderer = renderer; NC.THREE = THREE;
 
 // lights
-const amb = new THREE.AmbientLight(0x404860, 1.15);
-const hemi = new THREE.HemisphereLight(0x2a3570, 0x0a0c18, 0.85);
-const moon = new THREE.DirectionalLight(0x8fa5ff, 0.7);
+const amb = new THREE.AmbientLight(0x4c5e9c, 1.5);
+const hemi = new THREE.HemisphereLight(0x3d52a8, 0x161c30, 1.25);
+const moon = new THREE.DirectionalLight(0x8fa5ff, 0.9);
 moon.position.set(80, 140, 60);
 scene.add(amb, hemi, moon);
 
@@ -63,7 +63,7 @@ resize();
 
 // ---------- module wiring ----------
 const PLAY = new URLSearchParams(location.search).has('play');
-const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'combat', 'people', 'wanted', 'missions', 'hud', 'save', 'net'];
+const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'traffic', 'props', 'combat', 'people', 'wanted', 'missions', 'hud', 'save', 'net'];
 await Promise.all(MODS.map(m => import(`./${m}.js`).catch(e => { console.error('mod', m, e); })));
 for (const m of NC._mods) m.init && m.init(NC.state);
 for (const m of NC._mods) m.start && m.start(NC.state);

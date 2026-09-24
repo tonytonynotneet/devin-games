@@ -11,6 +11,7 @@ for (let k = 0; k <= N; k++) { ROAD_X.push(-EXT / 2 + k * PITCH); ROAD_Z.push(-E
 NC.register('city', {
   PITCH, EXT, BLOCK, ROAD, ROAD_X, ROAD_Z, N,
   solids: [],
+  buildings: [],
   hospital: { x: 0, z: 0 },
   police: { x: 0, z: 0 },
   fixer: { x: 0, z: 0 },
@@ -57,13 +58,13 @@ NC.register('city', {
     // ---------- ground + roads ----------
     const gnd = new THREE.Mesh(
       new THREE.PlaneGeometry(EXT + 300, EXT + 300),
-      new THREE.MeshLambertMaterial({ color: 0x070a16 })
+      new THREE.MeshLambertMaterial({ color: 0x0a1024 })
     );
     gnd.rotation.x = -Math.PI / 2; S.add(gnd);
 
-    const roadMat = new THREE.MeshLambertMaterial({ color: 0x11141f });
-    const laneMat = new THREE.MeshBasicMaterial({ color: 0x2a3350 });
-    const lineMat = new THREE.MeshBasicMaterial({ color: 0x39406b });
+    const roadMat = new THREE.MeshLambertMaterial({ color: 0x1b2340 });
+    const laneMat = new THREE.MeshBasicMaterial({ color: 0x37436e });
+    const lineMat = new THREE.MeshBasicMaterial({ color: 0x4a578e });
     for (const rx of ROAD_X) {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(ROAD, EXT + ROAD), roadMat);
       m.rotation.x = -Math.PI / 2; m.position.set(rx, 0.02, 0); S.add(m);
@@ -92,13 +93,15 @@ NC.register('city', {
 
     // ---------- buildings ----------
     const signCols = [0xff2d95, 0x22d3ee, 0xfacc15, 0xa855f7];
+    const tintCols = [0x0d1120, 0x101527, 0x0b0f1e, 0x121a33, 0x0f1424];
+    const paras = [], ledges = [];
     const rng = (a, b) => a + Math.random() * (b - a);
     for (let bx = 0; bx < N; bx++) for (let bz = 0; bz < N; bz++) {
       const c = this.blockCenter(bx, bz);
       // sidewalk rim
       const sw = new THREE.Mesh(
         new THREE.BoxGeometry(BLOCK + 6, 0.5, BLOCK + 6),
-        new THREE.MeshLambertMaterial({ color: 0x161b2e })
+        new THREE.MeshLambertMaterial({ color: 0x1f2847 })
       );
       sw.position.set(c.x, 0.25, c.z); S.add(sw);
       if ((bx + bz) % 9 === 4) continue; // ~1/9 blocks = empty lot
@@ -107,12 +110,17 @@ NC.register('city', {
       const tex = winTex.clone();
       tex.needsUpdate = true;
       tex.repeat.set(Math.max(1, Math.round(w / 8)), Math.max(2, Math.round(h / 8)));
+      const tint = tintCols[(Math.random() * tintCols.length) | 0];
       const bld = new THREE.Mesh(
         new THREE.BoxGeometry(w, h, d),
-        new THREE.MeshLambertMaterial({ color: 0x0d1120, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.9 })
+        new THREE.MeshLambertMaterial({ color: tint, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: rng(0.55, 1.3) })
       );
       bld.position.set(c.x, h / 2, c.z); S.add(bld);
       this.solids.push({ x: c.x, z: c.z, hw: w / 2, hd: d / 2 });
+      this.buildings.push({ x: c.x, z: c.z, w, d, h });
+      // parapet band on a subset + an occasional mid ledge — breaks the uniform silhouette
+      if (Math.random() < 0.45) paras.push([c.x, h - 0.4, c.z, w + 0.9, d + 0.9]);
+      if (h > 26 && Math.random() < 0.35) ledges.push([c.x, h * rng(0.4, 0.7), c.z, w + 0.5, d + 0.5]);
       // rooftop glow trim
       const trim = new THREE.Mesh(
         new THREE.BoxGeometry(w + 0.4, 0.5, d + 0.4),
@@ -129,6 +137,18 @@ NC.register('city', {
         sign.position.set(sx, h * 0.55, c.z + rng(-d / 3, d / 3)); S.add(sign);
       }
     }
+    // instanced parapets + ledges (2 draw calls total)
+    const _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(), _v = new THREE.Vector3(), _s = new THREE.Vector3();
+    const putInst = (geo, mat, arr, hh) => {
+      if (!arr.length) return;
+      const im = new THREE.InstancedMesh(geo, mat, arr.length);
+      arr.forEach(([x, y, z, w, d], i) => {
+        _m4.compose(_v.set(x, y, z), _q, _s.set(w, hh, d)); im.setMatrixAt(i, _m4);
+      });
+      S.add(im);
+    };
+    putInst(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({ color: 0x1b2340 }), paras, 1.1);
+    putInst(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({ color: 0x232c4a }), ledges, 0.35);
 
     // ---------- POIs ----------
     const hosp = this.blockCenter(1, 1);
