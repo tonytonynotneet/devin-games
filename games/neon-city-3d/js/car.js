@@ -204,6 +204,7 @@ NC.register('car', {
   },
 
   tryEnter(p) {
+    if (p.inCar || p.dead || p.busted) return false;
     const c = this.nearestCar(p.x, p.z, 3.4, true);
     if (!c) return false;
     const jacked = !!(c.driver && c.driver.npc);
@@ -279,8 +280,10 @@ NC.register('car', {
       if (d >= minD || d < 0.01) continue;
       const a = Math.atan2(o.x - c.x, o.z - c.z);
       const overlap = (minD - d) * 0.5;
-      o.x += Math.sin(a) * overlap; o.z += Math.cos(a) * overlap;
-      c.x -= Math.sin(a) * overlap; c.z -= Math.cos(a) * overlap;
+      const ox = o.x + Math.sin(a) * overlap, oz = o.z + Math.cos(a) * overlap;
+      const cx = c.x - Math.sin(a) * overlap, cz = c.z - Math.cos(a) * overlap;
+      if (!NC.city.solidAt(ox, oz, 1.0)) { o.x = ox; o.z = oz; }
+      if (!NC.city.solidAt(cx, cz, 1.0)) { c.x = cx; c.z = cz; }
       const rel = Math.abs(c.speed) + Math.abs(o.speed || 0) * 0.4;
       if (rel > 4) {
         this.damage(o, rel * 0.7, p);

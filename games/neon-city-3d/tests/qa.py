@@ -90,8 +90,8 @@ def main():
     real_con = [e for e in conerrors if "favicon" not in e and "404" not in e]
     report("boot: no pageerrors (10s soak)", not pageerrors, "; ".join(pageerrors[:3]))
     report("boot: no console errors", not real_con, "; ".join(real_con[:3]))
-    report("boot: 13 modules loaded", info["n"] == 13, f"got {info['n']}: {info['mods']}")
-    report("boot: peds=26 cars=40", info["peds"] == 26 and info["cars"] == 40,
+    report("boot: 14 modules loaded", info["n"] == 14, f"got {info['n']}: {info['mods']}")
+    report("boot: peds=26 cars>=50", info["peds"] == 26 and info["cars"] >= 50,
            f"peds={info['peds']} cars={info['cars']}")
     report("boot: city+pickups built", info["solids"] > 50 and info["pickups"] == 14,
            f"solids={info['solids']} pickups={info['pickups']}")
@@ -169,7 +169,7 @@ def main():
     for _ in range(8):
         page.keyboard.press("e"); time.sleep(0.22)
     st = js(page, """{incar: !!NC.me().inCar,
-      stale: NC.car.list.some(c => c.driver && !NC.state.players.includes(c.driver)),
+      stale: NC.car.list.some(c => c.driver && !c.driver.npc && !NC.state.players.includes(c.driver)),
       me_driver: NC.car.list.some(c => c.driver === NC.me())}""")
     consistent = st["incar"] == st["me_driver"]
     report("edge: rapid enter/exit consistent", consistent and not st["stale"], str(st))
