@@ -6,28 +6,45 @@ const U = () => NC.util;
 const TYPES = ['delivery', 'taxi', 'rampage', 'getaway', 'race', 'codate'];
 
 NC.register('missions', {
-  cur: null, _markerMeshes: [], _fixerMesh: null,
+  cur: null, _markerMeshes: [], _fixerMesh: null, _guestMarkers: null, _guestObj: null, lastType: null,
 
   current() {
     const c = this.cur;
-    if (!c) return 'Find the ★ fixer for work';
+    if (!c) return this._guestObj || 'Find the ★ fixer for work';
     return c.objective;
   },
   markers() {
+    const guest = NC.net && NC.net.isGuest && NC.net.isGuest();
+    if (guest) return this._guestMarkers || [];
     const out = this._fixerMesh && !this.cur ? [{ x: NC.city.fixer.x, z: NC.city.fixer.z }] : [];
     if (this.cur) for (const m of this.cur.markers) out.push(m);
     return out;
   },
 
+  // any live, linked player at a marker (needCar → driving counts via car pos)
+  _playerAt(m, needCar, r) {
+    for (const p of NC.state.players) {
+      if (!p || p.dead || p.busted || (p.remote && !p.mesh.visible)) continue;
+      if (needCar && !p.inCar) continue;
+      const px = p.inCar ? p.inCar.x : p.x, pz = p.inCar ? p.inCar.z : p.z;
+      if (U().dist3(px, pz, m.x, m.z) < (r || 4)) return p;
+    }
+    return null;
+  },
+
   begin(p, forceType) {
-    if (this.cur) return;
-    const type = forceType || TYPES[(Math.random() * TYPES.length) | 0];
+    if (this.cur) { NC.toast('Finish the current job first', 1600); return; }
+    if (!p || p.dead || p.busted || (p.missionCD || 0) > 0) return;
+    const pool = TYPES.filter(t => t !== this.lastType);
+    const type = forceType || pool[(Math.random() * pool.length) | 0];
+    this.lastType = type;
+    p.missionCD = 3;
     const mk = (x, z) => ({ x, z });
     const road = () => { const i = U().randi(1, NC.city.N - 1); return { x: NC.city.ROAD_X[i], z: U().rand(-NC.city.EXT / 2 + 30, NC.city.EXT / 2 - 30) }; };
     let cur = null;
     if (type === 'delivery') {
       const a = road(), b = road();
-      cur = { type, step: 0, markers: [mk(a.x, a.z)], data: { drop: b }, objective: 'DELIVERY — reach the pickup point', payout: 300 + U().randi(0, 200) };
+      cur = { type, step: 0, markers: [mk(a.x, a.z)], data: { drop: b }, timer: 75, objective: 'DELIVERY — reach the pickup point', payout: 300 + U().randi(0, 200) };
     } else if (type === 'taxi') {
       const a = NC.city.randomSidewalk(), b = NC.city.randomSidewalk();
       cur = { type, step: 0, markers: [mk(a.x, a.z)], data: { drop: b }, objective: 'TAXI — pick up the fare', payout: 250 + U().randi(0, 150) };
@@ -53,11 +70,13 @@ NC.register('missions', {
     NC.toast('MISSION CLEAR +$' + c.payout, 2400);
     NC.hud.mission('');
     this.cur = null;
+    for (const pl of NC.state.players) if (pl) pl.missionCD = Math.max(pl.missionCD || 0, 3);
   },
   _fail(msg) {
     NC.toast(msg || 'MISSION FAILED', 1800);
     NC.hud.mission('');
     this.cur = null;
+    for (const pl of NC.state.players) if (pl) pl.missionCD = Math.max(pl.missionCD || 0, 3);
   },
 
   noteKill(e, src) {
@@ -66,7 +85,20 @@ NC.register('missions', {
   },
 
   interactables() {
+    const guest = NC.net && NC.net.isGuest && NC.net.isGuest();
+    if (guest) {
+      // host is authoritative: ask it to start a job for us
+      return [{ x: NC.city.fixer.x, z: NC.city.fixer.z, r: 3, cb: () => NC.net.act && NC.net.act('mission-start') }];
+    }
     return this.cur ? [] : [{ x: NC.city.fixer.x, z: NC.city.fixer.z, r: 3, cb: (p) => this.begin(p) }];
+  },
+
+  // host-side handler for a guest's mission-start request
+  remoteAction(name, remote) {
+    if (name !== 'mission-start') return false;
+    if (!remote) return false;
+    if (U().dist3(remote.x, remote.z, NC.city.fixer.x, NC.city.fixer.z) < 40) this.begin(remote);
+    return true;
   },
 
   init() {
@@ -84,9 +116,10 @@ NC.register('missions', {
     this._fixerMesh = fm;
   },
 
-  _syncMarkers() {
+  _syncMarkers(list) {
     // keep one beacon mesh per active marker
-    const want = this.cur ? this.cur.markers.length : 0;
+    const ms = list || (this.cur ? this.cur.markers : []);
+    const want = ms.length;
     while (this._markerMeshes.length < want) {
       const m = new THREE.Mesh(
         new THREE.CylinderGeometry(0.9, 0.9, 26, 12, 1, true),
@@ -96,39 +129,62 @@ NC.register('missions', {
     }
     for (let i = 0; i < this._markerMeshes.length; i++) {
       const mm = this._markerMeshes[i];
-      if (i < want) { mm.visible = true; mm.position.set(this.cur.markers[i].x, 13, this.cur.markers[i].z); }
+      if (i < want) { mm.visible = true; mm.position.set(ms[i].x, 13, ms[i].z); }
       else mm.visible = false;
     }
   },
 
   update(dt, state) {
-    if (NC.net && NC.net.isGuest && NC.net.isGuest()) return;
+    const guest = NC.net && NC.net.isGuest && NC.net.isGuest();
+    if (guest) { this._syncMarkers(this._guestMarkers || []); return; }
+    for (const p of state.players) if (p) p.missionCD = Math.max(0, (p.missionCD || 0) - dt);
     const c = this.cur;
-    if (!c) return;
+    if (!c) { this._syncMarkers(); return; }
     this._syncMarkers();
     const p = NC.me();
-    const px = p.inCar ? p.inCar.x : p.x, pz = p.inCar ? p.inCar.z : p.z;
-    if (c.timer !== undefined) {
+    if (!p) return; // players not spawned yet — never crash (spec: no null-me crash)
+    if (c.timer !== undefined && c.timer !== null) {
       c.timer -= dt;
       if (c.timer <= 0) { this._fail('OUT OF TIME'); return; }
     }
-    if (c.type === 'delivery' || c.type === 'taxi') {
-      if (c.step === 0 && U().dist3(px, pz, c.markers[0].x, c.markers[0].z) < 4) {
+    // dying (or getting busted on getaway) fails the job — same as 2D
+    for (const pl of state.players) if (pl && pl.dead) { this._fail('MISSION FAILED — you died'); return; }
+    if (c.type === 'delivery') {
+      const hit = this._playerAt(c.markers[0], false, 4);
+      if (!hit) return;
+      if (c.step === 0) {
         c.step = 1;
         c.markers = [c.data.drop];
-        c.objective = c.type === 'delivery' ? 'DELIVERY — drop it off' : 'TAXI — drive them to the marker';
+        c.objective = 'DELIVERY — drop it off';
         NC.hud.mission(c.objective); NC.toast(c.objective, 1600);
-      } else if (c.step === 1 && U().dist3(px, pz, c.data.drop.x, c.data.drop.z) < 4) this._pay(p, c);
+      } else this._pay(hit, c);
+    } else if (c.type === 'taxi') {
+      if (c.step === 0) {
+        const hit = this._playerAt(c.markers[0], true, 6); // must drive up in a car
+        if (hit) {
+          c.step = 1;
+          c.markers = [c.data.drop];
+          c.objective = 'TAXI — drive them to the marker';
+          NC.hud.mission(c.objective); NC.toast('Fare aboard — drive!', 1600);
+        }
+      } else {
+        for (const pl of state.players) if (pl && pl.inCar && pl.inCar.dead) { this._fail('MISSION FAILED — the fare is toast'); return; }
+        const hit = this._playerAt(c.markers[0], false, 6);
+        if (hit) this._pay(hit, c);
+      }
     } else if (c.type === 'rampage') {
-      c.objective = `RAMPAGE — chaos! (${c.data.kills}/5)`;
+      c.objective = `RAMPAGE — chaos! (${c.data.kills}/${c.data.need})`;
       NC.hud.mission(c.objective);
       if (c.data.kills >= c.data.need) this._pay(p, c);
     } else if (c.type === 'getaway') {
-      if (p.stars === 0) this._pay(p, c);
+      if (p.busted) { this._fail('MISSION FAILED — BUSTED'); return; }
+      c.data.zeroT = (p.stars === 0) ? (c.data.zeroT || 0) + dt : 0;
+      if (c.data.zeroT >= 2) this._pay(p, c);
     } else if (c.type === 'race') {
-      if (U().dist3(px, pz, c.markers[0].x, c.markers[0].z) < 6) {
+      const hit = this._playerAt(c.markers[0], true, 6); // checkpoints only count in a car
+      if (hit) {
         c.step++;
-        if (c.step >= c.data.cps.length) { this._pay(p, c); return; }
+        if (c.step >= c.data.cps.length) { this._pay(hit, c); return; }
         c.markers = [c.data.cps[c.step]];
         c.timer += 20;
         c.objective = `RACE — checkpoint ${c.step + 1}/4`;
@@ -136,7 +192,7 @@ NC.register('missions', {
       }
     } else if (c.type === 'codate') {
       for (const pl of state.players) {
-        if (!pl || pl.dead) continue;
+        if (!pl || pl.dead || (pl.remote && !pl.mesh.visible)) continue;
         const ix = pl.inCar ? pl.inCar.x : pl.x, iz = pl.inCar ? pl.inCar.z : pl.z;
         if (pl.char === 'koto' && U().dist3(ix, iz, c.data.a.x, c.data.a.z) < 3.5) c.data.aOk = true;
         if (pl.char === 'zuza' && U().dist3(ix, iz, c.data.b.x, c.data.b.z) < 3.5) c.data.bOk = true;

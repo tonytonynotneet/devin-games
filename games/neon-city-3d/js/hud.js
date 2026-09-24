@@ -69,10 +69,10 @@ NC.register('hud', {
       for (const c of NC.people.cops || []) { if (c.dead) continue; g.beginPath(); g.arc(wx(c.x), wz(c.z), 1.8, 0, 7); g.fill(); }
       for (const c of NC.people.pcars || []) { if (c.dead) continue; g.fillRect(wx(c.x) - 2, wz(c.z) - 2, 4, 4); }
     }
-    // partner
+    // partner — only when linked & visible (an unjoined remote placeholder shows nothing)
     for (const p of s.players) {
-      if (!p || p === me || p.remote === false && p.mesh.visible === false) continue;
-      if (p.dead) continue;
+      if (!p || p === me || p.dead) continue;
+      if (p.remote && !p.mesh.visible && !p.inCar) continue;
       g.fillStyle = '#ff2d95'; g.beginPath(); g.arc(wx(p.x), wz(p.z), 3, 0, 7); g.fill();
     }
     // me

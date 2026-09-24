@@ -44,6 +44,8 @@ NC.register('net', {
       } else if (d.type === 'act' && d.name === 'car') {
         const c = NC.car.list[d.idx];
         if (c) { c.x = d.x; c.z = d.z; c.yaw = d.yaw; c.speed = d.speed; c.group.position.set(c.x, 0, c.z); c.group.rotation.y = c.yaw - Math.PI / 2; }
+      } else if (d.type === 'act' && d.name === 'mission-start') {
+        if (NC.missions && NC.missions.remoteAction) NC.missions.remoteAction('mission-start', remote);
       }
     } else {
       // guest: apply world snapshot
@@ -88,7 +90,11 @@ NC.register('net', {
         if (!!dead !== c.dead) { c.dead = !!dead; c.group.visible = !dead; }
         c.group.position.set(x, 0, z); c.group.rotation.y = yaw - Math.PI / 2;
       }
-      if (s.mission) NC.hud.mission(s.mission);
+      if (s.mission != null) NC.hud.mission(s.mission);
+      if (NC.missions) {
+        NC.missions._guestObj = s.mission || null;
+        NC.missions._guestMarkers = (s.mkr || []).map(m => ({ x: m[0], z: m[1] }));
+      }
     }
   },
 
@@ -111,6 +117,7 @@ NC.register('net', {
         cops: NC.people.cops.map(e => [Math.round(e.x * 10) / 10, Math.round(e.z * 10) / 10, Math.round(e.yaw * 100) / 100, e.dead ? 1 : 0]),
         cars: NC.car.list.map(c => [Math.round(c.x * 10) / 10, Math.round(c.z * 10) / 10, Math.round(c.yaw * 100) / 100, c.dead ? 1 : 0]),
         mission: NC.missions.current(),
+        mkr: NC.missions.markers().map(m => [Math.round(m.x), Math.round(m.z)]),
       });
     } else {
       this._net.send({
@@ -129,5 +136,11 @@ NC.register('net', {
   reportFire(p, x, z, angle, weapon) {
     if (this.role === 'guest' && this.connected())
       this._net.send({ type: 'act', name: 'fire', x, z, angle, weapon });
+  },
+
+  // guest → host generic action (e.g. 'mission-start' at the fixer)
+  act(name, args) {
+    if (this.role === 'guest' && this.connected())
+      this._net.send({ type: 'act', name, ...(args || {}) });
   },
 });
