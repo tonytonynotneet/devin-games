@@ -148,13 +148,13 @@ NC.register('car', {
       const rx = NC.city.ROAD_X[NC.util.randi(1, NC.city.N - 1)];
       const z = NC.util.rand(-NC.city.EXT / 2 + 10, NC.city.EXT / 2 - 10);
       const lane = Math.random() < 0.5 ? -3 : 3;
-      this.spawn(kinds[i % kinds.length], rx + lane, z, Math.PI / 2);
+      this.spawn(kinds[i % kinds.length], rx + lane, z, 0); // N-S road: forward is ±Z
     }
     for (let i = 0; i < 14; i++) {
       const rz = NC.city.ROAD_Z[NC.util.randi(1, NC.city.N - 1)];
       const x = NC.util.rand(-NC.city.EXT / 2 + 10, NC.city.EXT / 2 - 10);
       const lane = Math.random() < 0.5 ? -3 : 3;
-      this.spawn(kinds[(i + 2) % kinds.length], x, rz + lane, 0);
+      this.spawn(kinds[(i + 2) % kinds.length], x, rz + lane, Math.PI / 2); // E-W road: forward is ±X
     }
   },
 });
