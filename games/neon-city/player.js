@@ -108,19 +108,34 @@
           }
           if (!used && NC.cars) NC.cars.tryEnter(p);
         }
-        // B: attack
+        // B: attack (hold = autofire; guns get aim assist toward nearest hostile)
         if (inp.b && p.iatk <= 0 && NC.combat) {
           if (p.weapon === "fist") { NC.combat.melee(p); p.iatk = 0.45; }
           else if ((p.ammo[p.weapon] || 0) > 0) {
+            let best = null, bd = 1e9;
+            for (const arr of [NC.people && NC.people.cops, NC.people && NC.people.peds]) {
+              if (!arr) continue;
+              for (const e of arr) {
+                if (!e || e.dead) continue;
+                const d = U.dist(p.x, p.y, e.x, e.y);
+                if (d > 340) continue;
+                const a = Math.atan2(e.y - p.y, e.x - p.x);
+                let da = Math.abs(a - p.angle); if (da > Math.PI) da = Math.PI * 2 - da;
+                if (da > 1.3) continue;
+                const sc = d + da * 90;
+                if (sc < bd) { bd = sc; best = e; }
+              }
+            }
+            if (best) p.angle = Math.atan2(best.y - p.y, best.x - p.x);
             NC.combat.fire(p, p.x, p.y, p.angle, p.weapon);
-            p.iatk = p.weapon === "smg" ? 0.09 : p.weapon === "shotgun" ? 0.7 : 0.3;
+            p.iatk = p.weapon === "smg" ? 0.09 : p.weapon === "shotgun" ? 0.7 : p.weapon === "rpg" ? 1.1 : p.weapon === "rifle" ? 0.17 : 0.22;
             p.ammo[p.weapon]--;
             if (p.ammo[p.weapon] <= 0) p.weapon = "fist";
           } else p.weapon = "fist";
         }
         // C: weapon cycle
         if (inp.cEdge) {
-          const order = ["fist", "pistol", "smg", "shotgun"].filter((w) => p.weapons[w]);
+          const order = ["fist", "pistol", "smg", "rifle", "shotgun", "rpg"].filter((w) => p.weapons[w]);
           p.weapon = order[(order.indexOf(p.weapon) + 1) % order.length];
           NC.toast(p.weapon.toUpperCase(), 900);
         }

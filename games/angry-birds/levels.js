@@ -136,6 +136,81 @@ AB.LEVELS = [
   },
 ];
 
+// ---------- generated levels 9-100: 10 tiers of rising difficulty ----------
+// Deterministic (seeded) so everyone plays the same 100 stages.
+const mulberry = s => () => { s |= 0; s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+const pick = (r, a) => a[(r() * a.length) | 0];
+const LV_NAME_A = ['NEON', 'PIGGY', 'SKY', 'RUSTY', 'TWIN', 'LUCKY', 'CYBER', 'MISTY', 'STONE', 'GLASS'];
+const LV_NAME_B = ['ALLEY', 'HUT', 'TOWER', 'YARD', 'FORT', 'BRIDGE', 'DEN', 'SPIRE', 'WALL', 'KEEP'];
+
+// one "fort": two pillars + cap per floor (100px per floor), optional roof.
+function genFort(r, x, floors, matBase, matTop, caps, roof) {
+  const bl = [];
+  for (let f = 0; f < floors; f++) {
+    const m = f === 0 ? matBase : (r() < 0.5 ? matBase : matTop);
+    bl.push(S(m, 'pl', x - 40, f * 100), S(m, 'pl', x + 40, f * 100));
+    bl.push(S(pick(r, caps), 'beam', x, f * 100 + 78));
+    if (f > 0 && r() < 0.4) bl.push(S(matTop, 'sq', x + (r() < 0.5 ? -40 : 40), f * 100));
+  }
+  const topBase = floors * 100;
+  if (roof === 'tri') bl.push(S(matTop, 'tri', x, topBase));
+  else if (roof === 'sq') bl.push(S(matTop, 'sq', x, topBase));
+  return bl;
+}
+
+for (let g = 0; g < 92; g++) {
+  const r = mulberry(9917 + g * 131);
+  const tier = Math.min(9, (g * 10 / 92) | 0);
+  const x0 = 700 + tier * 15 + ((r() * 40) | 0);
+  const blocks = [], pigs = [];
+  // material pools grow harder with tier
+  const mats = tier < 1 ? ['wood', 'ice'] : tier < 3 ? ['wood', 'wood', 'ice'] : tier < 5 ? ['stone', 'wood', 'wood'] : ['stone', 'stone', 'wood'];
+  const matBase = tier < 3 ? 'wood' : 'stone';
+  const nForts = 1 + (tier >= 2 ? 1 : 0) + (tier >= 5 ? 1 : 0);
+  let x = x0;
+  for (let fi = 0; fi < nForts; fi++) {
+    const floors = Math.min(4, 1 + ((tier / 2.5) | 0) + (r() < 0.35 ? 1 : 0));
+    const mT = pick(r, mats);
+    const roof = r() < 0.55 ? 'tri' : (r() < 0.5 ? 'sq' : 'none');
+    blocks.push(...genFort(r, x, floors, fi === 0 ? matBase : pick(r, mats), mT, mats, roof));
+    // pigs inside this fort: ground floor always on higher tiers, upper floors sometimes
+    pigs.push(P(x, 0, r() < tier * 0.12 ? 'helmet' : 'plain'));
+    for (let f = 1; f < floors; f++) {
+      if (r() < 0.35 + tier * 0.06) pigs.push(P(x, f * 100, r() < tier * 0.1 ? 'helmet' : (r() < 0.15 ? 'stash' : 'plain')));
+    }
+    if (r() < 0.3 && floors >= 2 && roof !== 'none') pigs.push(P(x, floors * 100, 'plain')); // rooftop pig
+    x += 200 + ((r() * 70) | 0);
+  }
+  // annex walls / bunkers between forts on later tiers
+  if (tier >= 3) {
+    const ax = x0 + 100 + ((r() * 60) | 0);
+    blocks.push(S(pick(r, mats), 'sq', ax, 0));
+    const two = r() < 0.5;
+    if (two) blocks.push(S(pick(r, mats), 'sq', ax, 40));
+    if (r() < 0.35 + tier * 0.05) pigs.push(P(ax, two ? 80 : 0));
+  }
+  if (tier >= 6) { // far outpost pillar + pig
+    const ox = x + 60 + ((r() * 60) | 0);
+    blocks.push(S('stone', 'pl', ox, 0), S(pick(r, mats), 'pl', ox, 78), S(pick(r, mats), 'plh', ox, 156));
+    pigs.push(P(ox, 178, 'helmet'));
+  }
+  // bird roster: 3 early -> 5 late; unlock dash/bomb progressively
+  const nBirds = Math.min(5, 3 + ((tier / 2.5) | 0));
+  const birdPool = tier < 2 ? ['koto', 'koto', 'zuza', 'koto-dash']
+    : tier < 5 ? ['koto', 'koto-dash', 'zuza', 'zuza-bomb', 'koto']
+    : ['koto', 'koto-dash', 'zuza', 'zuza-bomb', 'zuza-bomb'];
+  const birds = [];
+  for (let i = 0; i < nBirds; i++) birds.push(i === nBirds - 1 && tier >= 2 ? 'zuza-bomb' : pick(r, birdPool));
+  const pigScore = pigs.length * 4500;
+  const s1 = 9000 + pigScore + tier * 800;
+  AB.LEVELS.push({
+    name: `${pick(r, LV_NAME_A)} ${pick(r, LV_NAME_B)}`,
+    theme: (tier >= 4 && g % 3 === 0) || g % 7 === 6 ? 'night' : 'day',
+    birds, blocks, pigs,
+    stars: [s1, (s1 * 1.55) | 0, (s1 * 2.2) | 0],
+  });
+}
+
 // convert def -> spawnable bodies data (world coords)
 AB.buildLevel = (i) => {
   const L = AB.LEVELS[i];

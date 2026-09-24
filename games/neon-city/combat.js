@@ -5,12 +5,14 @@
 
   const WEAPONS = {
     fist: { melee: true, dmg: 30, cd: 0.45 },
-    pistol: { dmg: 34, spd: 520, cd: 0.3, ammoPickup: 60, pellets: 1, spread: 0 },
+    pistol: { dmg: 34, spd: 520, cd: 0.22, ammoPickup: 60, pellets: 1, spread: 0 },
     smg: { dmg: 22, spd: 560, cd: 0.09, ammoPickup: 120, pellets: 1, spread: 0 },
     shotgun: { dmg: 16, spd: 460, cd: 0.7, ammoPickup: 24, pellets: 6, spread: 0.28 },
+    rifle: { dmg: 46, spd: 720, cd: 0.17, ammoPickup: 90, pellets: 1, spread: 0.015, ttl: 1.3 },
+    rpg: { dmg: 30, spd: 380, cd: 1.1, ammoPickup: 6, pellets: 1, spread: 0, boom: 46, ttl: 1.6 },
   };
-  const WCOLS = { pistol: "#22d3ee", smg: "#facc15", shotgun: "#ff2d95" };
-  const PICKUP_N = 8, PICKUP_RESPAWN = 75, PICKUP_R = 14;
+  const WCOLS = { pistol: "#22d3ee", smg: "#facc15", shotgun: "#ff2d95", rifle: "#a3e635", rpg: "#f97316" };
+  const PICKUP_N = 12, PICKUP_RESPAWN = 75, PICKUP_R = 14;
 
   const bullets = [], pickups = [];
   const fx = [], dmgNums = [], explosions = []; // cosmetic-only (safe on guests)
@@ -116,7 +118,7 @@
     const sy = y + Math.sin(angle) * 15;
     for (let i = 0; i < n; i++) {
       const a = angle + (n > 1 ? U.rand(-def.spread, def.spread) : 0);
-      bullets.push({ x: sx, y: sy, vx: Math.cos(a) * def.spd, vy: Math.sin(a) * def.spd, dmg: def.dmg, owner: shooter, ttl: 0.9 });
+      bullets.push({ x: sx, y: sy, vx: Math.cos(a) * def.spd, vy: Math.sin(a) * def.spd, dmg: def.dmg, owner: shooter, ttl: def.ttl || 0.9, boom: def.boom || 0 });
     }
     fx.push({ kind: "flash", x: sx, y: sy, t: 0, dur: 0.07 });
     if (NC.people) {
@@ -196,7 +198,7 @@
   function init() {
     bullets.length = 0; fx.length = 0; dmgNums.length = 0; explosions.length = 0;
     pickups.length = 0;
-    const kinds = ["pistol", "smg", "shotgun"];
+    const kinds = ["pistol", "smg", "shotgun", "rifle", "rifle", "rpg"];
     for (let i = 0; i < PICKUP_N; i++) {
       const pt = NC.world.randomSidewalk();
       pickups.push({ x: pt.x, y: pt.y, w: kinds[i % kinds.length], taken: false, respawn: 0 });
@@ -210,9 +212,9 @@
     for (let i = bullets.length - 1; i >= 0; i--) {
       const b = bullets[i];
       b.x += b.vx * dt; b.y += b.vy * dt; b.ttl -= dt;
-      if (b.ttl <= 0) { bullets.splice(i, 1); continue; }
-      if (NC.world.solidAt(b.x, b.y, 2)) { sparkAt(b.x, b.y); bullets.splice(i, 1); continue; }
-      if (hitTest(b)) bullets.splice(i, 1);
+      if (b.ttl <= 0) { if (b.boom) explode(b.x, b.y, b.boom); bullets.splice(i, 1); continue; }
+      if (NC.world.solidAt(b.x, b.y, 2)) { if (b.boom) explode(b.x, b.y, b.boom); else sparkAt(b.x, b.y); bullets.splice(i, 1); continue; }
+      if (hitTest(b)) { if (b.boom) explode(b.x, b.y, b.boom); bullets.splice(i, 1); }
     }
     for (const pk of pickups) {
       if (pk.taken) {

@@ -70,55 +70,70 @@ SPR.BIRD = {
   'zuza':      { body: '#4a3038', belly: '#efe4e4', accent: '#ff2d95', hair: '#2c1e24', size: 14, glasses: true },
   'zuza-bomb': { body: '#26262e', belly: '#3a3038', accent: '#a855f7', hair: '#2c1e24', size: 19, glasses: true, fuse: true },
 };
+// Chibi human — the flung bodies are koto & zuza themselves (tucked into a ball).
 SPR.drawBird = (ctx, b) => {
-  const def = SPR.BIRD[b.data.kind] || SPR.BIRD.koto;
+  const kind = b.data.kind === 'zuza-mini' ? 'zuza' : b.data.kind;
+  const def = SPR.BIRD[kind] || SPR.BIRD.koto;
   const r = b.kind.r;
+  const isKoto = kind.startsWith('koto');
+  const skin = '#f0c8a0', hair = isKoto ? '#16181d' : '#2c1e24',
+    hi = isKoto ? '#22d3ee' : '#ff2d95', jacket = isKoto ? '#14161f' : '#121019';
   ctx.save();
   ctx.translate(b.x, b.y); ctx.rotate(b.angle * 0.35);
-  // tail feathers (behind)
-  ctx.fillStyle = def.hair;
-  ctx.beginPath(); ctx.moveTo(-r * 0.9, -r * 0.15); ctx.lineTo(-r * 1.5, -r * 0.55); ctx.lineTo(-r * 1.35, -r * 0.1); ctx.lineTo(-r * 1.55, r * 0.35); ctx.closePath(); ctx.fill();
-  // body
+  // tucked body (round outline)
   ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU);
-  ctx.fillStyle = def.body; ctx.fill();
+  ctx.fillStyle = jacket; ctx.fill();
   ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.stroke();
-  // belly
-  ctx.beginPath(); ctx.ellipse(0, r * 0.42, r * 0.62, r * 0.5, 0, 0, TAU);
-  ctx.fillStyle = def.belly; ctx.fill();
-  // hair tuft on top — koto: cyan streak; zuza: magenta streaks
-  ctx.strokeStyle = def.hair; ctx.lineWidth = r * 0.22; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(-r * 0.3, -r * 0.85); ctx.lineTo(-r * 0.1, -r * 1.25); ctx.stroke();
-  ctx.strokeStyle = def.accent; ctx.lineWidth = r * 0.16;
-  ctx.beginPath(); ctx.moveTo(r * 0.05, -r * 0.9); ctx.lineTo(r * 0.3, -r * 1.3); ctx.stroke();
-  // beak
-  ctx.fillStyle = '#f5a623';
-  ctx.beginPath(); ctx.moveTo(r * 0.55, -r * 0.05); ctx.lineTo(r * 1.15, r * 0.18); ctx.lineTo(r * 0.55, r * 0.4); ctx.closePath(); ctx.fill();
-  // eye / glasses
-  if (def.glasses) {
-    ctx.fillStyle = '#111';
-    ctx.fillRect(r * 0.05, -r * 0.5, r * 0.62, r * 0.34);
-    ctx.strokeStyle = def.accent; ctx.lineWidth = 1.5; ctx.strokeRect(r * 0.05, -r * 0.5, r * 0.62, r * 0.34);
-  } else {
-    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(r * 0.3, -r * 0.28, r * 0.26, 0, TAU); ctx.fill();
-    ctx.fillStyle = '#14161f'; ctx.beginPath(); ctx.arc(r * 0.38, -r * 0.28, r * 0.13, 0, TAU); ctx.fill();
-    if (def.visor) { // dash visor stripe
-      ctx.strokeStyle = def.accent; ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.moveTo(-r * 0.5, -r * 0.42); ctx.lineTo(r * 0.75, -r * 0.42); ctx.stroke();
+  // jacket neon trim arc
+  ctx.strokeStyle = hi; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(0, 0, r * 0.82, 0.35, Math.PI - 0.35); ctx.stroke();
+  // head (big chibi head in the ball)
+  const hy = -r * 0.22, hr = r * 0.58;
+  ctx.beginPath(); ctx.arc(0, hy, hr, 0, TAU);
+  ctx.fillStyle = skin; ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 1.5; ctx.stroke();
+  // hair
+  ctx.fillStyle = hair;
+  if (isKoto) { // bowl cut + cyan streak
+    ctx.beginPath(); ctx.arc(0, hy, hr, Math.PI * 0.95, Math.PI * 2.05); ctx.fill();
+    ctx.fillRect(-hr, hy - hr * 0.15, hr * 2, hr * 0.42);
+    ctx.fillStyle = hi; ctx.fillRect(-hr * 0.95, hy - hr * 0.6, hr * 0.32, hr * 0.55); // streak
+    // eyes
+    ctx.fillStyle = '#101014';
+    ctx.fillRect(-hr * 0.45, hy + hr * 0.08, 2.4, 3.6);
+    ctx.fillRect(hr * 0.22, hy + hr * 0.08, 2.4, 3.6);
+    if (def.visor) { // dash goggles
+      ctx.strokeStyle = hi; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(-hr * 0.8, hy + hr * 0.05); ctx.lineTo(hr * 0.8, hy + hr * 0.05); ctx.stroke();
     }
-    // angry brow
-    ctx.strokeStyle = def.hair; ctx.lineWidth = r * 0.14; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(r * 0.02, -r * 0.62); ctx.lineTo(r * 0.58, -r * 0.42); ctx.stroke();
-  }
-  if (def.fuse) { // bomb fuse
-    ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0, -r * 1.05); ctx.quadraticCurveTo(r * 0.2, -r * 1.5, r * 0.45, -r * 1.45); ctx.stroke();
-    ctx.fillStyle = '#ffdd44'; ctx.beginPath(); ctx.arc(r * 0.5, -r * 1.47, 3, 0, TAU); ctx.fill();
-  }
-  if (b.data.kind === 'koto') { // silver chain
-    ctx.strokeStyle = '#c8cdd8'; ctx.lineWidth = 2; ctx.setLineDash([2.5, 2]);
-    ctx.beginPath(); ctx.arc(0, r * 0.45, r * 0.5, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+    // silver chain at neck
+    ctx.strokeStyle = '#c8cdd8'; ctx.lineWidth = 1.8; ctx.setLineDash([2.5, 2]);
+    ctx.beginPath(); ctx.arc(0, hy + hr + 2, r * 0.3, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
     ctx.setLineDash([]);
+  } else { // zuza: long flowing hair + sunglasses
+    ctx.beginPath(); ctx.arc(0, hy, hr, Math.PI * 0.9, Math.PI * 2.1); ctx.fill();
+    ctx.fillRect(-hr * 1.05, hy - hr * 0.1, hr * 0.38, hr * 1.7); // left fall
+    ctx.fillRect(hr * 0.67, hy - hr * 0.1, hr * 0.38, hr * 1.7);  // right fall
+    ctx.fillRect(-hr * 0.5, hy + hr * 0.9, hr, hr * 0.9);          // back fall
+    ctx.fillStyle = hi;
+    ctx.fillRect(-hr * 1.0, hy + hr * 1.35, hr * 0.34, hr * 0.3); // neon tips
+    ctx.fillRect(hr * 0.72, hy + hr * 1.35, hr * 0.34, hr * 0.3);
+    ctx.fillRect(-hr * 0.5, hy + hr * 1.6, hr, hr * 0.22);
+    // sunglasses
+    ctx.fillStyle = '#0a0c10';
+    ctx.fillRect(-hr * 0.62, hy + hr * 0.02, hr * 1.24, hr * 0.38);
+    ctx.fillStyle = hi; ctx.fillRect(-hr * 0.62, hy + hr * 0.02, hr * 1.24, 1.6);
+    if (def.fuse) { // bomb fuse sprouting from hair
+      ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, hy - hr * 0.95); ctx.quadraticCurveTo(r * 0.2, hy - hr * 1.5, r * 0.45, hy - hr * 1.4); ctx.stroke();
+      ctx.fillStyle = '#ffdd44'; ctx.beginPath(); ctx.arc(r * 0.5, hy - hr * 1.42, 3, 0, TAU); ctx.fill();
+    }
   }
+  // knees tucked below head
+  ctx.fillStyle = jacket;
+  ctx.beginPath(); ctx.arc(-r * 0.3, r * 0.45, r * 0.26, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(r * 0.3, r * 0.45, r * 0.26, 0, TAU); ctx.fill();
+  if (b.hitFlash > 0) { ctx.globalAlpha = Math.min(0.5, b.hitFlash); ctx.fillStyle = '#fff'; ctx.fill(); ctx.globalAlpha = 1; }
   ctx.restore();
 };
 
