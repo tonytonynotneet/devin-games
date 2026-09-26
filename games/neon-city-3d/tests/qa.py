@@ -118,6 +118,23 @@ def main():
     moved = math.hypot(p1["x"] - p0["x"], p1["z"] - p0["z"])
     report("move: WASD moves pawn", moved > 2, f"moved {moved:.1f}m")
 
+    # screen-direction truth: project player position through the camera.
+    # stick right must move the pawn to the RIGHT of the screen (NDC +x).
+    d = js(page, """(async () => {
+      const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
+      const proj = (x,z)=>new THREE.Vector3(x,1.2,z).project(NC.cam).x;
+      const me = NC.me();
+      // walk RIGHT for a moment from a fixed camera yaw, measure screen dx
+      NC.camera.yaw = Math.PI; NC.input.joy.x = 1; NC.input.joy.y = 0;
+      NC.input.joy.mag = 1; NC.input.joy.id = 'qa';
+      const s = proj(me.x, me.z);
+      await new Promise(r => setTimeout(r, 160)); // early window: chase cam not yet swung
+      const e = proj(me.x, me.z);
+      NC.input.joy.mag = 0; NC.input.joy.id = null; NC.input.joy.x = 0;
+      return {dx: e - s};
+    })()""")
+    report("move: stick right = screen right", d["dx"] > 0.008, f"screen dx={d['dx']:.3f}")
+
     # ============ CAMERA ============
     yaw0 = js(page, "NC.camera.yaw")
     tid = touch_drag(cdp, 700, 200, 580, 200, hold=0.4, tid=2)  # right-half drag
@@ -132,7 +149,9 @@ def main():
     js(page, """(() => {
       const me = NC.me();
       const c = NC.car.nearestCar(me.x, me.z, 1e9);
-      // park the player right beside the car's door
+      // place car on open road so the drive check isn't wall-position flaky
+      const rp = NC.city.nearestRoadTo(20, 20);
+      c.x = rp.x; c.z = rp.z; c.yaw = 0; c.speed = 0; c.hp = 100; c.dead = false; c.steer = 0;
       me.x = c.x + Math.sin(c.yaw + Math.PI/2) * 2.0;
       me.z = c.z + Math.cos(c.yaw + Math.PI/2) * 2.0;
       me.mesh.position.set(me.x, 0, me.z);

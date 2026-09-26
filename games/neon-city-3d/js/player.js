@@ -64,7 +64,7 @@ NC.register('player', {
         // camera-relative move: stick up = away from camera
         if (j.mag > 0.12) {
           const camYaw = NC.state.camYaw !== undefined ? NC.state.camYaw : p.yaw;
-          const a = Math.atan2(j.x, -j.y) + camYaw;
+          const a = Math.atan2(-j.x, -j.y) + camYaw; // screen-relative: up=view dir, right=screen right
           const sp = 7.5 * j.mag;
           const nx = p.x + Math.sin(a) * sp * dt;
           const nz = p.z + Math.cos(a) * sp * dt;

@@ -21,6 +21,18 @@ NC.register('camera', {
       c.dx = c.dy = 0;
     }
     const inCar = me.inCar;
+    // chase cam: ease behind the direction of travel (GTA-style recentre)
+    const joyMag = inp.joy ? inp.joy.mag : 0;
+    if (inCar) {
+      const c = inCar;
+      if (Math.abs(c.speed) > 2) {
+        const t = c.yaw + Math.PI;
+        this.yaw += NC.util.angDiff(this.yaw, t) * Math.min(1, dt * 1.6);
+      }
+    } else if (!me.dead && joyMag > 0.12) {
+      const t = me.yaw + Math.PI;
+      this.yaw += NC.util.angDiff(this.yaw, t) * Math.min(1, dt * 2.4);
+    }
     const dist = inCar ? 8.5 : 5.2;
     const hgt = inCar ? 4.4 : 2.6;
     this.dist = NC.util.lerp(this.dist, dist, dt * 5);

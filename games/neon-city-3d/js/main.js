@@ -64,7 +64,7 @@ resize();
 // ---------- module wiring ----------
 const PLAY = new URLSearchParams(location.search).has('play');
 const MODS = ['input', 'city', 'pawn', 'camera', 'player', 'car', 'props', 'combat', 'people', 'wanted', 'missions', 'hud', 'save', 'net'];
-const VER = 'v3'; // bump to bust stale JS caches on phones
+const VER = 'v4'; // bump to bust stale JS caches on phones
 NC.ver = VER;
 await Promise.all(MODS.map(m => import(`./${m}.js?v=${VER}`).catch(e => {
   console.error('mod', m, e);
