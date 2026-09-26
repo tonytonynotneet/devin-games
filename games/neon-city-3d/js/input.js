@@ -19,11 +19,11 @@ NC.register('input', {
       e.preventDefault();
       for (const t of e.changedTouches) {
         const x = t.clientX, y = t.clientY;
-        if (x < window.innerWidth * 0.5 && joy.id === null) {
+        if (x < window.innerWidth * 0.58 && joy.id === null) {
           joy.id = t.identifier; joy.ox = x; joy.oy = y;
           joy.x = 0; joy.y = 0; joy.mag = 0;
           placeRing(x, y);
-        } else if (x >= window.innerWidth * 0.5 && cam.id === null) {
+        } else if (x >= window.innerWidth * 0.58 && cam.id === null) {
           cam.id = t.identifier; cam.lx = x; cam.ly = y;
         }
       }
@@ -39,7 +39,8 @@ NC.register('input', {
           joy.x = dx / max; joy.y = dy / max; joy.mag = Math.min(1, d / max);
           knob.style.transform = `translate(${dx * 0.55}px,${dy * 0.55}px)`;
         } else if (t.identifier === cam.id) {
-          cam.dx += (t.clientX - cam.lx); cam.dy += (t.clientY - cam.ly);
+          const ddx = t.clientX - cam.lx, ddy = t.clientY - cam.ly;
+          if (Math.abs(ddx) > 1.5 || Math.abs(ddy) > 1.5) { cam.dx += ddx; cam.dy += ddy; } // jitter deadzone
           cam.lx = t.clientX; cam.ly = t.clientY;
         }
       }
@@ -61,7 +62,7 @@ NC.register('input', {
 
     // mouse fallback: left-half = joy, right-half drag = camera
     cv.addEventListener('mousedown', (e) => {
-      if (e.clientX < window.innerWidth * 0.5) {
+      if (e.clientX < window.innerWidth * 0.58) {
         joy.id = 'mouse'; joy.ox = e.clientX; joy.oy = e.clientY; joy.x = 0; joy.y = 0; joy.mag = 0;
         placeRing(e.clientX, e.clientY);
       } else { cam.id = 'mouse'; cam.lx = e.clientX; cam.ly = e.clientY; }

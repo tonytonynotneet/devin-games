@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#05060f">
 <title>NEON CITY 3D — koto &amp; zuza</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
 // on-screen error banner — surfaces any boot failure on devices without a console
@@ -59,14 +59,16 @@ window.addEventListener('unhandledrejection', function (e) {
     <p>koto &amp; zuza — a cyberpunk city for two</p>
     <button id="btn-play" class="bigbtn">PLAY</button>
     <p class="mini" id="netstat"></p>
+    <p class="mini" style="opacity:.5">v3 · photo-accurate cast</p>
   </div>
   <div id="btns">
     <button id="btn-a">A</button>
     <button id="btn-b">B</button>
     <button id="btn-c">C</button>
   </div>
+  <div id="ver" style="position:fixed;right:4px;bottom:2px;color:#3a4260;font:9px monospace;z-index:9;pointer-events:none">v3</div>
 </div>
-<script src="../../shared/online.js"></script>
-<script type="module" src="js/main.js"></script>
+<script src="../../shared/online.js?v=3"></script>
+<script type="module" src="js/main.js?v=3"></script>
 </body>
 </html>
