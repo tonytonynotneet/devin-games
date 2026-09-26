@@ -12,9 +12,9 @@ NC.register('save', {
         NC.state.money = s.money || 0;
         const me = NC.me();
         if (me) {
-          me.weapons = { fist: true, ...(s.weapons || {}) };
-          me.ammo = s.ammo || {};
-          me.weapon = s.weapon || 'fist';
+          me.weapons = { fist: true, pistol: true, ...(s.weapons || {}) };
+          me.ammo = { pistol: 60, ...(s.ammo || {}) };
+          me.weapon = (s.weapon && s.weapon !== 'fist') ? s.weapon : 'pistol';
           if (typeof s.hp === 'number' && s.hp > 0) me.hp = Math.min(100, s.hp);
           if (typeof s.x === 'number' && typeof s.z === 'number' && !NC.city.solidAt(s.x, s.z, 0.5)) { me.x = s.x; me.z = s.z; me.mesh.position.set(s.x, 0, s.z); }
         }

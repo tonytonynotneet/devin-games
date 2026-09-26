@@ -24,7 +24,7 @@ NC.register('player', {
       NC.scene.add(mesh);
       return {
         char, mesh, x, z, yaw: Math.PI / 2, step: 0, hp: 100, stars: 0,
-        weapon: 'fist', weapons: { fist: true }, ammo: {},
+        weapon: 'pistol', weapons: { fist: true, pistol: true }, ammo: { pistol: 90 },
         dead: false, busted: false, iatk: 0, flash: 0, inCar: null, remote: false,
       };
     };
@@ -64,7 +64,7 @@ NC.register('player', {
         // camera-relative move: stick up = away from camera
         if (j.mag > 0.12) {
           const camYaw = NC.state.camYaw !== undefined ? NC.state.camYaw : p.yaw;
-          const a = Math.atan2(j.x, -j.y) + camYaw + Math.PI;
+          const a = Math.atan2(j.x, -j.y) + camYaw;
           const sp = 7.5 * j.mag;
           const nx = p.x + Math.sin(a) * sp * dt;
           const nz = p.z + Math.cos(a) * sp * dt;
